@@ -1,0 +1,362 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Applied Unsupervised Machine Learning",
+    "section": "",
+    "text": "Overview",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Applied Unsupervised Machine Learning</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "Applied Unsupervised Machine Learning",
+    "section": "",
+    "text": "Session 1 (half‑day) Introduction to unsupervised learning\n\nIntroduction to unsupervised learning and normalization:\nUnderstand the fundamental principles of unsupervised learning and recognize the role that data normalization plays in preparing datasets for analysis.\nWhy normalization is required:\nExplain why normalization is necessary to ensure that features with different scales do not unduly influence unsupervised learning algorithms.\nWhy dimensionality reduction is required\nWhy you need dimensionality reduction.\nBasics of dimensionality reduction:\nDescribe the core concepts of dimensionality reduction. Then describe Principal Component Analysis (PCA), including how it reduces dimensionality by identifying directions of maximum variance.\nEvaluating unsupervised learning results\nHow to check the performance and quality of your unsupervised learning results.\n\n\n\n\nSession 2 (half‑day) Basics of dimensionality reduction\n\nBasic applications of PCA:\nApply PCA to real datasets, interpret the resulting principal components, and discuss how these components can reveal underlying structure.\nCurse of dimensionality:\nExplain the concept of the curse of dimensionality and its implications for the performance and interpretability of clustering and dimensionality‑reduction algorithms.\nPCA and t‑SNE:\nCompare and contrast PCA and t‑Distributed Stochastic Neighbor Embedding (t‑SNE) as two popular techniques for dimensionality reduction and data visualization.\nBasics of t‑SNE:\nExplain how t‑SNE projects high‑dimensional data into two or three dimensions while preserving local similarities between points.\nApplications to data:\nDemonstrate the use of both PCA and t‑SNE on sample datasets to visualize clustering tendencies and uncover hidden patterns.\n\n\n\n\nSession 3 (half‑day) Basics of Clustering\n\nClustering:\nDefine clustering in the context of unsupervised learning and outline its importance in discovering groupings within data.\nBasics of k‑means:\nDescribe the k‑means clustering algorithm, including how cluster centroids are initialized and updated to minimize within‑cluster variance.\nBasics of hierarchical clustering:\nExplain the steps of hierarchical clustering, heatmaps, agglomerative approaches, and interpret dendrograms.\nDeciding on your clustering approach:\nSituations in which you would want to apply hierarchical clustering. Discuss specific use cases: such as when the number of clusters is unknown or when a tree‑based representation is desired—where hierarchical clustering is advantageous.\n\n\n\n\nSession 4 (half‑day) Practical applications (hands-on)\n\nWhen not to apply PCA and t‑SNE:\nIdentify situations where PCA or t‑SNE may produce misleading results or be computationally infeasible, and propose alternative strategies.\nPractical applications:\nExplore real‑world scenarios where unsupervised learning methods provide actionable insights across various domains.\nPractical applications of PCA, t‑SNE and hierarchical clustering to biological data:\nApply PCA, t‑SNE, and hierarchical clustering to biological datasets (e.g., gene expression or single‑cell data), interpret the results, and discuss biological insights gained.\nEvaluating unsupervised learning methods\nHow to evaluate these techniques on different kinds of data (single-cell data, electronic healthcare records, social sciences data): these are used to generate hypotheses. Motivations for next steps.\n\n\n\n\n\n\n\nLearning Objectives\n\n\n\n\nList course learning objectives here.\nThese describe concepts the learners should grasp and techniques they should be able to use by the end of the course.\nYou can think of these as completing the phrase “after this course, the participant should be able to…”\nThey are not supposed to be as detailed as the learning objectives of each section, but more high-level.\n\n\n\n\n\nTarget Audience\nStudents who have some basic familiarity with Python.\n\n\nPrerequisites\nBasic familiarity with Python. Course webpage is here: Introduction to Python\n\n\n\nExercises\nExercises in these materials are labelled according to their level of difficulty:\n\n\n\n\n\n\n\nLevel\nDescription\n\n\n\n\n  \nExercises in level 1 are simpler and designed to get you familiar with the concepts and syntax covered in the course.\n\n\n  \nExercises in level 2 combine different concepts together and apply it to a given task.\n\n\n  \nExercises in level 3 require going beyond the concepts and syntax introduced to solve new problems.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Applied Unsupervised Machine Learning</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#citation-authors",
+    "href": "index.html#citation-authors",
+    "title": "Applied Unsupervised Machine Learning",
+    "section": "Citation & Authors",
+    "text": "Citation & Authors\nPlease cite these materials if:\n\nYou adapted or used any of them in your own teaching.\nThese materials were useful for your research work. For example, you can cite us in the methods section of your paper: “We carried our analyses based on the recommendations in YourReferenceHere”.\n\n\nYou can cite these materials as:\n\n\"Banerjee\", \"., \"van Rongen\", \"., \"Hodgson\", \"., \"Fannon\", \"., \"Castle\", \". (2025). \"Applied Unsupervised Machine Learning\". \"https://cambiotraining.github.io/ml-unsupervised/\"\n\nOr in BibTeX format:\n@misc{YourReferenceHere,\n  author = {\"Banerjee\", \"Soumya\" and \"van Rongen\", \"Martin\" and \"Hodgson\", \"Victoria\" and \"Fannon\", \"Paul\" and \"Castle\", \"Matthew\"},\n  month = {7},\n  title = {\"Applied Unsupervised Machine Learning\"},\n  url = {\"https://cambiotraining.github.io/ml-unsupervised/\"},\n  year = {2025}\n}\nAbout the authors:\n\"Soumya\" \"Banerjee\"  \nAffiliation: \"University of Cambridge\" Roles: \"edit author contribution roles\"\n\n\"Martin\" \"van Rongen\"  \nAffiliation: \"University of Cambridge\" Roles: \"edit author contribution roles\"\n\n\"Victoria\" \"Hodgson\"  \nAffiliation: \"University of Cambridge\" Roles: \"edit author contribution roles\"\n\n\"Paul\" \"Fannon\"  \nAffiliation: \"University of Cambridge\" Roles: \"edit author contribution roles\"\n\n\"Matthew\" \"Castle\"  \nAffiliation: \"University of Cambridge\" Roles: \"edit author contribution roles\"",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Applied Unsupervised Machine Learning</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#acknowledgements",
+    "href": "index.html#acknowledgements",
+    "title": "Applied Unsupervised Machine Learning",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\n\n\nWe thank Martin van Rongen, Vicki Hodgson, Hugo Tavares, Paul Fannon, Matt Castle and the Bioinformatics Facility Training Team for their support and guidance.\nIntroduction to Statistical Learning in Python",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Applied Unsupervised Machine Learning</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#data",
+    "href": "setup.html#data",
+    "title": "Data & Setup",
+    "section": "Data",
+    "text": "Data\nThe data used in these materials is provided as a zip file. Download and unzip the folder to your Desktop to follow along with the materials.\n\n  Download",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data & Setup</span>"
+    ]
+  },
+  {
+    "objectID": "setup.html#software",
+    "href": "setup.html#software",
+    "title": "Data & Setup",
+    "section": "Software",
+    "text": "Software\n\n📦 Installation Instructions (for Google Colab)\n\nHow to use in Colab:\n\nOpen a new notebook in Google Colab\nRun the commands in code cells.\nYou can now create notebooks and run any of the scripts in Google Colab.\nIf you want to run the notebooks in Colab, you can also use the “Open in Colab” badge below:\n\n\n\n\nOpen In Colab\n\n\nRepository link:\nhttps://cambiotraining.github.io/ml-unsupervised/\n\n\n\n\n\n\n2. Run locally\n\nInstall VSCode (see below).\nInstall required Python packages\n\npip install numpy pandas keras tensorflow scikit-learn seaborn matplotlib scanpy\nor\npip install -r requirements.txt\n\n\nVisual Studio Code\n\nWindowsMac OSLinux (Ubuntu)\n\n\n\nGo to the Visual Studio Code download page and download the installer for your operating system. Double-click the downloaded file to install the software, accepting all the default options.\nAfter completing the installation, go to your Windows Menu, search for “Visual Studio Code” and launch the application.\nGo to “File &gt; Preferences &gt; Settings”, then select “Text Editor &gt; Files” on the drop-down menu on the left. Scroll down to the section named “EOL” and choose “\\n” (this will ensure that the files you edit on Windows are compatible with the Linux operating system).\n\n\n\n\nGo to the Visual Studio Code download page and download the installer for Mac.\nGo to the Downloads folder and double-click the file you just downloaded to extract the application. Drag-and-drop the “Visual Studio Code” file to your “Applications” folder.\nYou can now open the installed application to check that it was installed successfully (the first time you launch the application you will get a warning that this is an application downloaded from the internet - you can go ahead and click “Open”).\n\n\n\n\nGo to the Visual Studio Code download page and download the installer for your Linux distribution. Install the package using your system’s installer.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data & Setup</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "3  References",
+    "section": "",
+    "text": "Aschenbrenner, Dominik, Maria Quaranta, Soumya Banerjee, Nicholas Ilott,\nJoanneke Jansen, Boyd Steere, Yin-Huai Chen, et al. 2020.\n“Deconvolution of Monocyte Responses in Inflammatory Bowel Disease\nReveals an IL-1 Cytokine Network That Regulates IL-23 in Genetic and\nAcquired IL-10 Resistance.” Gut, October,\ngutjnl-2020-321731. https://doi.org/10.1136/gutjnl-2020-321731.\n\n\nGareth, James, Witten Daniela, Hastie Trevor, and Tibshirani Robert.\n2017. Introduction to Statistical Learning with Applications in\nr. Springer. https://www.statlearning.com/.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Welcome",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>References</span>"
+    ]
+  },
+  {
+    "objectID": "materials/00-template.html",
+    "href": "materials/00-template.html",
+    "title": "4  Template Page",
+    "section": "",
+    "text": "4.1 Section\nHeadings for material sections start at level 2.\nMore guidelines for content available here: https://cambiotraining.github.io/quarto-course-template/materials/02-content_guidelines.html",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Template Page</span>"
+    ]
+  },
+  {
+    "objectID": "materials/00-template.html#summary",
+    "href": "materials/00-template.html#summary",
+    "title": "4  Template Page",
+    "section": "4.2 Summary",
+    "text": "4.2 Summary\n\n\n\n\n\n\nKey Points\n\n\n\n\nLast section of the page is a bulleted summary of the key points",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Template Page</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html",
+    "href": "materials/walkthrough.html",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "",
+    "text": "5.1 Introduction\nUnsupervised learning is a branch of machine learning that deals with finding hidden patterns or intrinsic structures in data without the use of labeled responses. Unlike supervised learning, where the model learns from labeled data to predict outcomes, unsupervised learning works with input data that does not have any corresponding output variables. The primary goal is to explore the underlying structure, groupings, or features in the data.\nOne of the most common applications of unsupervised learning is clustering, where the algorithm groups similar data points together based on their characteristics. This is particularly useful in scenarios such as customer segmentation, anomaly detection, and image compression. Another key technique is dimensionality reduction, which aims to reduce the number of variables under consideration, making it easier to visualize and interpret large datasets.\nUnsupervised learning is valuable because it can reveal insights that may not be immediately apparent, uncovering relationships and patterns that might otherwise go unnoticed. It is commonly used in exploratory data analysis and as a preprocessing step for other algorithms. As data continues to grow in complexity and volume, unsupervised learning plays a critical role in making sense of unstructured information.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#introduction",
+    "href": "materials/walkthrough.html#introduction",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "",
+    "text": "5.1.1 Motivation\nHere is a picture I took of a pavement in Cambridge the day after Valentine’s Day. Why did this picture capture my attention? The starkness of the grey pavement contrasted with the bright red rose. It may have triggered some unsupervised learning mechanism in my brain that allows me to pick anomalies!\n\n\n\nRose after Valentine’s Day\n\n\nUnsupervised learning is all about discovering structure in data without any explicit “right answers” to guide you. Your rose‑on‑pavement photo is a perfect real‑world illustration of a few core ideas:\n\nAnomaly (or Outlier) Detection\nWhat happened in your brain:\nWhen you look at a uniform grey pavement, your visual system builds an internal “model” of what’s normal—flat, texture‑repeating, monochrome. The bright red rose doesn’t fit that model, so it “pops,” drawing your attention.\nIn machine learning:\nAlgorithms like Isolation Forests, One‑Class SVMs, or autoencoder‑based detectors learn a representation of “normal” data (e.g. patches of pavement) and then flag anything that deviates significantly (e.g. the rose) as an anomaly.\nFeature Extraction & Saliency\nHuman vision analogy:\nEarly in the visual cortex, neurons respond to edges, color contrasts, textures. A red circle on grey evokes strong responses in “color” and “shape‑edge” channels.\nML counterpart:\nTechniques like PCA or deep autoencoders learn low‑dimensional “features” (color histograms, texture filters). Dimensions where the rose is extreme (high red‑channel value) are exactly the ones that give us the “anomaly” score.\nClustering & Pattern Discovery You might not only notice the rose, but if there were lots of petals scattered around, your brain could start grouping (clustering) regions of similar color/shape.\n\nUnsupervised clustering algorithms (k‑means, DBSCAN) would partition image patches into clusters—“pavement patches,” “rose petals,” maybe even “shadows.” Anything that doesn’t belong to a big cluster may again be flagged as rare.\n\nDimensionality Reduction & Visualization In a high‑dimensional feature space (e.g. each 10×10 pixel patch → a 300‑dim vector), you can’t “see” clusters easily. Algorithms like t‑SNE or UMAP compress that down to 2D so you can actually plot and see the rose‑patches separate from pavement.\n\nThis is why, for instance, visual analytics tools will show outliers as distant points on a scatterplot—just as you instantly spot the rose on the pavement.\n\n\n5.1.2 Resources\nPCA intuition\n\n\n\n\n\n\nKey Concept\n\n\n\n\n\n\nInformation bottleneck\n\n\nIn unsupervised learning, the bottleneck concept refers to a deliberate architectural constraint in a model—typically an autoencoder—where information is compressed through a narrow intermediate representation, often called a latent code or embedding. The model is trained to reconstruct the input data after passing it through this low-dimensional bottleneck, forcing it to learn a compact and informative representation of the underlying structure of the data. Since there are no labels guiding the learning process, the model relies solely on reconstructing its input as accurately as possible, using only the limited information passed through this narrow channel. This compression encourages the model to capture essential features while discarding noise or redundancy.\nThe bottleneck acts as an inductive bias that promotes dimensionality reduction, feature learning, and denoising. By minimizing reconstruction error while constrained by a reduced latent space, the model implicitly discovers patterns, clusters, and hierarchies within the input data. In practical terms, this is a foundational principle behind many unsupervised representation learning methods, including classical autoencoders, variational autoencoders (VAEs), and self-supervised learning systems that rely on contrastive or generative objectives. The learned low-dimensional codes can then be used for downstream tasks such as clustering, visualization (e.g., with t-SNE or PCA), or as inputs to supervised models in a semi-supervised setting.\nmagine you have a huge library of biological images—say, pictures of different cell types under a microscope—and you want to teach a computer to recognize patterns in those images without telling it what any of the cells are. A “bottleneck” in this context is like asking the computer to summarize each image using only a few key words instead of the entire picture. By forcing it to compress all the rich detail down to a small summary, the computer has to figure out which features—like cell shape, size, or texture—are truly important. This is similar to how a biologist might sketch a simplified diagram of a cell, highlighting its nucleus and membrane but leaving out every ribosome and microtubule.\nBecause the computer must recreate the original image from that stripped‑down summary, it learns to ignore random noise or unimportant quirks (like slight variations in lighting) and focus on the core characteristics shared by similar cell types. In other words, the bottleneck helps the machine discover the hidden “essence” of the data. Once you have those concise summaries, you can use them to cluster cells into groups, visualize how different cell types relate, or even feed them into a second analysis—just as you might reduce a complex DNA dataset to a handful of genetic markers before drawing a phylogenetic tree. This approach lets you explore and interpret large biological datasets more effectively, all without ever providing explicit labels.\n\n\n\n\n5.1.3 Example\nGiven the data below, how should we reduce the number of features and/or visualize it? This is an unsupervised machine learning problem.\n\n\n\n\n\n\nTip\n\n\n\nNOTE (IMPORTANT CONCEPT): The columns of this data are the features.\n\n\n\n\n\n\n\n\n\n\n\nState\nMurder (per 100k)\nRobbery (per 100k)\nPopulation\n\n\n\n\nCalifornia\n9.1\n45.3\n39,512,223\n\n\nTexas\n7.8\n38.6\n28,995,881\n\n\nFlorida\n5.9\n31.7\n21,477,737\n\n\nNew York\n3.4\n26.4\n19,453,561\n\n\nIllinois\n6.4\n35.1\n12,671,821\n\n\nPennsylvania\n4.8\n22.9\n12,801,989\n\n\n\nImportantly, we are not trying to predict anything. For example, say in the data below we can try to predict the number of people who moved to that state last year. This is a supervised machine learning problem (Gareth et al. 2017).\n\n\n\n\n\n\n\n\n\n\nState\nMurder (per 100k)\nRobbery (per 100k)\nPopulation\nPeople Who Moved (per 100k)\n\n\n\n\nCalifornia\n9.1\n45.3\n39,512,223\n5,400\n\n\nTexas\n7.8\n38.6\n28,995,881\n4,100\n\n\nFlorida\n5.9\n31.7\n21,477,737\n6,200\n\n\nNew York\n3.4\n26.4\n19,453,561\n3,800\n\n\nIllinois\n6.4\n35.1\n12,671,821\n2,900\n\n\nPennsylvania\n4.8\n22.9\n12,801,989\n2,500",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#what-pca-does-to-the-data",
+    "href": "materials/walkthrough.html#what-pca-does-to-the-data",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.2 What PCA does to the data",
+    "text": "5.2 What PCA does to the data\n\n\n5.2.1 Projection of 3D Data\nWe generate three clusters of synthetic 3‑dimensional points, compute the first two principal components using scikit‑learn’s PCA, and then create a two‑panel figure:\n\nLeft panel: A 3D scatter of the original points, the best‐fit plane defined by the first two principal components, and projection lines from each point down onto that plane.\n\nRight panel: A 2D scatter of the projected coordinates (the principal component scores) along the first two components, colored by cluster.\n\nUse this visualization to understand how PCA finds the plane that maximizes variance and how the data look when reduced to two dimensions.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#pca-is-lossy",
+    "href": "materials/walkthrough.html#pca-is-lossy",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.3 PCA is lossy",
+    "text": "5.3 PCA is lossy\nPCA does lose some information. But it can capture some/most of the salient aspects of your data.\n\n\n\n\n\n\nTip\n\n\n\nNOTE (IMPORTANT CONCEPT)\nDimensionality reduction techniques (such as PCA) always lose some information. In other words, it is lossy.\n\n\n\n5.3.1 Lesson on lossy compression (PCA applied to image)\n\n\n5.3.2 Learning Objectives\n\nUnderstand how Principal Component Analysis (PCA) can be applied to images.\nObserve how PCA captures the most significant patterns in image data.\nVisualize how the number of principal components affects image reconstruction.\nAppreciate the trade-off between compression and information loss.\n\n\n\n5.3.3 Key Concepts\n\nPCA is a dimensionality reduction technique that identifies directions (principal components) along which the variance in the data is maximized.\nImages can be viewed as high-dimensional data (each pixel as a feature), and PCA helps reduce that dimensionality while preserving key patterns.\n\n\n\n5.3.4 Procedure Overview\n\nLoad and display an image from a URL.\nApply PCA to each RGB channel of the image separately.\nReconstruct the image using an increasing number of principal components.\nVisualize the reconstructions to show how few components capture most of the image’s structure.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5.3.5 Takeaway Message\nPCA can significantly reduce image data dimensionality while preserving salient features, making it a powerful tool for image compression and understanding. However, perfect reconstruction is only possible with all components, revealing the balance between efficiency and fidelity.\n\n\n\n\n\n\nActivity: Playable version of PCA in browser\n\n\n\nPCA in your browser",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#visual-explanations-of-pca",
+    "href": "materials/walkthrough.html#visual-explanations-of-pca",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.4 Visual explanations of PCA",
+    "text": "5.4 Visual explanations of PCA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIntuition\n\n\n\n\nPCA maximimizes the variance captured",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#key-concepts-1",
+    "href": "materials/walkthrough.html#key-concepts-1",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.5 📊 Key Concepts",
+    "text": "5.5 📊 Key Concepts\n\n5.5.1 1. Scores and Loadings\nWhat is being plotted on the axes (PC1 and PC2) are the scores.\nThe scores for each principal component are calculated as follows:\n\\[\nPC_{1} = \\alpha X + \\beta Y + \\gamma Z + ....\n\\]\nwhere \\(X\\), \\(Y\\) and \\(Z\\) are the normalized features.\nThe constants \\(\\alpha\\), \\(\\beta\\), \\(\\gamma\\) are determined by the PCA algorithm. They are called the loadings.\n\n\n5.5.2 2. Variance\n\nVariance = how spread out the data is.\nPCA finds directions (principal components) that maximize variance.\n\nFormula for variance of variable \\(x\\):\n\\[\n\\text{Var}(x) = \\frac{1}{n - 1} \\sum_{i=1}^{n} (x_i - \\bar{x})^2\n\\]",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#example-gene-expression-data",
+    "href": "materials/walkthrough.html#example-gene-expression-data",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.6 🔬 Example: Gene Expression Data",
+    "text": "5.6 🔬 Example: Gene Expression Data\n\nRows = samples (patients)\nColumns = gene expression levels\n\n\n5.6.1 Goal:\n\nReduce dimensionality from 20,000 genes to 2-3 PCs\nVisualize patterns between patient groups (e.g., healthy vs. cancer)\n\n# Sample Python code (requires numpy, sklearn, matplotlib)\nfrom sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\nimport matplotlib.pyplot as plt\n\nX = ...  # gene expression matrix\nX_scaled = StandardScaler().fit_transform(X)\n\npca = PCA(n_components=2)\nX_pca = pca.fit_transform(X_scaled)\n\nplt.scatter(X_pca[:, 0], X_pca[:, 1])\nplt.xlabel('PC1')\nplt.ylabel('PC2')\nplt.title('PCA of Gene Expression')\nplt.show()",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#lesson-summary",
+    "href": "materials/walkthrough.html#lesson-summary",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.7 Lesson Summary",
+    "text": "5.7 Lesson Summary\n\nBasics of unsupervised learning\nUseful for visualization, outlier detection and making sense of your data if there are many features\nWhat it is: Discover hidden patterns or groupings in unlabeled data, without predicting a specific target.\n\nKey techniques:\n\nClustering (e.g. k‑means, hierarchical) for grouping similar observations\n\nDimensionality reduction (e.g. PCA) for compressing and visualizing high‑dimensional data\n\n\nWhy it matters:\n\nReveals structure in customer segmentation, anomaly detection, image compression, etc.\n\nServes as exploratory analysis and preprocessing for downstream tasks\n\n\nInformation bottleneck: Forcing models (like autoencoders) to squeeze data through a narrow “latent code” uncovers the most essential features and removes noise\n\nHands‑on example: Apply PCA to crime‑and‑population data by state to project three features into two dimensions for visualization\n\nUnsupervised vs. supervised:\n\nUnsupervised: No labels, focus on pattern discovery\n\nSupervised: With labels, focus on predicting a known outcome",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#acknowledgements",
+    "href": "materials/walkthrough.html#acknowledgements",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.8 Acknowledgements",
+    "text": "5.8 Acknowledgements\nWe thank Martin van Rongen, Vicki Hodgson, Hugo Tavares, Paul Fannon, Matt Castle and the Bioinformatics Facility Training Team for their support and guidance.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/walkthrough.html#resources-1",
+    "href": "materials/walkthrough.html#resources-1",
+    "title": "5  Introduction to Unsupervised Learning",
+    "section": "5.9 Resources",
+    "text": "5.9 Resources\n\nIntroduction to Statistical Learning in Python book\nVideo lectures by the authors of the book Introduction to Statistical Learning in Python\nhttps://github.com/neelsoumya/public_teaching_unsupervised_learning\nInteractive explanations of machine learning models\nMathematics behind unsupervised machine learning\n\n\n\n\n\n\nGareth, James, Witten Daniela, Hastie Trevor, and Tibshirani Robert. 2017. Introduction to Statistical Learning with Applications in r. Springer. https://www.statlearning.com/.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Introduction to Unsupervised Learning</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html",
+    "href": "materials/normalization.html",
+    "title": "6  Normalizing your data",
+    "section": "",
+    "text": "7 Introduction\nThis chapter demonstrates basic unsupervised machine learning concepts using Python.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#refresher-on-python",
+    "href": "materials/normalization.html#refresher-on-python",
+    "title": "6  Normalizing your data",
+    "section": "7.1 Refresher on Python",
+    "text": "7.1 Refresher on Python\n\n\n# ============================================================================\n# 1. IMPORTING PACKAGES\n# ============================================================================\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# ============================================================================\n# 2. READING DATA WITH PANDAS FROM GITHUB\n# ============================================================================\n\n# GitHub URL for the diabetes data\n# Convert from GitHub web URL to raw data URL\ngithub_url = \"https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/diabetes_sample_data.csv\"\n\n# Read CSV file directly from GitHub\ndiabetes_data = pd.read_csv(github_url)\n    \n# Display basic information about the data\nprint(\"\\nData shape:\", diabetes_data.shape)\nprint(\"\\nFirst 5 rows:\")\nprint(diabetes_data.head())\n        \nprint(\"\\nBasic statistics:\")\nprint(diabetes_data.describe())\n\n# ============================================================================\n# 3. PLOTTING WITH MATPLOTLIB\n# ============================================================================\n\n# Plot 1: Histogram of Age\nplt.figure(figsize=(10, 6))\nplt.hist(diabetes_data['age'], bins=20, alpha=0.7, color='skyblue', edgecolor='black')\nplt.title('Distribution of Age', fontsize=14, fontweight='bold')\nplt.xlabel('Age')\nplt.ylabel('Frequency')\nplt.grid(True, alpha=0.3)\n#plt.savefig('age_distribution.png', dpi=300, bbox_inches='tight')\nplt.show()\n\n\nData shape: (100, 6)\n\nFirst 5 rows:\n   patient_id   age  glucose   bmi  blood_pressure  diabetes\n0           1  62.5     97.5  29.8            71.7         0\n1           2  52.9    127.4  30.8            74.4         0\n2           3  64.7    129.7  33.4            87.5         0\n3           4  77.8    115.9  33.3            86.1         1\n4           5  51.5    135.2  21.1            79.8         1\n\nBasic statistics:\n       patient_id         age     glucose         bmi  blood_pressure  \\\ncount  100.000000  100.000000  100.000000  100.000000      100.000000   \nmean    50.500000   53.444000  140.670000   28.322000       81.066000   \nstd     29.011492   13.625024   28.611669    5.425223        8.842531   \nmin      1.000000   15.700000   82.400000   11.800000       58.800000   \n25%     25.750000   46.000000  115.800000   24.700000       74.350000   \n50%     50.500000   53.100000  142.550000   28.500000       80.500000   \n75%     75.250000   61.075000  156.175000   31.500000       86.825000   \nmax    100.000000   82.800000  221.600000   47.300000      101.900000   \n\n         diabetes  \ncount  100.000000  \nmean     0.250000  \nstd      0.435194  \nmin      0.000000  \n25%      0.000000  \n50%      0.000000  \n75%      0.250000  \nmax      1.000000",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#normalization-z-score-standardization",
+    "href": "materials/normalization.html#normalization-z-score-standardization",
+    "title": "6  Normalizing your data",
+    "section": "7.2 Normalization (Z-score Standardization)",
+    "text": "7.2 Normalization (Z-score Standardization)\nNormalization, specifically Z-score standardization, is a data scaling technique that transforms your data to have a mean of 0 and a standard deviation of 1. This is useful for many machine learning algorithms that are sensitive to the scale of input features.\nThe formula for Z-score is:\n\\[ z = \\frac{x - \\mu}{\\sigma} \\]\nWhere: - \\(x\\) is the original data point. - \\(\\mu\\) is the mean of the data. - \\(\\sigma\\) is the standard deviation of the data.\nFor example, say you have two variables or features on very different scales.\n\n\n\nAge\nWeight (grams)\n\n\n\n\n25\n65000\n\n\n30\n70000\n\n\n35\n75000\n\n\n40\n80000\n\n\n45\n85000\n\n\n50\n90000\n\n\n55\n95000\n\n\n60\n100000\n\n\n65\n105000\n\n\n70\n110000\n\n\n75\n115000\n\n\n80\n120000\n\n\n\nIf these are not brought on similar scales, weight will have a dispproportionate influence on whatever machine learning model we build.\nHence we normalize each of the features separately, i.e. age is normalized relative to age and weight is normalized relative to weight.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.preprocessing import StandardScaler\n\n# 1. Generate age and weight data\nnp.random.seed(42)\nage = np.random.normal(45, 15, 100)  # 100 people, mean age 45, std 15\nage = np.clip(age, 18, 80)  # Keep ages between 18-80\n\nweight = 70 + (age - 45) * 0.3 + np.random.normal(0, 10, 100)  # Weight correlated with age\nweight = np.clip(weight, 45, 120)  # Keep weights between 45-120 kg\n\nprint(\"Original data:\")\nprint(f\"Age: mean={age.mean():.1f}, std={age.std():.1f}\")\nprint(f\"Weight: mean={weight.mean():.1f}, std={weight.std():.1f}\")\n\n# 2. Normalize the data\nscaler = StandardScaler()\ndata = np.column_stack((age, weight))\nnormalized_data = scaler.fit_transform(data)\n\nage_normalized = normalized_data[:, 0]\nweight_normalized = normalized_data[:, 1]\n\n# Histogram: Age (Original)\nplt.figure()\nplt.hist(age, bins=20, alpha=0.7)\nplt.title('Age Distribution (Original)')\nplt.xlabel('Age')\nplt.ylabel('Frequency')\nplt.grid(True, alpha=0.3)\nplt.show()\n\n# Histogram: Age (Normalized)\nplt.figure()\nplt.hist(age_normalized, bins=20, alpha=0.7)\nplt.title('Age Distribution (Normalized)')\nplt.xlabel('Age (Z-score)')\nplt.ylabel('Frequency')\nplt.grid(True, alpha=0.7)\n\nplt.tight_layout()\nplt.show()\n\nOriginal data:\nAge: mean=43.6, std=13.1\nWeight: mean=69.8, std=9.8",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#setup",
+    "href": "materials/normalization.html#setup",
+    "title": "6  Normalizing your data",
+    "section": "7.3 Setup",
+    "text": "7.3 Setup\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\nfrom sklearn.decomposition import PCA\nfrom sklearn.cluster import KMeans",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#example-data",
+    "href": "materials/normalization.html#example-data",
+    "title": "6  Normalizing your data",
+    "section": "7.4 Example Data",
+    "text": "7.4 Example Data",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#pca-example",
+    "href": "materials/normalization.html#pca-example",
+    "title": "6  Normalizing your data",
+    "section": "7.5 PCA Example",
+    "text": "7.5 PCA Example\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nPythonR\n\n\n\npca = PCA(n_components=2)\nX_pca = pca.fit_transform(X)\nplt.scatter(X_pca[:, 0], X_pca[:, 1])\nplt.title(\"PCA Projection\")\nplt.show()\n\n\n\n\nA simple PCA plot",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#clustering-example",
+    "href": "materials/normalization.html#clustering-example",
+    "title": "6  Normalizing your data",
+    "section": "7.6 Clustering Example",
+    "text": "7.6 Clustering Example",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#pca-vs.-other-techniques",
+    "href": "materials/normalization.html#pca-vs.-other-techniques",
+    "title": "6  Normalizing your data",
+    "section": "7.7 🧠 PCA vs. Other Techniques",
+    "text": "7.7 🧠 PCA vs. Other Techniques\n\nPCA is unsupervised (no labels used)\nWorks best for linear relationships\nAlternatives:\n\nt-SNE for nonlinear structures",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#in-practice-tips-for-biologists",
+    "href": "materials/normalization.html#in-practice-tips-for-biologists",
+    "title": "6  Normalizing your data",
+    "section": "7.8 🧬 In Practice: Tips for Biologists",
+    "text": "7.8 🧬 In Practice: Tips for Biologists\n\nAlways standardize data before PCA\nBe cautious interpreting PCs biologically—PCs are mathematical constructs",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#exercise",
+    "href": "materials/normalization.html#exercise",
+    "title": "6  Normalizing your data",
+    "section": "7.9 Exercise",
+    "text": "7.9 Exercise\n\nPCA on US Arrest data\n\n\n7.9.1 Goals of unsupervised learning\n\nFinding patterns in data\n\nHere is an example from biological data (single-cell sequencing data) (the plot is from [2])(Aschenbrenner et al. 2020).\n\n\n\nExample tSNE\n\n\n\n\n\nExample heatmaps\n\n\n\nFinding interesting patterns\n\nYou can also use dimensionality reduction techniques (such as PCA) to find interesting patterns in your data.\n\n\n\n\n\n\n\n\n\n\nFinding outliers\n\nYou can also use dimensionality reduction techniques (such as PCA) to find outliers in your data.\n\n\n\n\n\n\n\n\n\n\nFinding hypotheses\n\nAll of these can be used to generate hypotheses. These hypotheses can be tested by collecting more data.\n\n\n\n\n\n\nSummary\n\n\n\n\nNeed to normalize data before doing dimensionality reduction\nPCA reduces dimensionality for visualization.\nKMeans finds clusters in unlabeled data.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  },
+  {
+    "objectID": "materials/normalization.html#references",
+    "href": "materials/normalization.html#references",
+    "title": "6  Normalizing your data",
+    "section": "7.10 References",
+    "text": "7.10 References\n[1] Article on normalization on Wikipedia\n[2] Deconvolution of monocyte responses in inflammatory bowel disease reveals an IL-1 cytokine network that regulates IL-23 in genetic and acquired IL-10 resistance Gut, 2020 link\n\n\n\n\n\nAschenbrenner, Dominik, Maria Quaranta, Soumya Banerjee, Nicholas Ilott, Joanneke Jansen, Boyd Steere, Yin-Huai Chen, et al. 2020. “Deconvolution of Monocyte Responses in Inflammatory Bowel Disease Reveals an IL-1 Cytokine Network That Regulates IL-23 in Genetic and Acquired IL-10 Resistance.” Gut, October, gutjnl-2020-321731. https://doi.org/10.1136/gutjnl-2020-321731.",
+    "crumbs": [
+      "{{< iconify fa6-brands github size=lg title='CRIT GitHub' >}}",
+      "Section title",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Normalizing your data</span>"
+    ]
+  }
+]
