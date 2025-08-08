@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Normalizing your data and PCA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/tsne.html" rel="next">
+<link href="../materials/walkthrough.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-b13b45a669a15caaa44b422aa2b28d1d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Applied Unsupervised Machine Learning</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/cambiotraining/ml-unsupervised"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:github" style="font-size: 1.25em;" aria-label="Icon github from fa6-brands Iconify.design set." title="CRIT GitHub"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/bioinfocambs.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:bluesky" style="font-size: 1.25em;" aria-label="Icon bluesky from fa6-brands Iconify.design set." title="CRIT Bluesky"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://genomic.social/@BioInfoCambs"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:mastodon" style="font-size: 1.25em;" aria-label="Icon mastodon from fa6-brands Iconify.design set." title="CRIT Mastodon"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bioinfotraining.bio.cam.ac.uk/"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="mdi:web" style="font-size: 1.25em;" aria-label="Icon web from mdi Iconify.design set." title="CRIT Website"></iconify-icon></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Applied Unsupervised Machine Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data &amp; Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">References and Resources</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Introduction to Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/normalization.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Dimensionality Reduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/tsne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">tSNE</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: Clustering</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 4: Applications of Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Hands-on exercises (Applications of unsupervised machine learning)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bonus Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/bonus_material.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Bonus Material</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">6</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#refresher-on-python" id="toc-refresher-on-python" class="nav-link" data-scroll-target="#refresher-on-python"><span class="header-section-number">6.1</span> Refresher on Python</a></li>
+  <li><a href="#normalization-z-score-standardization" id="toc-normalization-z-score-standardization" class="nav-link" data-scroll-target="#normalization-z-score-standardization"><span class="header-section-number">6.2</span> Normalization (Z-score Standardization)</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">6.3</span> Setup</a></li>
+  <li><a href="#example-data" id="toc-example-data" class="nav-link" data-scroll-target="#example-data"><span class="header-section-number">6.4</span> Example Data</a></li>
+  <li><a href="#pca-example" id="toc-pca-example" class="nav-link" data-scroll-target="#pca-example"><span class="header-section-number">6.5</span> PCA Example</a></li>
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="header-section-number">6.6</span> Exercise</a></li>
+  <li><a href="#scree-plot" id="toc-scree-plot" class="nav-link" data-scroll-target="#scree-plot"><span class="header-section-number">6.7</span> Scree plot</a></li>
+  <li><a href="#clustering-example" id="toc-clustering-example" class="nav-link" data-scroll-target="#clustering-example"><span class="header-section-number">6.8</span> Clustering Example</a></li>
+  <li><a href="#pca-vs.-other-techniques" id="toc-pca-vs.-other-techniques" class="nav-link" data-scroll-target="#pca-vs.-other-techniques"><span class="header-section-number">6.9</span> 🧠 PCA vs.&nbsp;Other Techniques</a></li>
+  <li><a href="#in-practice-tips-for-biologists" id="toc-in-practice-tips-for-biologists" class="nav-link" data-scroll-target="#in-practice-tips-for-biologists"><span class="header-section-number">6.10</span> 🧬 In Practice: Tips for Biologists</a>
+  <ul class="collapse">
+  <li><a href="#goals-of-unsupervised-learning" id="toc-goals-of-unsupervised-learning" class="nav-link" data-scroll-target="#goals-of-unsupervised-learning"><span class="header-section-number">6.10.1</span> Goals of unsupervised learning</a></li>
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link" data-scroll-target="#exercise-1"><span class="header-section-number">6.10.2</span> Exercise</a></li>
+  </ul></li>
+  <li><a href="#exercise-advanced" id="toc-exercise-advanced" class="nav-link" data-scroll-target="#exercise-advanced"><span class="header-section-number">6.11</span> Exercise (advanced)</a></li>
+  <li><a href="#exercise-theoretical" id="toc-exercise-theoretical" class="nav-link" data-scroll-target="#exercise-theoretical"><span class="header-section-number">6.12</span> Exercise (theoretical)</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"><span class="header-section-number">6.13</span> Resources</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Introduction</h1>
+<p>This chapter demonstrates basic unsupervised machine learning concepts using Python.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Refresher on Python</li>
+<li>Understand the difference between supervised and unsupervised learning.</li>
+<li>Apply PCA and clustering to example data.</li>
+<li>Visualize results.</li>
+</ul>
+</div>
+</div>
+<section id="refresher-on-python" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="refresher-on-python"><span class="header-section-number">6.1</span> Refresher on Python</h2>
+<!--
+If SSL error on Mac OS X,
+then 
+
+try in the Terminal
+
+open "/Applications/Python 3.10/Install Certificates.command"
+-->
+<div id="7fd57cc7" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. IMPORTING PACKAGES</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. READING DATA WITH PANDAS FROM GITHUB</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># GitHub URL for the diabetes data</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert from GitHub web URL to raw data URL</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>github_url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/diabetes_sample_data.csv"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Read CSV file directly from GitHub</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>diabetes_data <span class="op">=</span> pd.read_csv(github_url)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Display basic information about the data</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Data shape:"</span>, diabetes_data.shape)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">First 5 rows:"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(diabetes_data.head())</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Basic statistics:"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(diabetes_data.describe())</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. PLOTTING WITH MATPLOTLIB</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot 1: Histogram of Age</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>plt.hist(diabetes_data[<span class="st">'age'</span>], bins<span class="op">=</span><span class="dv">20</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, color<span class="op">=</span><span class="st">'skyblue'</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Distribution of Age'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age'</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.savefig('age_distribution.png', dpi=300, bbox_inches='tight')</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Data shape: (100, 6)
+
+First 5 rows:
+   patient_id   age  glucose   bmi  blood_pressure  diabetes
+0           1  62.5     97.5  29.8            71.7         0
+1           2  52.9    127.4  30.8            74.4         0
+2           3  64.7    129.7  33.4            87.5         0
+3           4  77.8    115.9  33.3            86.1         1
+4           5  51.5    135.2  21.1            79.8         1
+
+Basic statistics:
+       patient_id         age     glucose         bmi  blood_pressure  \
+count  100.000000  100.000000  100.000000  100.000000      100.000000   
+mean    50.500000   53.444000  140.670000   28.322000       81.066000   
+std     29.011492   13.625024   28.611669    5.425223        8.842531   
+min      1.000000   15.700000   82.400000   11.800000       58.800000   
+25%     25.750000   46.000000  115.800000   24.700000       74.350000   
+50%     50.500000   53.100000  142.550000   28.500000       80.500000   
+75%     75.250000   61.075000  156.175000   31.500000       86.825000   
+max    100.000000   82.800000  221.600000   47.300000      101.900000   
+
+         diabetes  
+count  100.000000  
+mean     0.250000  
+std      0.435194  
+min      0.000000  
+25%      0.000000  
+50%      0.000000  
+75%      0.250000  
+max      1.000000  </code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-2-output-2.png" width="808" height="526" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="normalization-z-score-standardization" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="normalization-z-score-standardization"><span class="header-section-number">6.2</span> Normalization (Z-score Standardization)</h2>
+<p>Normalization, specifically Z-score standardization, is a data scaling technique that transforms your data to have a mean of 0 and a standard deviation of 1. This is useful for many machine learning algorithms that are sensitive to the scale of input features.</p>
+<p>The formula for Z-score is:</p>
+<p><span class="math display">\[ z = \frac{x - \mu}{\sigma} \]</span></p>
+<p>Where: - <span class="math inline">\(x\)</span> is the original data point. - <span class="math inline">\(\mu\)</span> is the mean of the data. - <span class="math inline">\(\sigma\)</span> is the standard deviation of the data.</p>
+<p>For example, say you have two variables or <em>features</em> on very different scales.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Age</th>
+<th>Weight (grams)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>25</td>
+<td>65000</td>
+</tr>
+<tr class="even">
+<td>30</td>
+<td>70000</td>
+</tr>
+<tr class="odd">
+<td>35</td>
+<td>75000</td>
+</tr>
+<tr class="even">
+<td>40</td>
+<td>80000</td>
+</tr>
+<tr class="odd">
+<td>45</td>
+<td>85000</td>
+</tr>
+<tr class="even">
+<td>50</td>
+<td>90000</td>
+</tr>
+<tr class="odd">
+<td>55</td>
+<td>95000</td>
+</tr>
+<tr class="even">
+<td>60</td>
+<td>100000</td>
+</tr>
+<tr class="odd">
+<td>65</td>
+<td>105000</td>
+</tr>
+<tr class="even">
+<td>70</td>
+<td>110000</td>
+</tr>
+<tr class="odd">
+<td>75</td>
+<td>115000</td>
+</tr>
+<tr class="even">
+<td>80</td>
+<td>120000</td>
+</tr>
+</tbody>
+</table>
+<p>If these are not brought on similar scales, weight will have a dispproportionate influence on whatever machine learning model we build.</p>
+<p>Hence we normalize each of the features <em>separately</em>, i.e.&nbsp;age is normalized relative to age and weight is normalized relative to weight.</p>
+<div id="6ef2ecad" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Generate age and weight data</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> np.random.normal(<span class="dv">45</span>, <span class="dv">15</span>, <span class="dv">100</span>)  <span class="co"># 100 people, mean age 45, std 15</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> np.clip(age, <span class="dv">18</span>, <span class="dv">80</span>)  <span class="co"># Keep ages between 18-80</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>weight <span class="op">=</span> <span class="dv">70</span> <span class="op">+</span> (age <span class="op">-</span> <span class="dv">45</span>) <span class="op">*</span> <span class="fl">0.3</span> <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>)  <span class="co"># Weight correlated with age</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>weight <span class="op">=</span> np.clip(weight, <span class="dv">45</span>, <span class="dv">120</span>)  <span class="co"># Keep weights between 45-120 kg</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Original data:"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Age: mean=</span><span class="sc">{</span>age<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">, std=</span><span class="sc">{</span>age<span class="sc">.</span>std()<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Weight: mean=</span><span class="sc">{</span>weight<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">, std=</span><span class="sc">{</span>weight<span class="sc">.</span>std()<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Normalize the data</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.column_stack((age, weight))</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>normalized_data <span class="op">=</span> scaler.fit_transform(data)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>age_normalized <span class="op">=</span> normalized_data[:, <span class="dv">0</span>]</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>weight_normalized <span class="op">=</span> normalized_data[:, <span class="dv">1</span>]</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram: Age (Original)</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>plt.hist(age, bins<span class="op">=</span><span class="dv">20</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Age Distribution (Original)'</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age'</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram: Age (Normalized)</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>plt.hist(age_normalized, bins<span class="op">=</span><span class="dv">20</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Age Distribution (Normalized)'</span>)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age (Z-score)'</span>)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original data:
+Age: mean=43.6, std=13.1
+Weight: mean=69.8, std=9.8</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-3-output-2.png" width="585" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-3-output-3.png" width="662" height="470" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="setup" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="setup"><span class="header-section-number">6.3</span> Setup</h2>
+<div id="dde4e758" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example-data" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="example-data"><span class="header-section-number">6.4</span> Example Data</h2>
+<div id="20a33f74" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-5-output-1.png" width="569" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pca-example" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="pca-example"><span class="header-section-number">6.5</span> PCA Example</h2>
+<!--open tab-->
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">R</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="4506e556" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>X_pca <span class="op">=</span> pca.fit_transform(X)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_pca[:, <span class="dv">0</span>], X_pca[:, <span class="dv">1</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"PCA Projection"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-6-output-1.png" width="569" height="431" class="figure-img"></p>
+<figcaption>A simple PCA plot</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!--close tab-->
+</section>
+<section id="exercise" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="exercise"><span class="header-section-number">6.6</span> Exercise</h2>
+<ul>
+<li><p>Try the same code above but now <em>without</em> normalisation.</p></li>
+<li><p>What differences do you observe in PCA <em>with</em> and <em>without</em> normalization?</p></li>
+</ul>
+</section>
+<section id="scree-plot" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="scree-plot"><span class="header-section-number">6.7</span> Scree plot</h2>
+<p>A <em>scree</em> plot is a simple graph that shows how much variance (information) each principal component explains in your data after running PCA. The x-axis shows the principal components (PC1, PC2, etc.), and the y-axis shows the proportion of variance explained by each one.</p>
+<p>You can use a scree plot to decide how many principal components to keep: look for the point where the plot levels off (the <em>elbow</em>): this tells you that adding more components doesn’t explain much more variance.</p>
+<div id="b33e6f55" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scree plot: variance explained by each component</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(pca.explained_variance_ratio_) <span class="op">+</span> <span class="dv">1</span>), pca.explained_variance_ratio_, marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Scree Plot"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Principal Component"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Variance Explained Ratio"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-7-output-1.png" width="589" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A scree plot may have an <em>elbow</em> like the plot below.</p>
+<div id="807b6aae" class="cell" data-fig.cap="An idealized scree plot" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-8-output-1.png" width="663" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<!--
+## Loadings
+
+::: {#5a06046d .cell execution_count=8}
+``` {.python .cell-code}
+# pca.components_.T
+#feature_names = ["Feature 1", "Feature 2"]  # Replace with your actual feature names if available
+#loadings = pd.DataFrame(pca.components_.T, columns=["PC1", "PC2"], index=feature_names)
+#print("PCA Loadings:")
+#print(loadings)
+```
+:::
+
+
+-->
+</section>
+<section id="clustering-example" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="clustering-example"><span class="header-section-number">6.8</span> Clustering Example</h2>
+<p>PCA is different to clustering where you are trying to find patterns in your data. We will encounter clustering later in the course.</p>
+<div id="902f460b" class="cell" data-fig.cap="A simple clustering" data-execution_count="9">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-10-output-1.png" width="577" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pca-vs.-other-techniques" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="pca-vs.-other-techniques"><span class="header-section-number">6.9</span> 🧠 PCA vs.&nbsp;Other Techniques</h2>
+<ul>
+<li><p>PCA is <strong>unsupervised</strong> (no labels used)</p></li>
+<li><p>Works best for <strong>linear</strong> relationships</p></li>
+<li><p>Alternatives:</p>
+<ul>
+<li>t-SNE for nonlinear structures</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="in-practice-tips-for-biologists" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="in-practice-tips-for-biologists"><span class="header-section-number">6.10</span> 🧬 In Practice: Tips for Biologists</h2>
+<ul>
+<li>Always <strong>standardize</strong> data before PCA</li>
+<li>Be cautious interpreting PCs biologically—PCs are <strong>mathematical constructs</strong></li>
+</ul>
+<section id="goals-of-unsupervised-learning" class="level3" data-number="6.10.1">
+<h3 data-number="6.10.1" class="anchored" data-anchor-id="goals-of-unsupervised-learning"><span class="header-section-number">6.10.1</span> Goals of unsupervised learning</h3>
+<ul>
+<li>Finding patterns in data</li>
+</ul>
+<p>Here is an example from biological data (single-cell sequencing data) (the plot is from [2])<span class="citation" data-cites="Aschenbrenner2020">(<a href="../references.html#ref-Aschenbrenner2020" role="doc-biblioref">Aschenbrenner et al. 2020</a>)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://gut.bmj.com/content/gutjnl/70/6/1023/F3.large.jpg" class="img-fluid figure-img"></p>
+<figcaption>Example tSNE</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://gut.bmj.com/content/gutjnl/70/6/1023/F5.large.jpg" class="img-fluid figure-img"></p>
+<figcaption>Example heatmaps</figcaption>
+</figure>
+</div>
+<ul>
+<li>Finding interesting patterns</li>
+</ul>
+<p>You can also use dimensionality reduction techniques (such as PCA) to find interesting patterns in your data.</p>
+<div id="cf2046be" class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-11-output-1.png" width="600" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Finding outliers</li>
+</ul>
+<p>You can also use dimensionality reduction techniques (such as PCA) to find outliers in your data.</p>
+<div id="ed8f1902" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-12-output-1.png" width="587" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Finding hypotheses</li>
+</ul>
+<p>All of these can be used to generate hypotheses. These hypotheses can be tested by collecting more data.</p>
+</section>
+<section id="exercise-1" class="level3" data-number="6.10.2">
+<h3 data-number="6.10.2" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">6.10.2</span> Exercise</h3>
+<ul>
+<li>Perform PCA on a dataset of US Arrests</li>
+</ul>
+<p>Load data</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pca</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="ec9511a5" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pca <span class="im">import</span> pca</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the US Arrests data</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the USArrests data directly from the GitHub raw URL</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/USArrests.csv"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"US Arrests Data (first 5 rows):"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Data shape:"</span>, df.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>US Arrests Data (first 5 rows):
+            Murder  Assault  UrbanPop  Rape
+State                                      
+Alabama       13.2      236        58  21.2
+Alaska        10.0      263        48  44.5
+Arizona        8.1      294        80  31.0
+Arkansas       8.8      190        50  19.5
+California     9.0      276        91  40.6
+
+Data shape: (48, 4)</code></pre>
+</div>
+</div>
+<p>Perform PCA</p>
+<div id="8c83906e" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pca(n_components<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> model.fit_transform(df)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> model.biplot(n_feat<span class="op">=</span><span class="bu">len</span>(df.columns), legend<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>[07-08-2025 14:09:32] [pca.pca] [INFO] Extracting column labels from dataframe.
+[07-08-2025 14:09:32] [pca.pca] [INFO] Extracting row labels from dataframe.
+[07-08-2025 14:09:32] [pca.pca] [INFO] The PCA reduction is performed on the 4 columns of the input dataframe.
+[07-08-2025 14:09:32] [pca.pca] [INFO] Fit using PCA.
+[07-08-2025 14:09:32] [pca.pca] [INFO] Compute loadings and PCs.
+[07-08-2025 14:09:32] [pca.pca] [INFO] Compute explained variance.
+[07-08-2025 14:09:32] [pca.pca] [INFO] Outlier detection using Hotelling T2 test with alpha=[0.05] and n_components=[4]
+[07-08-2025 14:09:32] [pca.pca] [INFO] Multiple test correction applied for Hotelling T2 test: [fdr_bh]
+[07-08-2025 14:09:32] [pca.pca] [INFO] Outlier detection using SPE/DmodX with n_std=[3]
+[07-08-2025 14:09:32] [pca.pca] [INFO] Plot PC1 vs PC2 with loadings.
+[07-08-2025 14:09:32] [scatterd.scatterd] [INFO] Create scatterplot</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-15-output-2.png" width="2058" height="1271" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Variance explained plots</li>
+</ul>
+<div id="cba45ac9" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model.plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>(&lt;Figure size 1440x960 with 1 Axes&gt;,
+ &lt;Axes: title={'center': 'Cumulative explained variance\n 4 Principal Components explain [100.0%] of the variance.'}, xlabel='Principal Component', ylabel='Percentage explained variance'&gt;)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-16-output-2.png" width="1212" height="875" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>3D PCA biplots</li>
+</ul>
+<div id="6b9de0d0" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.biplot3d()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>[07-08-2025 14:09:32] [pca.pca] [INFO] Plot PC1 vs PC2 vs PC3 with loadings.
+[07-08-2025 14:09:32] [scatterd.scatterd] [INFO] Create scatterplot</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>(&lt;Figure size 3000x2500 with 1 Axes&gt;,
+ &lt;Axes3D: title={'center': '4 Principal Components explain [100.0%] of the variance'}, xlabel='PC1 (96.4% expl.var)', ylabel='PC2 (2.88% expl.var)', zlabel='PC3 (0.59% expl.var)'&gt;)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-17-output-3.png" width="1945" height="1972" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Loadings</li>
+</ul>
+<p><em>Recall</em></p>
+<p>What is being plotted on the axes (PC1 and PC2) are the <code>scores</code>.</p>
+<p>The <code>scores</code> for each principal component are calculated as follows:</p>
+<p><span class="math display">\[
+PC_{1} = \alpha X + \beta Y + \gamma Z + ....
+\]</span></p>
+<p>where <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> are the normalized <em>features</em>.</p>
+<p>The constants <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\gamma\)</span> are determined by the PCA algorithm. They are called the <code>loadings</code>.</p>
+<div id="88670400" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'loadings':        Murder   Assault  UrbanPop      Rape
+PC1  0.041584  0.995187  0.048369  0.074397
+PC2 -0.045411 -0.060516  0.976922  0.199748
+PC3  0.079078 -0.066443 -0.199673  0.974404
+PC4  0.994965 -0.039074  0.058436 -0.071436, 'PC':                        PC1        PC2        PC3       PC4
+Alabama          62.104695 -11.569854  -2.571036  2.390729
+Alaska           90.091422 -18.173579  20.082295 -4.096991
+Arizona         121.406646   8.601610  -1.671659 -4.364402
+Arkansas         15.629716 -16.741244   0.078286 -0.535736
+California      104.776982  22.313750   6.753359 -2.808592
+Colorado         32.307655  13.641366  12.194635 -1.713629
+Connecticut     -63.532892  13.048830  -8.617371 -0.704265
+Delaware         64.066928   1.238885 -11.338389 -3.746809
+Florida         162.579815   5.968716  -2.941584  1.232499
+Georgia          37.838646  -7.374991   3.505073  7.334706
+Hawaii         -126.174440  24.510283   3.462165  3.486970
+Idaho           -54.491992  -9.374532  -1.724029 -3.356955
+Illinois         76.343221  12.752929  -5.919698  0.357727
+Indiana         -60.229054   2.944616   3.534375  1.650429
+Iowa           -118.271210  -3.131830  -0.928109 -0.871706
+Kansas          -58.463403   3.255756   0.183712  0.651066
+Kentucky        -65.084303 -10.565646   2.013888  3.870227
+Louisiana        75.594954  -4.441346  -3.883800  4.467733
+Maine           -91.955934 -11.321876  -4.942350 -2.126798
+Maryland        126.643967  -5.245981  -2.339614 -1.946027
+Massachusetts   -23.901058  19.492807  -7.652137 -1.037690
+Michigan         82.775518   5.737532   6.429014  0.495857
+Minnesota      -101.624283   5.388593  -0.240855 -0.730665
+Mississippi      84.132386 -27.589292  -5.069534  3.852208
+Missouri          5.310427   5.252112   5.375275  0.679364
+Montana         -65.182355  -9.400729   1.619068  0.240149
+Nebraska        -71.776593  -0.087644   0.250121 -0.658994
+Nevada           80.943626  14.930242  15.859544  0.342969
+New Hampshire  -117.462465  -4.524273  -2.556713 -0.940127
+New Jersey      -13.444972  23.158469  -6.442013  1.611612
+New Mexico      112.185340  -0.553098   2.255854 -1.392284
+New York         81.649603  15.768795  -4.749328  0.884121
+North Carolina  161.602001 -31.391611 -11.671292 -2.150116
+North Dakota   -130.202864 -15.901552  -1.609817 -2.308756
+Ohio            -52.745141  12.365579   1.470217  2.032185
+Oklahoma        -22.366204   3.403263  -0.611321 -0.184635
+Oregon          -13.831882   3.877062   7.984332 -2.911465
+Pennsylvania    -67.348024   9.029093  -3.413268  1.873292
+Rhode Island      0.438586  18.381176 -17.586862 -2.321153
+South Carolina  104.560644 -23.736093  -2.069733  1.227265
+South Dakota    -88.817911 -16.443418   1.062809 -1.260376
+Tennessee        14.808170  -6.549591   5.972649  3.917549
+Texas            28.636397  12.922119  -0.487939  4.239257
+Utah            -52.562195  17.735996   1.609241 -1.862148
+Vermont        -127.449367 -27.090724   4.497811 -2.012857
+Virginia        -17.501029  -1.730386   0.887159  1.168243
+Washington      -27.742336  10.007474   4.624674 -2.687825
+West Virginia   -94.265438 -22.787766  -0.667106  0.724843, 'explained_var': array([0.9643326 , 0.99313748, 0.99911593, 1.        ]), 'variance_ratio': array([9.64332599e-01, 2.88048813e-02, 5.97845474e-03, 8.84065325e-04]), 'model': PCA(n_components=4), 'scaler': None, 'pcp': np.float64(1.0000000000000002), 'topfeat':     PC   feature   loading  type
+0  PC1   Assault  0.995187  best
+1  PC2  UrbanPop  0.976922  best
+2  PC3      Rape  0.974404  best
+3  PC4    Murder  0.994965  best, 'outliers':                  y_proba     p_raw    y_score  y_bool  y_bool_spe  y_score_spe
+Alabama         0.999620  0.799234   4.601111   False       False    63.173211
+Alaska          0.999620  0.365520   8.730713   False       False    91.906165
+Arizona         0.999620  0.167967  11.640753   False       False   121.710975
+Arkansas        0.999620  0.993595   1.444244   False       False    22.903216
+California      0.999620  0.257562  10.107498   False       False   107.126651
+Colorado        0.999620  0.946624   2.793800   False       False    35.069523
+Connecticut     0.999620  0.758702   4.989460   False       False    64.859081
+Delaware        0.999620  0.781579   4.772620   False       False    64.078905
+Florida         0.420843  0.017535  18.538069   False       False   162.689341
+Georgia         0.999620  0.950428   2.724717   False       False    38.550663
+Hawaii          0.999620  0.104870  13.208618   False       False   128.533043
+Idaho           0.999620  0.871111   3.841755   False       False    55.292486
+Illinois        0.999620  0.635299   6.106537   False       False    77.401064
+Indiana         0.999620  0.850834   4.069115   False       False    60.300993
+Iowa            0.999620  0.214721  10.775933   False       False   118.312668
+Kansas          0.999620  0.878457   3.755791   False       False    58.553988
+Kentucky        0.999620  0.771674   4.867169   False       False    65.936328
+Louisiana       0.999620  0.676410   5.739275   False       False    75.725310
+Maine           0.999620  0.451018   7.822307   False       False    92.650303
+Maryland        0.999620  0.141316  12.228021   False       False   126.752572
+Massachusetts   0.999620  0.968244   2.352761   False       False    30.842018
+Michigan        0.999620  0.589923   6.513389   False       False    82.974126
+Minnesota       0.999620  0.383510   8.529668   False       False   101.767047
+Mississippi     0.999620  0.448614   7.846422   False       False    88.540541
+Missouri        0.999620  0.999620   0.659862   False       False     7.468957
+Montana         0.999620  0.792670   4.665365   False       False    65.856762
+Nebraska        0.999620  0.769963   4.883398   False       False    71.776646
+Nevada          0.999620  0.519438   7.160325   False       False    82.309068
+New Hampshire   0.999620  0.214470  10.780144   False       False   117.549563
+New Jersey      0.999620  0.981723   1.976515   False       False    26.778386
+New Mexico      0.999620  0.274248   9.870286   False       False   112.186703
+New York        0.999620  0.559034   6.793809   False       False    83.158359
+North Carolina  0.420843  0.009995  20.091620   False       False   164.622720
+North Dakota    0.999620  0.103125  13.262693   False       False   131.170291
+Ohio            0.999620  0.877098   3.771862   False       False    54.175248
+Oklahoma        0.999620  0.996651   1.199054   False       False    22.623645
+Oregon          0.999620  0.996784   1.185440   False       False    14.364977
+Pennsylvania    0.999620  0.758811   4.988439   False       False    67.950576
+Rhode Island    0.999620  0.988643   1.710246   False       False    18.386407
+South Carolina  0.999620  0.271867   9.903461   False       False   107.220942
+South Dakota    0.999620  0.482905   7.508345   False       False    90.327224
+Tennessee       0.999620  0.995571   1.298396   False       False    16.191944
+Texas           0.999620  0.976601   2.134707   False       False    31.416944
+Utah            0.999620  0.855304   4.020116   False       False    55.473866
+Vermont         0.999620  0.094545  13.540901   False       False   130.296771
+Virginia        0.999620  0.998694   0.922137   False       False    17.586366
+Washington      0.999620  0.979528   2.047287   False       False    29.492147
+West Virginia   0.999620  0.389782   8.460986   False       False    96.980694, 'outliers_params': {'paramT2': (np.float64(5.0330110449673766e-15), np.float64(1777.6058289930552)), 'paramSPE': (array([1.33226763e-14, 5.62512999e-15]), array([[ 7.00270263e+03, -8.77755141e-13],
+       [-8.77755141e-13,  2.09172664e+02]]))}}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exercise-advanced" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="exercise-advanced"><span class="header-section-number">6.11</span> Exercise (advanced)</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Look into the documentation available here for the <a href="https://erdogant.github.io/pca/pages/html/Examples.html">PCA package</a> and plot prettier <em>publication ready</em> plots.</p>
+</div>
+</div>
+</section>
+<section id="exercise-theoretical" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="exercise-theoretical"><span class="header-section-number">6.12</span> Exercise (theoretical)</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Break up into groups and discuss the following problem:</p>
+<ol type="1">
+<li><p>Shown are biological samples with scores</p></li>
+<li><p>The features are genes</p></li>
+</ol>
+<ul>
+<li><p>Why are <code>Sample 33</code> and <code>Sample 24</code> separated from the rest? What can we say about <code>Gene1</code>, <code>Gene 2</code>, <code>Gene 3</code> and <code>Gene 4</code>?</p></li>
+<li><p>Why is <code>Sample 2</code> separated from the rest? What can we say about <code>Gene1</code>, <code>Gene 2</code>, <code>Gene 3</code> and <code>Gene 4</code>?</p></li>
+<li><p>Can we treat <code>Sample 2</code> as an outlier? Why or why not? Argue your case.</p></li>
+</ul>
+<p>The PCA biplot is shown below:</p>
+<div id="2b973c2e" class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="normalization_files/figure-html/cell-19-output-1.png" width="735" height="568" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The table of loadings is shown below:</p>
+<div id="52af8f0b" class="cell" data-execution_count="19">
+<div class="cell-output cell-output-stdout">
+<pre><code>            PC1       PC2       PC3       PC4
+Gene1 -0.535899  0.418181 -0.341233  0.649228
+Gene2 -0.583184  0.187986 -0.268148 -0.743075
+Gene3 -0.278191 -0.872806 -0.378016  0.133877
+Gene4 -0.543432 -0.167319  0.817778  0.089024</code></pre>
+</div>
+</div>
+</div>
+</div>
+<!-- end callout -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Need to normalize data before doing dimensionality reduction</li>
+<li>PCA reduces dimensionality for visualization.</li>
+<li>KMeans finds clusters in unlabeled data.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="resources" class="level2" data-number="6.13">
+<h2 data-number="6.13" class="anchored" data-anchor-id="resources"><span class="header-section-number">6.13</span> Resources</h2>
+<p>[1] <a href="https://en.wikipedia.org/wiki/Standard_score">Article on normalization on Wikipedia</a></p>
+<p>[2] Deconvolution of monocyte responses in inflammatory bowel disease reveals an IL-1 cytokine network that regulates IL-23 in genetic and acquired IL-10 resistance Gut, 2020 <a href="https://gut.bmj.com/content/70/6/1023">link</a></p>
+<p>[3] <a href="https://www.statlearning.com/">ISLP book</a></p>
+<p>[4] <a href="https://www.youtube.com/playlist?list=PLoROMvodv4rNHU1-iPeDRH-J0cL-CrIda">Video lectures by the authors of the book Introduction to Statistical Learning in Python</a></p>
+<p>[6] <a href="https://mlu-explain.github.io">Visual explanations of machine learning algorithms</a></p>
+<hr>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Aschenbrenner2020" class="csl-entry" role="listitem">
+Aschenbrenner, Dominik, Maria Quaranta, Soumya Banerjee, Nicholas Ilott, Joanneke Jansen, Boyd Steere, Yin-Huai Chen, et al. 2020. <span>“Deconvolution of Monocyte Responses in Inflammatory Bowel Disease Reveals an IL-1 Cytokine Network That Regulates IL-23 in Genetic and Acquired IL-10 Resistance.”</span> <em>Gut</em>, October, gutjnl-2020-321731. <a href="https://doi.org/10.1136/gutjnl-2020-321731">https://doi.org/10.1136/gutjnl-2020-321731</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/walkthrough.html" class="pagination-link" aria-label="Introduction to Unsupervised Learning">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/tsne.html" class="pagination-link" aria-label="tSNE">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">tSNE</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Cambridge Research Informatics Training</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
