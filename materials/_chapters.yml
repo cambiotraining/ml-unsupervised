@@ -13,6 +13,7 @@ book:
         - materials/clustering.qmd
     - part: "Session 4: Applications of Unsupervised Learning"
       chapters:
+        - materials/pca_tsne_notwork.qmd
         - materials/applications.qmd
     - part: "Bonus Material"
       chapters:
