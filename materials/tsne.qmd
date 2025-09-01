@@ -17,12 +17,91 @@ title: tSNE
 
 ## The curse of dimensionality
 
-In very high-dimensional spaces, almost all the “volume” of a dataset lives near its corners, and pairwise Euclidean distances between points tend to concentrate around a single value. 
+In very high-dimensional spaces, almost all the "volume" of a dataset lives near its corners, and pairwise Euclidean distances between points tend to concentrate around a single value. 
 
 
 ## Simplified explanations
 
 Think of each cell as a point in a space where each gene’s activity is its own “axis.” When you have only a few genes (low dimensions), you can tell cells apart by how far apart they sit in that space. But as you add more genes, almost every cell ends up about the same distance from every other cell—so you lose any useful sense of “close” or “far.”
+
+
+
+Imagine you're trying to find similar cells in a dataset. As you measure more features (dimensions), it becomes harder to find truly similar cells, even though you have more information.
+
+## Visual Example: Finding Similar Points
+
+### 1 Dimension (1 feature)
+```
+Feature 1: [0]----[1]----[2]----[3]----[4]----[5]
+           A      B      C      D      E      F
+
+Points A and B are close (distance = 1)
+Points A and F are far (distance = 5)
+```
+
+### 2 Dimensions (2 features)
+```
+Feature 2: 5 |     F
+           4 |  E
+           3 |     D
+           2 |  C
+           1 |     B
+           0 |A
+             0  1  2  3  4  5  Feature 1
+
+Points A and B are still close
+Points A and F are still far
+```
+
+### 3+ Dimensions (3+ features)
+```
+Feature 3: 5 |     F
+           4 |  E
+           3 |     D
+           2 |  C
+           1 |     B
+           0 |A
+             0  1  2  3  4  5  Feature 1
+             
+Feature 4, 5, 6... (more dimensions)
+
+As dimensions increase:
+- All points become equally distant from each other
+- "Close" and "far" lose meaning
+- Finding similar cells becomes impossible
+```
+
+## Why This Happens: The "Empty Space" Problem
+
+
+2D Circle - most area near the edge:
+
+```
+    ████████
+  ██••••••██
+ ██••••••••██
+██••••••••••██
+██••••••••••██
+ ██••••••••██
+  ██••••••██
+    ████████
+
+```
+
+::: {.callout-tip}
+**NOTE (IMPORTANT CONCEPT)**: 
+
+* ALL volume concentrates at the "surface"
+The interior becomes essentially EMPTY!
+
+* Your data points all end up at the edges, far apart from each other.
+
+
+:::
+<!-- end callout -->
+
+
+
 
 **Why k-Means fails:**  
 k-Means tries to draw boundaries around groups by asking “Which centroid (group center) is each cell closest to?” In very high–gene spaces, every cell is nearly the same distance from all centroids. Small moves of the centroids don’t change which cells get assigned to them, so k-Means can’t find real groupings.
@@ -79,6 +158,7 @@ t-SNE is like a magic tool that turns complicated data into a simple picture, so
 ## Why t‑SNE Works in High Dimensions
  - Bypasses global distance concentration by focusing on nearest neighbors.
 
+<!-- TODO: intuition behindtSNE -->
 
 ---
 
