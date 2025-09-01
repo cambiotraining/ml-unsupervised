@@ -1,0 +1,396 @@
+---
+title: When PCA or tSNE might not work
+---
+
+::: {.callout-tip}
+#### Learning Objectives
+
+- Understand real-world scenarios where unsupervised learning is applied
+- Identify situations where PCA and other dimensionality reduction techniques may not be effective
+
+:::
+
+
+
+## When PCA may *not* work
+
+### **Non-linear data**
+
+
+- **Non-linearity**: Data that lies on curved surfaces or when data has non-linear relationships.
+- **Single-cell data**: Biological data where cell types form non-linear clusters in high-dimensional space
+
+### **Categorical Features**
+- PCA may work poorly with categorical data unless properly encoded
+- One-hot encoding categorical features can create sparse, high-dimensional data where PCA may not capture meaningful structure
+
+<!-- TODO: CCA comment by Hugo -->
+
+<!--
+### 3. **When Variance Direction ≠ Structure Direction**
+- PCA maximizes variance along principal components, but this doesn't always align with the true underlying structure
+- The lesson shows how PCA on XOR data captures only ~15% variance per component, failing to reveal the true four-cluster structure
+-->
+
+## Alternatives
+
+### **t-SNE** (t-Distributed Stochastic Neighbor Embedding)
+- **Best for**: Non-linear dimensionality reduction and visualization
+- **Key parameter**: Perplexity (try values 5-50)
+- **Use case**: Single-cell data, biological expression data, any non-linear clustering
+
+
+::: {.callout-tip}
+**NOTE (IMPORTANT CONCEPT)**: Sometimes tSNE may not work as well! It is hard to predict which unsupervised machine learning technique will work best.
+
+You just need to try a bunch of different techniques.
+:::
+<!-- end callout -->
+
+
+<!--
+### **Autoencoders**
+- **Best for**: Complex non-linear relationships in deep learning contexts
+- **Use case**: When you need to learn complex representations
+-->
+
+### **Hierarchical Clustering + Heatmaps**
+- **Best for**: Categorical data and understanding relationships between samples
+- **Use case**: When you want to see how samples group together based on multiple features
+
+
+
+### Demonstrating how PCA or tSNE may not work well
+
+* Generate synthetic biological expression data: matrix of 200 samples × 10 genes, where Gene_1 and Gene_2 follow a clustering (four corner clusters) and the remaining genes are just Gaussian noise. You can see from the scatter of Gene_1 vs Gene_2 that the true structure is non-linear and not aligned with any single variance direction: PCA (or tSNE) may fail to unfold these clusters into separate principal components.
+
+```{python ch4-pca-not-work}
+#| warning: false
+#| echo: false
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters
+n_samples = 200
+n_genes = 10
+
+# Generate XOR structure for genes 1 and 2
+gene1 = np.random.choice([0, 1], size=n_samples)
+gene2 = np.random.choice([0,1],  size=n_samples)
+# For continuous spread, add small noise
+gene1 = gene1 + 0.1 * np.random.randn(n_samples)
+gene2 = gene2 + 0.1 * np.random.randn(n_samples)
+
+# Generate remaining genes as random noise
+other_genes = np.random.randn(n_samples, n_genes - 2)
+
+# Combine into a DataFrame
+data = np.hstack([gene1.reshape(-1,1), gene2.reshape(-1,1), other_genes])
+genes = [f'Gene_{i+1}' for i in range(n_genes)]
+df = pd.DataFrame(data, columns=genes)
+
+# Scatter plot for Gene_1 vs Gene_2 to visualize the non-linear structure
+plt.figure()
+plt.scatter(df['Gene_1'], df['Gene_2'])
+plt.title('Scatter of Gene_1 vs Gene_2')
+plt.xlabel('Gene_1 expression')
+plt.ylabel('Gene_2 expression')
+plt.show()
+```
+
+* Perform PCA on this data
+
+```{python ch4-pca-synthetic_data}
+#| warning: false
+
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Apply PCA
+pca = PCA()
+pcs = pca.fit_transform(df) # where df is a dataframe with your data
+
+
+# Scatter plot of the first two principal components
+plt.figure()
+plt.scatter(pcs[:, 0], pcs[:, 1])
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA on Synthetic Biological Dataset')
+plt.show()
+```
+
+* Let us try tSNE on this data
+
+```{python ch4-tsne-synthetic-data}
+#| warning: false
+
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+
+tsne = TSNE()
+tsne_results = tsne.fit_transform(df)
+
+# plot
+plt.figure()
+plt.scatter(tsne_results[:,0], tsne_results[:,1])
+plt.xlabel('t-SNE component 1')
+plt.ylabel('t-SNE component 2')
+plt.title('t-SNE on Synthetic Biological Dataset')
+plt.show()
+
+```
+
+* What if we try different values of *perplexity*?
+
+```{python ch4-tnse-perplexity-vary-synthetic-data}
+#| warning: false
+#| echo: false
+
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Convert DataFrame to numpy array
+data = df.values
+
+# Define different perplexity values to explore
+perplexities = [2, 5, 30, 50, 100] # Exploring values between 2 and 100
+
+plt.figure(figsize=(20,5)) # Adjust figure size for more subplots
+
+for i, perplexity in enumerate(perplexities):
+    tsne = TSNE(n_components=2, random_state=42, perplexity=perplexity)
+    tsne_results = tsne.fit_transform(data)
+
+    # Create a subplot for each perplexity value
+    plt.subplot(1, len(perplexities), i + 1)
+    plt.scatter(tsne_results[:, 0], tsne_results[:, 1])
+    plt.title(f't-SNE (Perplexity={perplexity})')
+    plt.xlabel('t-SNE component 1')
+    plt.ylabel('t-SNE component 2')
+
+plt.tight_layout() # Adjust layout to prevent overlap
+plt.show()
+```
+
+
+#### What if data has categorical features?
+
+* PCA may not work if you have categorical features
+
+For example, if you have data that looks like this ....
+
+```{python ch4-pca-categorical-generate}
+#| warning: false
+#| echo: false
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Generate synthetic data with categorical features
+np.random.seed(42)
+n_samples = 200
+
+# Categorical features
+species = np.random.choice(['mouse', 'rat', 'human'], size=n_samples)
+tissue = np.random.choice(['liver', 'brain', 'heart'], size=n_samples)
+condition = np.random.choice(['healthy', 'diseased'], size=n_samples)
+
+# Create DataFrame
+df_cat = pd.DataFrame({
+    'species': species,
+    'tissue': tissue,
+    'condition': condition
+})
+
+print(df_cat.head())
+```
+
+<!-- TODO: explain one hot encoding, also talkabout CCA and put in bonus material Issue #17 -->
+
+```{python, ch4-pca-notwork-showcategroical}
+#| warning: false
+#| echo: false
+
+# One-hot encode the categorical features
+encoder = OneHotEncoder(sparse_output=False)
+encoded_data = encoder.fit_transform(df_cat)
+
+# Apply PCA
+pca = PCA(n_components=2)
+pcs = pca.fit_transform(encoded_data)
+
+# Plot PCA result
+plt.figure(figsize=(6,5))
+plt.scatter(pcs[:, 0], pcs[:, 1], alpha=0.7)
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA on One-Hot Encoded Categorical Data')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# Show the one-hot encoded feature names
+encoded_feature_names = encoder.get_feature_names_out(df_cat.columns)
+encoded_df = pd.DataFrame(encoded_data, columns=encoded_feature_names)
+
+```
+
+* We can split by disease/healthy, or other features.
+
+```{python ch4-pca-color-by-type}
+#| warning: false
+#| echo: false
+
+# Plot PCA result
+plt.figure(figsize=(10, 8))
+
+# Create subplot for PCA
+plt.subplot(2, 2, 1)
+plt.scatter(pcs[:, 0], pcs[:, 1], alpha=0.7)
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA on One-Hot Encoded Categorical Data')
+plt.grid(True)
+
+# Create subplot showing PCA with colors based on species
+plt.subplot(2, 2, 2)
+colors = {'mouse': 'red', 'rat': 'blue', 'human': 'green'}
+for sp in ['mouse', 'rat', 'human']:
+    mask = df_cat['species'] == sp
+    plt.scatter(pcs[mask, 0], pcs[mask, 1], c=colors[sp], label=sp, alpha=0.7)
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA Colored by Species')
+plt.legend()
+plt.grid(True)
+
+# Create subplot showing PCA with colors based on tissue
+plt.subplot(2, 2, 3)
+colors_tissue = {'liver': 'orange', 'brain': 'purple', 'heart': 'brown'}
+for tissue_type in ['liver', 'brain', 'heart']:
+    mask = df_cat['tissue'] == tissue_type
+    plt.scatter(pcs[mask, 0], pcs[mask, 1], c=colors_tissue[tissue_type], label=tissue_type, alpha=0.7)
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA Colored by Tissue')
+plt.legend()
+plt.grid(True)
+
+# Create subplot showing PCA with colors based on condition
+plt.subplot(2, 2, 4)
+colors_condition = {'healthy': 'green', 'diseased': 'red'}
+for cond in ['healthy', 'diseased']:
+    mask = df_cat['condition'] == cond
+    plt.scatter(pcs[mask, 0], pcs[mask, 1], c=colors_condition[cond], label=cond, alpha=0.7)
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA Colored by Condition')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+```
+
+<!--* TODO: XX tSNE and color by tissue type-->
+
+
+* Hierarchical clustering
+
+_Recall_:
+
+**Leaves**: Each leaf at the bottom of the dendrogram represents one sample from your dataset.
+
+**Branches**: The branches connect the samples and groups of samples. The height of the branch represents the distance (dissimilarity) between the clusters being merged.
+
+**Height of Merges**: Taller branches indicate that the clusters being merged are more dissimilar, while shorter branches indicate more similar clusters.
+
+**Clusters**: By drawing a horizontal line across the dendrogram at a certain distance, you can define clusters. All samples below that line that are connected by branches form a cluster.
+
+* In the context of your one-hot encoded categorical data (species, tissue, condition), the dendrogram shows how samples are grouped based on their combinations of these categorical features.
+
+* Samples with the same or very similar combinations of categories will be closer together in the dendrogram and merge at lower distances.
+
+* The structure of the dendrogram reflects the relationships and similarities between the different combinations of species, tissue, and condition present in your synthetic dataset.
+
+```{python ch4-hclust-cat-data}
+#| warning: false
+
+from scipy.cluster.hierarchy import dendrogram, linkage
+from matplotlib import pyplot as plt
+import seaborn as sns
+
+# Assume 'encoded_data' exists from the previous one-hot encoding step
+linked = linkage(y = encoded_data,
+    method = 'ward',
+    metric = 'euclidean',
+    optimal_ordering=True
+    )
+
+# plot dendrogram
+plt.figure()
+dendrogram(linked, 
+            orientation='top',
+            distance_sort='descending',
+            show_leaf_counts=True)
+plt.title('Hierarchical Clustering Dendrogram on One-Hot Encoded Categorical Data')
+plt.xlabel('Sample Index')
+plt.ylabel('Distance')
+plt.show()
+
+# or use sns.clustermap()
+sns.clustermap(data=encoded_data,
+method = "ward",
+metric = "euclidean",
+row_cluster = True,
+col_cluster = True,
+cmap = "vlag"
+)
+```
+
+* Heatmaps
+
+Heatmaps are a great way to visualize data and clustering
+
+```{python ch4-heatmaps}
+#| warning: false
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Assume 'encoded_df' exists from the previous one-hot encoding step
+
+plt.figure()
+sns.heatmap(encoded_df.T, cmap='viridis', cbar_kws={'label': 'Encoded Value (0 or 1)'}) # Transpose for features on y-axis
+
+plt.title('Heatmap of One-Hot Encoded Categorical Data')
+plt.xlabel('Sample Index')
+plt.ylabel('Encoded Feature')
+plt.tight_layout()
+plt.show()
+```
+
+<!--## How to evaluate unsupervised learning methods ->
+
+<!--TODO: XX Potentially NC160 data exercise can live here -->
+
+
+
+
+## Summary
+
+::: {.callout-tip}
+#### Key Points
+
+- PCA or tSNE are not magic bullets and may not _work_ all the time 
+:::
