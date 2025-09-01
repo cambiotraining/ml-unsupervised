@@ -37,11 +37,11 @@ Unsupervised learning is valuable because it can reveal insights that may not be
 
 ### Motivation
 
-Here is a picture I took of a pavement in Cambridge the day after Valentine's Day. Why did this picture capture my attention? The starkness of the grey pavement contrasted with the bright red rose. It may have triggered some unsupervised learning mechanism in my brain that allows me to pick anomalies!
+Here is a picture (taken by Soumya Banerjee) of a pavement in Cambridge the day after Valentine's Day. Why did this picture capture my attention? The starkness of the grey pavement contrasted with the bright red rose. It may have triggered some unsupervised learning mechanism in my brain that allows me to pick anomalies!
 
-![Rose after Valentine's Day](images/rose_after_valentines_day.png)
+![Rose after Valentine's Day (picture taken by Soumya Banerjee)](images/rose_after_valentines_day.png)
 
-Unsupervised learning is all about discovering structure in data without any explicit “right answers” to guide you. The rose‑on‑pavement photo is a perfect real‑world illustration of a few core ideas:
+Unsupervised learning is all about discovering structure in data without any explicit "right answers" to guide you. The rose‑on‑pavement photo is a perfect real‑world illustration of a few core ideas:
 
 * Anomaly (or Outlier) Detection
 - **What happened in your brain:**  
@@ -230,7 +230,7 @@ plt.show()
 ::: {.callout-tip}
 **NOTE (IMPORTANT CONCEPT)** 
 
-* It is not possible to exhaustively plot one feature vs. another _or_ remove any feature willy-nilly. For example, in a dataset from patient healthcare records, we cannot just randomly throw away data on blood pressure.
+* It is not possible to exhaustively plot one feature vs. another _or_ remove any feature randomly. For example, in a dataset from patient healthcare records, we cannot just randomly throw away data on blood pressure.
 
 * This is why we use dimensionality reduction to _reduce_ the dimensions of the data. This yields fewer _new_ features.
 
@@ -783,6 +783,12 @@ pendulum_anim = create_pendulum_animation()
 
 :::
 <!-- end callout -->
+
+
+## Intuitive explanation of PCA
+
+[Explanation of PCA (by StatQuest)](https://www.youtube.com/watch?v=_UVHneBUBW0)
+
 
 
 ## Differences between PCA and linear regression

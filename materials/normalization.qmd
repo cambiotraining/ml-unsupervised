@@ -21,6 +21,8 @@ This chapter demonstrates basic unsupervised machine learning concepts using Pyt
 
 Normalization, specifically Z-score standardization, is a data scaling technique that transforms your data to have a mean of 0 and a standard deviation of 1. This is useful for many machine learning algorithms that are sensitive to the scale of input features.
 
+_Intuition_: the value represents the number of standard deviations away from the mean for that variable. For example an 80-year-old person might be 3 standard deviations above the mean age.
+
 The formula for Z-score is:
 
 $$ z = \frac{x - \mu}{\sigma} $$
