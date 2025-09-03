@@ -694,8 +694,8 @@ def create_static_optimization_frames():
     
     plt.tight_layout()
     plt.show()
-    plt.savefig('tsne_step4_optimization_stages.png', dpi=300, bbox_inches='tight')
-    plt.savefig('tsne_step4_optimization_stages.pdf', bbox_inches='tight')
+    #plt.savefig('tsne_step4_optimization_stages.png', dpi=300, bbox_inches='tight')
+    #plt.savefig('tsne_step4_optimization_stages.pdf', bbox_inches='tight')
 
 # Create static frames (easier to include in presentations)
 create_static_optimization_frames()
