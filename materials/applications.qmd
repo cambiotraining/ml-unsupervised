@@ -746,7 +746,58 @@ For this exercise we will be using sociological data.
 #### Exercise
 
 
-In this exercise you will explore the _Gapminder_ dataset, focusing on life expectancy, GDP per capita, and population data. You will perform the following steps initially:
+In this exercise you will explore the _Gapminder_ dataset, focusing on life expectancy, GDP per capita, and population data. 
+
+The Gapminder dataset contains global development indicators over time, tracking 142 countries from 1952 to 2007 at 5-year intervals.
+
+* Dataset Features
+
+### 1. **`country`** (Categorical)
+- **Type**: String/Categorical variable
+- **Description**: The name of the country
+- **Example**: "Afghanistan", "Albania", "Algeria", etc.
+- **Purpose**: Identifies which country each observation belongs to
+- **Unique values**: 142 different countries
+
+### 2. **`year`** (Numerical)
+- **Type**: Integer
+- **Description**: The year of the observation
+- **Range**: 1952 to 2007
+- **Interval**: Every 5 years (1952, 1957, 1962, 1967, 1972, 1977, 1982, 1987, 1992, 1997, 2002, 2007)
+- **Purpose**: Tracks temporal changes in development indicators
+
+### 3. **`pop`** (Numerical)
+- **Type**: Float
+- **Description**: Total population of the country
+- **Units**: Number of people
+- **Range**: From thousands to over 1 billion
+- **Example**: 8,425,333 people in Afghanistan in 1952
+- **Purpose**: Measures country size and demographic changes over time
+
+### 4. **`continent`** (Categorical)
+- **Type**: String/Categorical variable
+- **Description**: The continent where the country is located
+- **Categories**: "Africa", "Americas", "Asia", "Europe", "Oceania"
+- **Purpose**: Groups countries by geographical region for comparative analysis
+
+### 5. **`lifeExp`** (Numerical)
+- **Type**: Float
+- **Description**: Life expectancy at birth
+- **Units**: Years
+- **Range**: Typically 20-85 years
+- **Example**: 28.801 years in Afghanistan in 1952
+- **Purpose**: Key health indicator measuring average lifespan
+
+### 6. **`gdpPercap`** (Numerical)
+- **Type**: Float
+- **Description**: Gross Domestic Product per capita
+- **Units**: US dollars (adjusted for inflation)
+- **Range**: From hundreds to tens of thousands of dollars
+- **Example**: $779.45 in Afghanistan in 1952
+- **Purpose**: Economic indicator measuring average wealth per person
+
+
+You will perform the following steps initially:
 
 1. *Data Loading and Setup*: The gapminder dataset is loaded, and necessary libraries for data manipulation, visualization, and dimensionality reduction are imported.  
 2. *Feature Selection*: The features `lifeExp`, `gdpPercap`, and `pop` are selected for analysis.
@@ -931,6 +982,8 @@ plt.show()
 * What does `PC1` mean? Are there any features that are correlated with `PC1`?
 
 _Hint_: Perform a scatterplot (`plt.scatter()`) for each feature vs. `PC1`
+
+Can we use PCA to approximate the human development index?
 
 ```{python ch4-gapminder-pc1-correlation}
 #| warning: false
