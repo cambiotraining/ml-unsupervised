@@ -101,7 +101,94 @@ The interior becomes essentially EMPTY!
 <!-- end callout -->
 
 
+## High-dimensions are counter-intuitive
 
+Counter-intuitive things happen in high dimensions. For example, most of the volume is near the edges!
+
+```{python ch2-tsne-highdimensions-counterintuitive-edges}
+#| warning: false
+#| echo: false
+
+import numpy as np
+import itertools
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 (needed for 3D)
+
+# -------- Helpers --------
+def perspective_project_4d_to_3d(points_4d, camera_w=3.5):
+    # Simple perspective projection from 4D -> 3D using w as depth
+    # scale = 1 / (camera_w - w)
+    w = points_4d[:, 3]
+    scale = 1.0 / (camera_w - w)
+    xyz = points_4d[:, :3] * scale[:, None]
+    return xyz
+
+def hamming_distance_one(a, b):
+    return np.count_nonzero(a != b) == 1
+
+# -------- Tesseract (4D hypercube) wireframe projected to 3D --------
+def plot_tesseract(ax, edge_color='tab:blue', alpha=0.9):
+    # Vertices: all combinations of (-1, +1)^4
+    verts_4d = np.array(list(itertools.product([-1, 1], repeat=4)), dtype=float)
+
+    # Build edges between vertices that differ in exactly one coordinate
+    edges = []
+    for i in range(len(verts_4d)):
+        for j in range(i + 1, len(verts_4d)):
+            if hamming_distance_one(verts_4d[i], verts_4d[j]):
+                edges.append((i, j))
+
+    # Project 4D -> 3D
+    verts_3d = perspective_project_4d_to_3d(verts_4d, camera_w=3.5)
+
+    # Plot edges
+    for i, j in edges:
+        xs, ys, zs = zip(verts_3d[i], verts_3d[j])
+        ax.plot(xs, ys, zs, color=edge_color, lw=1.5, alpha=alpha)
+
+    # Plot vertices
+    ax.scatter(verts_3d[:, 0], verts_3d[:, 1], verts_3d[:, 2],
+               s=18, color='k', alpha=0.8)
+
+    ax.set_title("Tesseract (4D hypercube) projected to 3D")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
+    ax.set_box_aspect([1, 1, 1])
+    ax.grid(True, alpha=0.3)
+
+# -------- 3-sphere (hypersphere in 4D) projected to 3D --------
+def plot_3sphere_points(ax, num_points=3000, color='tab:red', alpha=0.6):
+    # Sample points uniformly on the 3-sphere (unit surface in R^4):
+    # 1) sample standard normals in R^4, 2) normalize to unit length
+    rng = np.random.default_rng(0)
+    x = rng.normal(size=(num_points, 4))
+    x /= np.linalg.norm(x, axis=1, keepdims=True)
+
+    # Project 4D -> 3D
+    pts_3d = perspective_project_4d_to_3d(x, camera_w=2.2)
+
+    ax.scatter(pts_3d[:, 0], pts_3d[:, 1], pts_3d[:, 2],
+               s=4, color=color, alpha=alpha, edgecolors='none')
+
+    ax.set_title("3-sphere (hypersphere in 4D) projected to 3D")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
+    ax.set_box_aspect([1, 1, 1])
+    ax.grid(True, alpha=0.3)
+
+fig = plt.figure(figsize=(12, 5))
+
+ax1 = fig.add_subplot(1, 2, 1, projection='3d')
+plot_tesseract(ax1)
+
+ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+plot_3sphere_points(ax2)
+
+plt.tight_layout()
+plt.show()
+```
 
 **Why k-Means fails:**  
 k-Means tries to draw boundaries around groups by asking “Which centroid (group center) is each cell closest to?” In very high–gene spaces, every cell is nearly the same distance from all centroids. Small moves of the centroids don’t change which cells get assigned to them, so k-Means can’t find real groupings.
@@ -704,6 +791,96 @@ create_static_optimization_frames()
 # anim = create_optimization_animation(save_gif=True)
 ```
 
+## Using a t-distribution over points
+
+- **Problem in 2D**: When we compress high‑dimensional data into 2D, many points that were moderately far apart get squashed together. With a Gaussian in 2D, those "far" points all look similarly unlikely, which causes **crowding** in the center.
+
+- **t-distribution has heavy tails**: It decreases more slowly than a Gaussian. So points that are moderately far apart in 2D still get some probability—**not zero**.
+
+- **What this achieves**:
+  - **Reduces crowding** in the middle of the plot.
+  - **Spreads clusters out** more naturally.
+  - **Preserves local neighborhoods** (close points stay close) while allowing space between different groups.
+
+- **Intuition**: In high dimensions we can identify close neighbours well. In 2D there isn’t enough room, so everything would pile up. The **heavy tails** of the t‑distribution give extra “elbow room,” keeping clusters distinct and easier to interpret.
+
+```{python ch2-tsne-tdist-why}
+#| warning: false
+#| echo: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+from math import gamma, sqrt, pi
+
+def student_t_pdf(x: np.ndarray, df: float) -> np.ndarray:
+    coeff = gamma((df + 1) / 2) / (sqrt(df * pi) * gamma(df / 2))
+    return coeff * (1 + (x**2) / df) ** (-(df + 1) / 2)
+
+# --- Plot 1: Student's t-distribution ---
+x = np.linspace(-5, 5, 800)
+df = 3
+pdf = student_t_pdf(x, df)
+
+plt.figure(figsize=(6, 4))
+plt.plot(x, pdf, color="tab:blue", lw=2)
+plt.title(f"t-distribution")
+plt.xlabel("x")
+plt.ylabel("Density")
+plt.grid(True, alpha=0.3)
+
+# --- Plot 2: Four dispersed 2D clusters ---
+np.random.seed(0)
+points_per_cluster = 150
+means = np.array([
+    [ 4.0,  3.0],
+    [-4.0, -3.0],
+    [ 3.5, -2.5],
+    [-3.5,  2.5],
+])
+# Slightly elongated and rotated covariances
+covs = [
+    np.array([[0.6, 0.25],[0.25, 0.4]]),
+    np.array([[0.5, -0.2],[-0.2, 0.5]]),
+    np.array([[0.4, 0.15],[0.15, 0.3]]),
+    np.array([[0.5, -0.25],[-0.25, 0.35]]),
+]
+
+colors = ["tab:blue", "tab:orange", "tab:green", "tab:red"]
+labels = [f"Cluster {i+1}" for i in range(4)]
+
+plt.figure(figsize=(6, 6))
+for mean, cov, color, label in zip(means, covs, colors, labels):
+    pts = np.random.multivariate_normal(mean, cov, size=points_per_cluster)
+    plt.scatter(pts[:, 0], pts[:, 1], s=18, alpha=0.75, edgecolor="k", linewidths=0.2, c=color, label=label)
+
+plt.title("Four dispersed clusters")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.axis("equal")
+plt.grid(True, alpha=0.3)
+plt.legend(frameon=False, loc="best")
+
+plt.show()
+```
+
+## Explanation of perplexity
+
+tSNE has an important parameter called _perplexity_.
+
+- **What it is**: Perplexity is like the “number of close friends” each point listens to when arranging the map.
+
+- **How to think about it**: It sets the typical neighborhood size.
+  - **Low perplexity**: each point cares about a small, tight circle.
+  - **High perplexity**: each point _listens_ to more distant neighbors too.
+
+- **If it’s too low**: You may get tiny, fragmented clusters or noisy structure.  
+- **If it’s too high**: Different groups can blur together, losing fine details.  
+- **Good starting range**: 5–50 (try a few values to see what’s most interpretable).
+
+- **Analogy**: Imagine placing cells on a 2D table. Perplexity decides how many nearby "reference cells" each one considers when finding its spot—too few and it overfits tiny patterns; too many and it smooths away meaningful differences.
+
+
+
 ## What does tSNE look like compared to PCA?
 
 ```{python mnist}
@@ -839,6 +1016,120 @@ plt.show()
 :::
 <!--end callout -->
 
+
+## Perplexity pitfalls and things to watch out for
+
+TODO:
+
+## PCA vs. tSNE
+
+TODO:
+
+```{python ch2-tsne-pca-vs-tsne-python}
+#| warning: false
+#| echo: false
+#| eval: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.patches as mpatches
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+
+# Figure 6: t-SNE vs PCA Comparison
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
+
+# Create sample data with clear clusters in high dimensions
+np.random.seed(42)
+
+# Generate 3 distinct clusters in high-dimensional space
+n_samples_per_cluster = 20
+n_features = 50
+
+# Cluster 1: High in first half of features
+cluster1 = np.random.normal(0, 0.5, (n_samples_per_cluster, n_features))
+cluster1[:, :25] += 3  # Boost first half
+
+# Cluster 2: High in second half of features  
+cluster2 = np.random.normal(0, 0.5, (n_samples_per_cluster, n_features))
+cluster2[:, 25:] += 3  # Boost second half
+
+# Cluster 3: Moderate in all features
+cluster3 = np.random.normal(1.5, 0.3, (n_samples_per_cluster, n_features))
+
+# Combine data
+X = np.vstack([cluster1, cluster2, cluster3])
+colors = ['#e74c3c'] * n_samples_per_cluster + \
+         ['#3498db'] * n_samples_per_cluster + \
+         ['#2ecc71'] * n_samples_per_cluster
+labels = ['Type A'] * n_samples_per_cluster + \
+         ['Type B'] * n_samples_per_cluster + \
+         ['Type C'] * n_samples_per_cluster
+
+# Apply PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+# Apply t-SNE
+tsne = TSNE(n_components=2, random_state=42, perplexity=30)
+X_tsne = tsne.fit_transform(X)
+
+# Plot PCA results
+for i, (color, label) in enumerate(zip(['#e74c3c', '#3498db', '#2ecc71'], 
+                                     ['Type A', 'Type B', 'Type C'])):
+    start_idx = i * n_samples_per_cluster
+    end_idx = (i + 1) * n_samples_per_cluster
+    ax1.scatter(X_pca[start_idx:end_idx, 0], X_pca[start_idx:end_idx, 1], 
+               c=color, label=label, alpha=0.7, s=50)
+
+ax1.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.1%} variance)')
+ax1.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.1%} variance)')
+ax1.set_title('PCA: Linear Dimensionality Reduction\n' +
+             'Preserves global structure & variance', fontsize=12, pad=15)
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# Plot t-SNE results  
+for i, (color, label) in enumerate(zip(['#e74c3c', '#3498db', '#2ecc71'], 
+                                     ['Type A', 'Type B', 'Type C'])):
+    start_idx = i * n_samples_per_cluster
+    end_idx = (i + 1) * n_samples_per_cluster
+    ax2.scatter(X_tsne[start_idx:end_idx, 0], X_tsne[start_idx:end_idx, 1], 
+               c=color, label=label, alpha=0.7, s=50)
+
+ax2.set_xlabel('t-SNE Dimension 1')
+ax2.set_ylabel('t-SNE Dimension 2')
+ax2.set_title('t-SNE: Non-linear Dimensionality Reduction\n' +
+             'Preserves local neighborhoods & reveals clusters', fontsize=12, pad=15)
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+# Add comparison table below
+fig.text(0.5, 0.02, 
+"""
+📊 PCA vs t-SNE Comparison:
+
+                    PCA                                          t-SNE
+🎯 Goal:           Preserve global variance                    Preserve local neighborhoods  
+📈 Method:         Linear projection                          Non-linear embedding
+⏱️ Speed:          Fast                                        Slower
+🔍 Best for:       • Understanding data variance              • Finding hidden clusters
+                   • Preprocessing for other methods          • Exploratory data analysis
+                   • When global structure matters            • Visualizing complex patterns
+❌ Limitations:    • May miss non-linear patterns             • Doesn't preserve global distances
+                   • Clusters may overlap                     • Can create false clusters
+                                                             • Sensitive to parameters
+""", 
+ha='center', va='bottom', fontsize=10, 
+bbox=dict(boxstyle="round,pad=0.8", facecolor='lightgray', alpha=0.8))
+
+plt.tight_layout()
+plt.subplots_adjust(bottom=0.35)
+plt.show()
+# Save the figure
+#plt.savefig('tsne_step6_comparison_with_pca.png', dpi=300, bbox_inches='tight')
+#plt.savefig('tsne_step6_comparison_with_pca.pdf', bbox_inches='tight')
+```
 
 ## Exercise: hands-on practical applying tSNE to another dataset
 
