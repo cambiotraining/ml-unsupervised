@@ -1385,7 +1385,9 @@ plt.show()
 ```
 
 
-<!-- TODO: but it might be good if the course went a little further than what’s typically found in most introductory resources. Some additional methods worth at least mentioning are:
+<!-- TODO: UMAP
+
+but it might be good if the course went a little further than what’s typically found in most introductory resources. Some additional methods worth at least mentioning are:
 
 MDS (multidimensional scaling)
 PCoA (principal coordinates analysis)
