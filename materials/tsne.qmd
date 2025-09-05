@@ -1169,9 +1169,9 @@ plt.show()
 #plt.savefig('tsne_step7_pitfalls_best_practices.pdf', bbox_inches='tight')
 ```
 
-## PCA vs. tSNE
+<!--## PCA vs. tSNE -->
 
-TODO:
+<!-- TODO: -->
 
 ```{python ch2-tsne-pca-vs-tsne-python}
 #| warning: false
@@ -1381,7 +1381,6 @@ plt.ylabel("t-SNE feature 2")
 plt.title("t-SNE visualization of US Arrests data")
 plt.tight_layout()
 plt.show()
-
 ```
 
 
