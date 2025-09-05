@@ -1285,9 +1285,6 @@ plt.show()
 
 * Load the US Arrests data in Python and perform tSNE on this (pair up with a person)
 
-* How would you evaluate this?
-
-* Vary the `perplexity` parameter
 
 * Some code to help you get started is here:
 
@@ -1340,6 +1337,15 @@ plt.ylabel("t-SNE feature 2")
 plt.title("t-SNE visualization of US Arrests data")
 plt.show()
 ```
+
+* How would you evaluate this?
+
+* Vary the `perplexity` parameter
+
+
+<!-- TODO: students might need help with annotation -->
+
+* Also annotate the plot by US states. _Hint_: Use the `plt.annotate()` function.
 
 ```{python ch3-tsne_usarrestdata}
 #| eval: false
