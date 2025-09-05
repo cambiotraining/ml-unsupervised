@@ -948,6 +948,16 @@ plt.show()
 
 ## Simple code to perform tSNE (hands-on exercise)
 
+Let us now practice performing tSNE on some data. We will use the `iris` data. The **Iris dataset** is a small, classic dataset in machine learning.  
+It contains measurements of **150 flowers** from three species of iris (*setosa, versicolor, virginica*).  
+
+For each flower, four features are recorded:
+- **Sepal length**
+- **Sepal width**
+- **Petal length**
+- **Petal width**
+
+
 <!-- TODO: simplify code below -->
 
 ```{python ch3-tsne-prac}
@@ -966,9 +976,13 @@ y = iris.target          # The species labels (0, 1, 2)
 tsne = TSNE(n_components=2, random_state=0, perplexity=30)
 X_2d = tsne.fit_transform(X)
 
+# Plot the results (simple plot)
+plt.figure()
+plt.scatter(X_2d[:,0], X_2d[:,1], c = y) # color by spcies labels
+plt.show()
+
 # Plot the results, one species at a time
 plt.figure()
-
 # Setosa (label 0)
 plt.scatter(X_2d[y == 0, 0], X_2d[y == 0, 1], color='red', label='setosa')
 
