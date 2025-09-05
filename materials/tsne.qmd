@@ -1301,7 +1301,7 @@ url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/cou
 df = pd.read_csv(url, index_col=0)
 
 # Prepare the data for t-SNE
-X = df.values  # Convert to numpy array
+X = df.values  
 
 # Fill in your code here ..........
 
@@ -1322,7 +1322,7 @@ url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/cou
 df = pd.read_csv(url, index_col=0)
 
 # Prepare the data for t-SNE
-X = df.values  # Convert to numpy array
+X = df.values  
 
 # Run t-SNE to reduce the data to 2 dimensions
 tsne = TSNE(n_components=2, random_state=42)
@@ -1345,7 +1345,7 @@ plt.show()
 
 <!-- TODO: students might need help with annotation -->
 
-* Also annotate the plot by US states. _Hint_: Use the `plt.annotate()` function.
+* Also annotate the plot by US states. _Hint_: Use the `plt.annotate()` function. The US states names are available in `df.index`.
 
 ```{python ch3-tsne_usarrestdata}
 #| eval: false
