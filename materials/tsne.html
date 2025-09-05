@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; tSNE</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/clustering.html" rel="next">
+<link href="../materials/normalization.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-066ba01d64f30ceb188d1182fc21c3ee.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Applied Unsupervised Machine Learning</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/cambiotraining/ml-unsupervised"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:github" style="font-size: 1.25em;" aria-label="Icon github from fa6-brands Iconify.design set." title="CRIT GitHub"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/bioinfocambs.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:bluesky" style="font-size: 1.25em;" aria-label="Icon bluesky from fa6-brands Iconify.design set." title="CRIT Bluesky"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://genomic.social/@BioInfoCambs"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:mastodon" style="font-size: 1.25em;" aria-label="Icon mastodon from fa6-brands Iconify.design set." title="CRIT Mastodon"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bioinfotraining.bio.cam.ac.uk/"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="mdi:web" style="font-size: 1.25em;" aria-label="Icon web from mdi Iconify.design set." title="CRIT Website"></iconify-icon></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">tSNE</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Applied Unsupervised Machine Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data &amp; Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">References and Resources</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Introduction to Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/python_refresher.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Refresher on Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Dimensionality Reduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/tsne.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">tSNE</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: Clustering</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 4: Applications of Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/pca_tsne_notwork.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">When PCA or tSNE might not work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Hands-on exercises (Applications of unsupervised machine learning)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bonus Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/bonus_material.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Bonus Material</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-curse-of-dimensionality" id="toc-the-curse-of-dimensionality" class="nav-link active" data-scroll-target="#the-curse-of-dimensionality"><span class="header-section-number">7.1</span> The curse of dimensionality</a></li>
+  <li><a href="#simplified-explanations" id="toc-simplified-explanations" class="nav-link" data-scroll-target="#simplified-explanations"><span class="header-section-number">7.2</span> Simplified explanations</a></li>
+  <li><a href="#visual-example-finding-similar-points" id="toc-visual-example-finding-similar-points" class="nav-link" data-scroll-target="#visual-example-finding-similar-points"><span class="header-section-number">7.3</span> Visual Example: Finding Similar Points</a>
+  <ul class="collapse">
+  <li><a href="#dimension-1-feature" id="toc-dimension-1-feature" class="nav-link" data-scroll-target="#dimension-1-feature"><span class="header-section-number">7.3.1</span> 1 Dimension (1 feature)</a></li>
+  <li><a href="#dimensions-2-features" id="toc-dimensions-2-features" class="nav-link" data-scroll-target="#dimensions-2-features"><span class="header-section-number">7.3.2</span> 2 Dimensions (2 features)</a></li>
+  <li><a href="#dimensions-3-features" id="toc-dimensions-3-features" class="nav-link" data-scroll-target="#dimensions-3-features"><span class="header-section-number">7.3.3</span> 3+ Dimensions (3+ features)</a></li>
+  </ul></li>
+  <li><a href="#why-this-happens-the-empty-space-problem" id="toc-why-this-happens-the-empty-space-problem" class="nav-link" data-scroll-target="#why-this-happens-the-empty-space-problem"><span class="header-section-number">7.4</span> Why This Happens: The “Empty Space” Problem</a></li>
+  <li><a href="#high-dimensions-are-counter-intuitive" id="toc-high-dimensions-are-counter-intuitive" class="nav-link" data-scroll-target="#high-dimensions-are-counter-intuitive"><span class="header-section-number">7.5</span> High-dimensions are counter-intuitive</a></li>
+  <li><a href="#tldr-simple-explanation" id="toc-tldr-simple-explanation" class="nav-link" data-scroll-target="#tldr-simple-explanation"><span class="header-section-number">7.6</span> TLDR (Simple explanation)</a>
+  <ul class="collapse">
+  <li><a href="#imagine-this" id="toc-imagine-this" class="nav-link" data-scroll-target="#imagine-this"><span class="header-section-number">7.6.1</span> Imagine this:</a></li>
+  <li><a href="#what-t-sne-does" id="toc-what-t-sne-does" class="nav-link" data-scroll-target="#what-t-sne-does"><span class="header-section-number">7.6.2</span> What t-SNE does:</a></li>
+  </ul></li>
+  <li><a href="#pictorial-explanation-of-tsne" id="toc-pictorial-explanation-of-tsne" class="nav-link" data-scroll-target="#pictorial-explanation-of-tsne"><span class="header-section-number">7.7</span> Pictorial explanation of tSNE</a>
+  <ul class="collapse">
+  <li><a href="#why-is-this-useful" id="toc-why-is-this-useful" class="nav-link" data-scroll-target="#why-is-this-useful"><span class="header-section-number">7.7.1</span> Why is this useful?</a></li>
+  </ul></li>
+  <li><a href="#why-tsne-works-in-high-dimensions" id="toc-why-tsne-works-in-high-dimensions" class="nav-link" data-scroll-target="#why-tsne-works-in-high-dimensions"><span class="header-section-number">7.8</span> Why t‑SNE Works in High Dimensions</a></li>
+  <li><a href="#intuitive-explanation-of-tsne" id="toc-intuitive-explanation-of-tsne" class="nav-link" data-scroll-target="#intuitive-explanation-of-tsne"><span class="header-section-number">7.9</span> Intuitive explanation of tSNE</a></li>
+  <li><a href="#digging-into-tsne" id="toc-digging-into-tsne" class="nav-link" data-scroll-target="#digging-into-tsne"><span class="header-section-number">7.10</span> Digging into tSNE</a></li>
+  <li><a href="#tsne-works-iteratively" id="toc-tsne-works-iteratively" class="nav-link" data-scroll-target="#tsne-works-iteratively"><span class="header-section-number">7.11</span> tSNE works iteratively</a></li>
+  <li><a href="#using-a-t-distribution-over-points" id="toc-using-a-t-distribution-over-points" class="nav-link" data-scroll-target="#using-a-t-distribution-over-points"><span class="header-section-number">7.12</span> Using a t-distribution over points</a></li>
+  <li><a href="#explanation-of-perplexity" id="toc-explanation-of-perplexity" class="nav-link" data-scroll-target="#explanation-of-perplexity"><span class="header-section-number">7.13</span> Explanation of perplexity</a></li>
+  <li><a href="#what-does-tsne-look-like-compared-to-pca" id="toc-what-does-tsne-look-like-compared-to-pca" class="nav-link" data-scroll-target="#what-does-tsne-look-like-compared-to-pca"><span class="header-section-number">7.14</span> What does tSNE look like compared to PCA?</a></li>
+  <li><a href="#simple-code-to-perform-tsne-hands-on-exercise" id="toc-simple-code-to-perform-tsne-hands-on-exercise" class="nav-link" data-scroll-target="#simple-code-to-perform-tsne-hands-on-exercise"><span class="header-section-number">7.15</span> Simple code to perform tSNE (hands-on exercise)</a></li>
+  <li><a href="#exercise-tsne-is-stochastic" id="toc-exercise-tsne-is-stochastic" class="nav-link" data-scroll-target="#exercise-tsne-is-stochastic"><span class="header-section-number">7.16</span> Exercise: tSNE is stochastic</a></li>
+  <li><a href="#exercise-building-intuition-on-how-to-use-tsne" id="toc-exercise-building-intuition-on-how-to-use-tsne" class="nav-link" data-scroll-target="#exercise-building-intuition-on-how-to-use-tsne"><span class="header-section-number">7.17</span> Exercise: Building intuition on how to use tSNE</a></li>
+  <li><a href="#key-concept" id="toc-key-concept" class="nav-link" data-scroll-target="#key-concept"><span class="header-section-number">7.18</span> Key Concept</a></li>
+  <li><a href="#perplexity-pitfalls-and-things-to-watch-out-for" id="toc-perplexity-pitfalls-and-things-to-watch-out-for" class="nav-link" data-scroll-target="#perplexity-pitfalls-and-things-to-watch-out-for"><span class="header-section-number">7.19</span> Perplexity pitfalls and things to watch out for</a></li>
+  <li><a href="#exercise-hands-on-practical-applying-tsne-to-another-dataset" id="toc-exercise-hands-on-practical-applying-tsne-to-another-dataset" class="nav-link" data-scroll-target="#exercise-hands-on-practical-applying-tsne-to-another-dataset"><span class="header-section-number">7.20</span> Exercise: hands-on practical applying tSNE to another dataset</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">7.21</span> Summary</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">7.22</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">tSNE</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Bulleted list of learning objectives</li>
+<li>Why PCA does not work sometimes</li>
+<li>The intution around the <em>curse of dimensionality</em></li>
+<li>What is tSNE?</li>
+<li>How to use tSNE</li>
+</ul>
+</div>
+</div>
+<!-- TODO: explain curse better -->
+<section id="the-curse-of-dimensionality" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="the-curse-of-dimensionality"><span class="header-section-number">7.1</span> The curse of dimensionality</h2>
+<p>In very high-dimensional spaces, almost all the “volume” of a dataset lives near its corners, and pairwise Euclidean distances between points tend to concentrate around a single value.</p>
+</section>
+<section id="simplified-explanations" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="simplified-explanations"><span class="header-section-number">7.2</span> Simplified explanations</h2>
+<p>Think of each cell as a point in a space where each gene’s activity is its own “axis.” When you have only a few genes (low dimensions), you can tell cells apart by how far apart they sit in that space. But as you add more genes, almost every cell ends up about the same distance from every other cell—so you lose any useful sense of “close” or “far.”</p>
+<p>Imagine you’re trying to find similar cells in a dataset. As you measure more features (dimensions), it becomes harder to find truly similar cells, even though you have more information.</p>
+</section>
+<section id="visual-example-finding-similar-points" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="visual-example-finding-similar-points"><span class="header-section-number">7.3</span> Visual Example: Finding Similar Points</h2>
+<section id="dimension-1-feature" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="dimension-1-feature"><span class="header-section-number">7.3.1</span> 1 Dimension (1 feature)</h3>
+<pre><code>Feature 1: [0]----[1]----[2]----[3]----[4]----[5]
+           A      B      C      D      E      F
+
+Points A and B are close (distance = 1)
+Points A and F are far (distance = 5)</code></pre>
+</section>
+<section id="dimensions-2-features" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="dimensions-2-features"><span class="header-section-number">7.3.2</span> 2 Dimensions (2 features)</h3>
+<pre><code>Feature 2: 5 |     F
+           4 |  E
+           3 |     D
+           2 |  C
+           1 |     B
+           0 |A
+             0  1  2  3  4  5  Feature 1
+
+Points A and B are still close
+Points A and F are still far</code></pre>
+</section>
+<section id="dimensions-3-features" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="dimensions-3-features"><span class="header-section-number">7.3.3</span> 3+ Dimensions (3+ features)</h3>
+<pre><code>Feature 3: 5 |     F
+           4 |  E
+           3 |     D
+           2 |  C
+           1 |     B
+           0 |A
+             0  1  2  3  4  5  Feature 1
+             
+Feature 4, 5, 6... (more dimensions)
+
+As dimensions increase:
+- All points become equally distant from each other
+- "Close" and "far" lose meaning
+- Finding similar cells becomes impossible</code></pre>
+</section>
+</section>
+<section id="why-this-happens-the-empty-space-problem" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="why-this-happens-the-empty-space-problem"><span class="header-section-number">7.4</span> Why This Happens: The “Empty Space” Problem</h2>
+<p>2D Circle - most area near the edge:</p>
+<pre><code>    ████████
+  ██••••••██
+ ██••••••••██
+██••••••••••██
+██••••••••••██
+ ██••••••••██
+  ██••••••██
+    ████████
+</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPT)</strong>:</p>
+<ul>
+<li><p>ALL volume concentrates at the “surface” The interior becomes essentially EMPTY!</p></li>
+<li><p>Your data points all end up at the edges, far apart from each other.</p></li>
+</ul>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="high-dimensions-are-counter-intuitive" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="high-dimensions-are-counter-intuitive"><span class="header-section-number">7.5</span> High-dimensions are counter-intuitive</h2>
+<p>Counter-intuitive things happen in high dimensions. For example, most of the volume is near the edges!</p>
+<div id="34d67854" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-2-output-1.png" width="1001" height="487" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Why k-Means fails:</strong><br>
+k-Means tries to draw boundaries around groups by asking “Which centroid (group center) is each cell closest to?” In very high–gene spaces, every cell is nearly the same distance from all centroids. Small moves of the centroids don’t change which cells get assigned to them, so k-Means can’t find real groupings.</p>
+<p><strong>Why t-SNE helps:</strong><br>
+t-SNE ignores the idea of absolute distance and instead asks, “Which cells are each cell’s few nearest neighbors?” It builds a map that keeps those local neighborhoods intact. In the final 2D picture, cells that were neighbors in the huge gene space stay neighbors on the screen, while cells that weren’t neighbors get pushed apart. This way, you still see meaningful clusters (e.g., cell types) even when dealing with hundreds or thousands of genes.</p>
+</section>
+<section id="tldr-simple-explanation" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="tldr-simple-explanation"><span class="header-section-number">7.6</span> TLDR (Simple explanation)</h2>
+<p>t-SNE (pronounced “tee-snee”) is a tool that helps us look at complex data by making it easier to see patterns.</p>
+<section id="imagine-this" class="level3" data-number="7.6.1">
+<h3 data-number="7.6.1" class="anchored" data-anchor-id="imagine-this"><span class="header-section-number">7.6.1</span> Imagine this:</h3>
+<ul>
+<li>You have a big box of mixed beads. Each bead has many features: color, size, shape, weight, etc.</li>
+<li>It is hard to see how the beads are similar or different just by looking at all these features at once.</li>
+</ul>
+</section>
+<section id="what-t-sne-does" class="level3" data-number="7.6.2">
+<h3 data-number="7.6.2" class="anchored" data-anchor-id="what-t-sne-does"><span class="header-section-number">7.6.2</span> What t-SNE does:</h3>
+<ul>
+<li>t-SNE takes all those features and creates a simple map (like a 2D picture).</li>
+<li>In this map, beads that are similar to each other are placed close together.</li>
+<li>Beads that are very different are placed far apart.</li>
+</ul>
+</section>
+</section>
+<section id="pictorial-explanation-of-tsne" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="pictorial-explanation-of-tsne"><span class="header-section-number">7.7</span> Pictorial explanation of tSNE</h2>
+<p>High-dimensional beads (hard to see groups):</p>
+<p>[🔴] [🔵] [🟢] [🟡] [🔴] [🟢] [🔵] [🟡] [🔴] [🟢] [🔵] [🟡]</p>
+<p>Each bead has many features (color, size, shape, etc.)</p>
+<pre><code>    |
+    v</code></pre>
+<p>t-SNE makes a simple 2D map:</p>
+<p>[🔴] [🔴] [🔴] | | [🔵] [🔵] [🔵]</p>
+<p>[🟢] [🟢] [🟢]</p>
+<p>[🟡] [🟡] [🟡]</p>
+<p>Now, similar beads are grouped together.</p>
+<p><strong>In summary:</strong><br>
+t-SNE is like a magic tool that turns complicated data into a simple picture, so we can easily see groups and patterns—even if we do not understand the math behind it!</p>
+<section id="why-is-this-useful" class="level3" data-number="7.7.1">
+<h3 data-number="7.7.1" class="anchored" data-anchor-id="why-is-this-useful"><span class="header-section-number">7.7.1</span> Why is this useful?</h3>
+<ul>
+<li>It helps us see groups or clusters in our data.</li>
+<li>We can spot patterns, like which beads are most alike, or if there are outliers.</li>
+<li>Emphasis on preserving local structure.</li>
+</ul>
+</section>
+</section>
+<section id="why-tsne-works-in-high-dimensions" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="why-tsne-works-in-high-dimensions"><span class="header-section-number">7.8</span> Why t‑SNE Works in High Dimensions</h2>
+<ul>
+<li>Bypasses global distance concentration by focusing on nearest neighbors.</li>
+</ul>
+<!-- TODO: intuition behind tSNE 
+
+TODO: The explanation of t-SNE could be improved. Currently you refer to it as a "magic tool", but the more detailed explanation (in the collapsed box) is very technical and hard to follow. A middle ground with a simple intuitive explanation would help. StatQuest video is excellent for this.
+
+
+TODO: Perplexity is mentioned but not explained, which is worth clarifying.
+
+-->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The complex explanation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In very high-dimensional spaces, almost all the “volume” of a dataset lives near its corners, and pairwise Euclidean distances between points tend to concentrate around a single value. As dimension <span class="math inline">\(n\)</span> grows, the volume of an inscribed ball in the hypercube <span class="math inline">\([-1,1]^n\)</span> shrinks toward zero, and the ratio</p>
+<p><span class="math display">\[
+\frac{\max d - \min d}{\min d}
+\]</span></p>
+<p>for distances <span class="math inline">\(d\)</span> between random points rapidly approaches zero. Intuitively, “nearest” and “farthest” neighbors become indistinguishable, so any method that relies on global distances (like <strong>k-Means</strong>) loses its ability to meaningfully separate points into clusters.</p>
+<p><strong>k-Means clustering</strong> exemplifies this breakdown: it repeatedly assigns each point to its nearest centroid based on squared-distance comparisons. When all inter-point distances look almost the same, tiny shifts in centroid positions barely affect those assignments, leading to noisy labels and flat optimization landscapes with no clear gradients. In practice, k-Means can “get stuck” or fail to discover any meaningful grouping once dimensions rise into the dozens or hundreds.</p>
+<p><strong>t-SNE</strong> sidesteps these problems by focusing only on <strong>local</strong> similarities rather than global distances. It first converts pairwise distances in the high-dimensional space into a distribution of affinities <span class="math inline">\(p_{ij}\)</span> using Gaussian kernels centered on each point. Then it searches for a low-dimensional embedding whose Student-t affinity distribution <span class="math inline">\(q_{ij}\)</span> best matches <span class="math inline">\(p_{ij}\)</span>. By emphasizing the preservation of each point’s nearest neighbors and using a heavy-tailed low-dimensional kernel to push dissimilar points apart, t-SNE highlights local clusters even when global geometry has become uninformative—making it a far more effective visualization and exploratory tool in very high dimensions.</p>
+</div>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="intuitive-explanation-of-tsne" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="intuitive-explanation-of-tsne"><span class="header-section-number">7.9</span> Intuitive explanation of tSNE</h2>
+<p><a href="https://www.youtube.com/watch?v=NEaUSP4YerM">Explanation of tSNE (by StatQuest)</a></p>
+</section>
+<section id="digging-into-tsne" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="digging-into-tsne"><span class="header-section-number">7.10</span> Digging into tSNE</h2>
+<div id="9f056e6b" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-3-output-1.png" width="1430" height="1134" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-3-output-2.png" width="1526" height="575" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-3-output-3.png" width="1718" height="1134" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-3-output-4.png" width="1526" height="1134" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="tsne-works-iteratively" class="level2" data-number="7.11">
+<h2 data-number="7.11" class="anchored" data-anchor-id="tsne-works-iteratively"><span class="header-section-number">7.11</span> tSNE works iteratively</h2>
+<p>tSNE works iteratively to find similar points and brings them together. This is similar to <em>clustering</em> which we will encounter later.</p>
+<p>tSNE gradually moves points to preserve neighborhoods. 🎯 Similar points are pulled together, different cells pushed apart.</p>
+<!-- TODO: get animation to work. Needs pip install pillow -->
+<div id="9e655aa4" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-4-output-1.png" width="1072" height="950" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="using-a-t-distribution-over-points" class="level2" data-number="7.12">
+<h2 data-number="7.12" class="anchored" data-anchor-id="using-a-t-distribution-over-points"><span class="header-section-number">7.12</span> Using a t-distribution over points</h2>
+<ul>
+<li><p><strong>Problem in 2D</strong>: When we compress high‑dimensional data into 2D, many points that were moderately far apart get squashed together. With a Gaussian in 2D, those “far” points all look similarly unlikely, which causes <strong>crowding</strong> in the center.</p></li>
+<li><p><strong>t-distribution has heavy tails</strong>: It decreases more slowly than a Gaussian. So points that are moderately far apart in 2D still get some probability—<strong>not zero</strong>.</p></li>
+<li><p><strong>What this achieves</strong>:</p>
+<ul>
+<li><strong>Reduces crowding</strong> in the middle of the plot.</li>
+<li><strong>Spreads clusters out</strong> more naturally.</li>
+<li><strong>Preserves local neighborhoods</strong> (close points stay close) while allowing space between different groups.</li>
+</ul></li>
+<li><p><strong>Intuition</strong>: In high dimensions we can identify close neighbours well. In 2D there isn’t enough room, so everything would pile up. The <strong>heavy tails</strong> of the t‑distribution give extra “elbow room,” keeping clusters distinct and easier to interpret.</p></li>
+</ul>
+<div id="97739546" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-5-output-1.png" width="520" height="375" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-5-output-2.png" width="509" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="explanation-of-perplexity" class="level2" data-number="7.13">
+<h2 data-number="7.13" class="anchored" data-anchor-id="explanation-of-perplexity"><span class="header-section-number">7.13</span> Explanation of perplexity</h2>
+<p>tSNE has an important parameter called <em>perplexity</em>.</p>
+<ul>
+<li><p><strong>What it is</strong>: Perplexity is like the “number of close friends” each point listens to when arranging the map.</p></li>
+<li><p><strong>How to think about it</strong>: It sets the typical neighborhood size.</p>
+<ul>
+<li><strong>Low perplexity</strong>: each point cares about a small, tight circle.</li>
+<li><strong>High perplexity</strong>: each point <em>listens</em> to more distant neighbors too.</li>
+</ul></li>
+<li><p><strong>If it’s too low</strong>: You may get tiny, fragmented clusters or noisy structure.<br>
+</p></li>
+<li><p><strong>If it’s too high</strong>: Different groups can blur together, losing fine details.<br>
+</p></li>
+<li><p><strong>Good starting range</strong>: 5–50 (try a few values to see what’s most interpretable).</p></li>
+<li><p><strong>Analogy</strong>: Imagine placing cells on a 2D table. Perplexity decides how many nearby “reference cells” each one considers when finding its spot—too few and it overfits tiny patterns; too many and it smooths away meaningful differences.</p></li>
+</ul>
+</section>
+<section id="what-does-tsne-look-like-compared-to-pca" class="level2" data-number="7.14">
+<h2 data-number="7.14" class="anchored" data-anchor-id="what-does-tsne-look-like-compared-to-pca"><span class="header-section-number">7.14</span> What does tSNE look like compared to PCA?</h2>
+<div id="248745c0" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-6-output-1.png" width="757" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-6-output-2.png" width="758" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="simple-code-to-perform-tsne-hands-on-exercise" class="level2" data-number="7.15">
+<h2 data-number="7.15" class="anchored" data-anchor-id="simple-code-to-perform-tsne-hands-on-exercise"><span class="header-section-number">7.15</span> Simple code to perform tSNE (hands-on exercise)</h2>
+<p>Let us now practice performing tSNE on some data. We will use the <code>iris</code> data. The <strong>Iris dataset</strong> is a small, classic dataset in machine learning.<br>
+It contains measurements of <strong>150 flowers</strong> from three species of iris (<em>setosa, versicolor, virginica</em>).</p>
+<p>For each flower, four features are recorded: - <strong>Sepal length</strong> - <strong>Sepal width</strong> - <strong>Petal length</strong> - <strong>Petal width</strong></p>
+<div id="5f9303fc" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> datasets</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.manifold <span class="im">import</span> TSNE</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Iris dataset</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> datasets.load_iris()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data            <span class="co"># The features (measurements)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> iris.target          <span class="co"># The species labels (0, 1, 2)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Run t-SNE to reduce the data to 2 dimensions</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>tsne <span class="op">=</span> TSNE(n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">0</span>, perplexity<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>X_2d <span class="op">=</span> tsne.fit_transform(X)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results (simple plot)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_2d[:,<span class="dv">0</span>], X_2d[:,<span class="dv">1</span>], c <span class="op">=</span> y) <span class="co"># color by spcies labels</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results, one species at a time</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Setosa (label 0)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>idx_y_0 <span class="op">=</span> (y <span class="op">==</span> <span class="dv">0</span>) <span class="co"># get index of those flowers where y == 0</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_2d[idx_y_0,<span class="dv">0</span>], X_2d[idx_y_0,<span class="dv">1</span>], color<span class="op">=</span><span class="st">'red'</span>, label<span class="op">=</span><span class="st">'setosa'</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Versicolor (label 1)</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>idx_y_1 <span class="op">=</span> (y <span class="op">==</span> <span class="dv">1</span>) <span class="co"># get index of those flowers where y == 1</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_2d[idx_y_1,<span class="dv">0</span>], X_2d[idx_y_1,<span class="dv">1</span>], color<span class="op">=</span><span class="st">'green'</span>, label<span class="op">=</span><span class="st">'versicolor'</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Virginica (label 2)</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>idx_y_2 <span class="op">=</span> (y <span class="op">==</span> <span class="dv">2</span>) <span class="co"># get indices of when y is 2</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_2d[idx_y_2,<span class="dv">0</span>], X_2d[idx_y_2,<span class="dv">1</span>], color<span class="op">=</span><span class="st">'blue'</span>, label<span class="op">=</span><span class="st">'virginica'</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"t-SNE feature 1"</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"t-SNE feature 2"</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"t-SNE visualization of the Iris dataset"</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-7-output-1.png" width="639" height="447" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-7-output-2.png" width="659" height="486" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-tsne-is-stochastic" class="level2" data-number="7.16">
+<h2 data-number="7.16" class="anchored" data-anchor-id="exercise-tsne-is-stochastic"><span class="header-section-number">7.16</span> Exercise: tSNE is stochastic</h2>
+<ul>
+<li><p>Stochasticity: play around with the <code>random_state</code> parameter. Does your tSNE plot look different to the person you are seated next to?</p></li>
+<li><p>Play around with the <code>perplexity</code> parameter (pair up with someone)</p></li>
+<li><p>Which value of <code>perplexity</code> should you use?</p></li>
+</ul>
+</section>
+<section id="exercise-building-intuition-on-how-to-use-tsne" class="level2" data-number="7.17">
+<h2 data-number="7.17" class="anchored" data-anchor-id="exercise-building-intuition-on-how-to-use-tsne"><span class="header-section-number">7.17</span> Exercise: Building intuition on how to use tSNE</h2>
+<ul>
+<li><p><a href="https://distill.pub/2016/misread-tsne/">Pitfalls in using tSNE</a></p></li>
+<li><p>Let us read the paper <em>How to use t-SNE effectively</em> <span class="citation" data-cites="Wattenberg2016">(<a href="../references.html#ref-Wattenberg2016" role="doc-biblioref">Wattenberg, Viégas, and Johnson 2017</a>)</span>.</p></li>
+<li><p>Distances are not preserved</p></li>
+<li><p>Normal does not always look normal</p></li>
+</ul>
+</section>
+<section id="key-concept" class="level2" data-number="7.18">
+<h2 data-number="7.18" class="anchored" data-anchor-id="key-concept"><span class="header-section-number">7.18</span> Key Concept</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Recall that unsupervised machine learning can help you come up with new hypotheses</li>
+<li>Vary the perplexity parameter: ideally your patterns or hypotheses should be true even if you change perplexity</li>
+</ul>
+</div>
+</div>
+<!--end callout -->
+</section>
+<section id="perplexity-pitfalls-and-things-to-watch-out-for" class="level2" data-number="7.19">
+<h2 data-number="7.19" class="anchored" data-anchor-id="perplexity-pitfalls-and-things-to-watch-out-for"><span class="header-section-number">7.19</span> Perplexity pitfalls and things to watch out for</h2>
+<div id="ed24bf2b" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tsne_files/figure-html/cell-8-output-1.png" width="1210" height="1418" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<!--## PCA vs. tSNE -->
+<!-- TODO: -->
+</section>
+<section id="exercise-hands-on-practical-applying-tsne-to-another-dataset" class="level2" data-number="7.20">
+<h2 data-number="7.20" class="anchored" data-anchor-id="exercise-hands-on-practical-applying-tsne-to-another-dataset"><span class="header-section-number">7.20</span> Exercise: hands-on practical applying tSNE to another dataset</h2>
+<ul>
+<li><p>Load the US Arrests data in Python and perform tSNE on this (pair up with a person)</p></li>
+<li><p>Some code to help you get started is here:</p></li>
+</ul>
+<div id="26a63a2c" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.manifold <span class="im">import</span> TSNE</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the US Arrests data</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/USArrests.csv"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data for t-SNE</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.values  </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill in your code here ..........</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>How would you evaluate this?</p></li>
+<li><p>Vary the <code>perplexity</code> parameter</p></li>
+</ul>
+<!-- TODO: students might need help with annotation -->
+<ul>
+<li>Also annotate the plot by US states. <em>Hint</em>: Use the <code>plt.annotate()</code> function. The US states names are available in <code>df.index</code>.</li>
+</ul>
+<!-- TODO: UMAP
+
+but it might be good if the course went a little further than what’s typically found in most introductory resources. Some additional methods worth at least mentioning are:
+
+MDS (multidimensional scaling)
+PCoA (principal coordinates analysis)
+
+-->
+</section>
+<section id="summary" class="level2" data-number="7.21">
+<h2 data-number="7.21" class="anchored" data-anchor-id="summary"><span class="header-section-number">7.21</span> Summary</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>High dimensions make global distances meaningless.</li>
+<li>Methods that leverage local structure (t‑SNE) can still find patterns.</li>
+<li>tSNE is stochastic and can be hard to interpret</li>
+<li>Vary the perplexity parameter (ideally your patterns or hypotheses should be true even if you change perplexity)</li>
+</ul>
+</div>
+</div>
+<!--end callout -->
+</section>
+<section id="references" class="level2" data-number="7.22">
+<h2 data-number="7.22" class="anchored" data-anchor-id="references"><span class="header-section-number">7.22</span> References</h2>
+<p>[1] <a href="https://distill.pub/2016/misread-tsne/">How to Use t-SNE Effectively</a></p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Wattenberg2016" class="csl-entry" role="listitem">
+Wattenberg, Martin, Fernanda Viégas, and Ian Johnson. 2017. <span>“How to Use t-SNE Effectively.”</span> <em>Distill</em> 1 (October): e2. <a href="https://doi.org/10.23915/distill.00002">https://doi.org/10.23915/distill.00002</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/normalization.html" class="pagination-link" aria-label="Normalizing your data and PCA">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/clustering.html" class="pagination-link" aria-label="Clustering">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Cambridge Research Informatics Training</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
