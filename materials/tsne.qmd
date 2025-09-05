@@ -957,9 +957,6 @@ For each flower, four features are recorded:
 - **Petal length**
 - **Petal width**
 
-
-<!-- TODO: simplify code below -->
-
 ```{python ch3-tsne-prac}
 #| warning: false
 
@@ -984,13 +981,16 @@ plt.show()
 # Plot the results, one species at a time
 plt.figure()
 # Setosa (label 0)
-plt.scatter(X_2d[y == 0, 0], X_2d[y == 0, 1], color='red', label='setosa')
+idx_y_0 = (y == 0) # get index of those flowers where y == 0
+plt.scatter(X_2d[idx_y_0,0], X_2d[idx_y_0,1], color='red', label='setosa')
 
 # Versicolor (label 1)
-plt.scatter(X_2d[y == 1, 0], X_2d[y == 1, 1], color='green', label='versicolor')
+idx_y_1 = (y == 1) # get index of those flowers where y == 1
+plt.scatter(X_2d[idx_y_1,0], X_2d[idx_y_1,1], color='green', label='versicolor')
 
 # Virginica (label 2)
-plt.scatter(X_2d[y == 2, 0], X_2d[y == 2, 1], color='blue', label='virginica')
+idx_y_2 = (y == 2) # get indices of when y is 2
+plt.scatter(X_2d[idx_y_2,0], X_2d[idx_y_2,1], color='blue', label='virginica')
 
 plt.xlabel("t-SNE feature 1")
 plt.ylabel("t-SNE feature 2")

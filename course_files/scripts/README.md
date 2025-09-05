@@ -25,3 +25,5 @@ Scripts for generating data
 12. `pca_plot_simple_withtextlabels.py` is a Python script that performs PCA on a sample dataset and generates a scatter plot of the first two principal components with text labels for each point.
 
 13. `tsne_statquest_inspired.py` is a Python script that demonstrates the use of t-SNE for dimensionality reduction on the digits dataset, inspired by StatQuest's explanation of t-SNE. It includes visualizations of the t-SNE optimization process and the effects of different perplexity values.
+
+14. `*statquest*.py` are files which explain tSNE and are inspired by the videos created by StatQuest. 
