@@ -109,7 +109,7 @@ You just need to try a bunch of different techniques.
 
 
 
-### Demonstrating how PCA may not work well on the Swiss roll data
+### Activity: Demonstrating how PCA may not work well on the Swiss roll data
 
 * The `Swiss roll` dataset
 
@@ -708,4 +708,5 @@ plt.show()
 ## Additional reading
 
 [1] [tSNE FAQ by its creators](https://lvdmaaten.github.io/tsne/#faq)
+
 [2] [Swiss roll and SNE](https://jlmelville.github.io/smallvis/swisssne.html)
