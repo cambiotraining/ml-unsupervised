@@ -890,15 +890,17 @@ The most appropriate value of `perplexity` depends on the density of your data. 
 ::: {.callout-tip}
 #### Key Points
 
-- Perplexity in t-SNE acts like a control for the effective number of nearest neighbours.
+- Perplexity in t-SNE acts like a _knob_ for the effective number of nearest neighbours.
+
+![Perplexity as a knob for a complex machine learning model. Image created using DALL-E.](images/knob_radio.png)
 
 :::
 <!--end callout -->
 
 
-## Interactive figure showing tSNE and perplexity
+## Activity: Interactive figure showing tSNE and perplexity
 
-Here is an interactive tSNE on the `Swiss roll` dataset (we will encounter this later). Play around with this figure!
+Here is an interactive tSNE on the `Swiss roll` dataset (we will encounter this later). Play around with this figure and use the slider to change the value of `perplexity`!
 
 ```{python ch2-tsne-intreactive-perplexity-plotly}
 #| warning: false
