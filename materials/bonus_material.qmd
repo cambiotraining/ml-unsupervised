@@ -152,6 +152,21 @@ Here are some key aspects of t-SNE:
 In summary, t-SNE is a powerful visualization tool for exploring the structure of high-dimensional data, especially when that structure is non-linear and involves distinct clusters.
 
 
+## Mathematical definition of the Swiss roll dataset
+
+### Parametric definition
+
+$[ x = \phi \cos(\phi),\quad y = \phi \sin(\phi),\quad z = \psi ]$
+
+### Sampling
+
+$\phi$ is drawn uniformly from (1.5$\pi$, 4.5$\pi$) and $\psi$ is drawn uniformly from (0, 50).
+
+- $\phi \sim \mathrm{Uniform}(1.5\pi,\; 4.5\pi)$
+- $\psi \sim \mathrm{Uniform}(0,\; 50)$
+
+
+
 ## Summary
 
 ::: {.callout-tip}

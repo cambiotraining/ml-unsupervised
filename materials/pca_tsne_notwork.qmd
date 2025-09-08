@@ -703,3 +703,9 @@ plt.show()
 
 - PCA or tSNE are not magic bullets and may not _work_ all the time 
 :::
+
+
+## Additional reading
+
+[1] [tSNE FAQ by its creators](https://lvdmaaten.github.io/tsne/#faq)
+[2] [Swiss roll and SNE](https://jlmelville.github.io/smallvis/swisssne.html)
