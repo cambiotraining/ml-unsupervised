@@ -195,7 +195,7 @@ cd ml-unsupervised
 
 ```bash
 python3 -m venv .venv
-``
+```
 
 * Activate the virtual environment
 

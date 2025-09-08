@@ -265,7 +265,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 ```{python ch1-3d-pca}
 #| echo: false
-
+#| warning: false
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -328,9 +328,91 @@ ax2.set_ylabel('Second principal component')
 
 plt.tight_layout()
 plt.show()
-
 ```
 
+* Play around with the figure below to get an intuition of what PCA does!
+
+```{python ch1-pca-playbale-plotly-figure}
+#| warning: false
+#| echo: false
+
+import numpy as np
+from sklearn.decomposition import PCA
+import plotly.graph_objects as go
+
+# 1. Generate synthetic 3D data (three clusters)
+np.random.seed(0)
+n = 30
+means = [(-2, 0, 0), (2, 0, 0), (0, 2, 2)]
+data = np.vstack([np.random.randn(n, 3) + m for m in means])
+labels = np.array([0]*n + [1]*n + [2]*n)
+
+# 2. Perform PCA to get first two components
+pca = PCA(n_components=2)
+scores = pca.fit_transform(data)
+components = pca.components_
+mean_3d = pca.mean_
+
+# 3. Create a meshgrid for the principal component plane
+grid_x, grid_y = np.meshgrid(
+    np.linspace(-4, 4, 10),
+    np.linspace(-4, 4, 10)
+)
+# Plane points: mean + x*pc1 + y*pc2
+plane_points = mean_3d + grid_x[..., None] * components[0] + grid_y[..., None] * components[1]
+
+# 4. Inverse transform scores to get projections back into 3D
+proj_3d = pca.inverse_transform(scores)
+
+# Build projection line coordinates as a single trace
+line_x, line_y, line_z = [], [], []
+for i in range(data.shape[0]):
+    line_x += [data[i, 0], proj_3d[i, 0], None]
+    line_y += [data[i, 1], proj_3d[i, 1], None]
+    line_z += [data[i, 2], proj_3d[i, 2], None]
+
+fig = go.Figure()
+
+# Points
+fig.add_trace(go.Scatter3d(
+    x=data[:, 0], y=data[:, 1], z=data[:, 2],
+    mode='markers',
+    marker=dict(size=5, color=labels, colorscale='Viridis', showscale=False, opacity=0.9),
+    name='Data'
+))
+
+# PCA plane
+fig.add_trace(go.Surface(
+    x=plane_points[:, :, 0],
+    y=plane_points[:, :, 1],
+    z=plane_points[:, :, 2],
+    opacity=0.25,
+    colorscale='Greys',
+    showscale=False,
+    name='PC1-PC2 plane'
+))
+
+# Projection lines
+fig.add_trace(go.Scatter3d(
+    x=line_x, y=line_y, z=line_z,
+    mode='lines',
+    line=dict(color='rgba(120,120,120,0.7)', width=2),
+    name='Projections'
+))
+
+fig.update_layout(
+    title='Data and first two principal components',
+    scene=dict(
+        xaxis_title='X₁',
+        yaxis_title='X₂',
+        zaxis_title='X₃',
+        aspectmode='data'
+    ),
+    margin=dict(l=0, r=0, t=40, b=0)
+)
+
+fig.show()
+```
 
 ## Another intuition behind PCA
 
@@ -388,7 +470,7 @@ Dimensionality reduction techniques (such as PCA) always lose some information. 
 4. **Visualize the reconstructions** to show how few components capture most of the image's structure.
 
 ```{python ch1-pca-lossy-image}
-
+#| warning: false
 #| echo: false
 
 import numpy as np
@@ -446,7 +528,6 @@ for i, n_components in enumerate(components_list):
 plt.suptitle("Image Reconstruction with Varying Principal Components", fontsize=14)
 plt.tight_layout()
 plt.show()
-
 ```
 
 ### Takeaway Message
@@ -534,7 +615,6 @@ plt.legend()
 plt.axis('equal')
 plt.grid(True)
 plt.show()
-
 ```
 
 

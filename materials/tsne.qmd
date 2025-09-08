@@ -1517,7 +1517,7 @@ PCoA (principal coordinates analysis)
 - High dimensions make global distances meaningless.
 - Methods that leverage local structure (t‑SNE) can still find patterns.
 - tSNE is stochastic and can be hard to interpret
-- Vary the perplexity parameter (ideally your patterns or hypotheses should be true even if you change perplexity)
+- Vary the `perplexity` parameter (ideally your patterns or hypotheses should be true even if you change perplexity)
 
 :::
 <!--end callout -->
@@ -1526,4 +1526,5 @@ PCoA (principal coordinates analysis)
 ## References
 
 [1] [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/)
+
 [2] [FAQs by the creator of tSNE](https://lvdmaaten.github.io/tsne/#faq)
