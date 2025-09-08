@@ -24,3 +24,6 @@ title: "References and Resources"
 
 [7] [Data visualization in Python using matplotlib and seaborn](https://kavihshah.github.io/Intro-to-Python/materials/13-data-visualisation-with-matplotlib-and-seaborn.html)
 
+[8] [FAQs by the creator of tSNE](https://lvdmaaten.github.io/tsne/#faq)
+
+

@@ -171,17 +171,45 @@ rm singularity.deb
 -->
 
 
-### 2. Run locally
+### Run locally
 
 * Install Python (we recommend using [Anaconda](https://www.anaconda.com/products/distribution) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) to manage your Python environment).
 
-* Install VSCode (see below) or [Spyder](https://www.spyder-ide.org/).
+* Install Visual Studio Code (see below) or [Spyder](https://www.spyder-ide.org/).
 
 * Download the [material](https://github.com/cambiotraining/ml-unsupervised/archive/refs/heads/main.zip) or clone the repository (optional, for full access)
 
 ```bash
 git clone https://github.com/cambiotraining/ml-unsupervised
 ```
+
+
+* Navigate to the folder
+
+```bash
+cd ml-unsupervised
+```
+
+
+* Setup a virtual environment (optional, but recommended)
+
+```bash
+python3 -m venv .venv
+``
+
+* Activate the virtual environment
+
+  - On Windows (in Command Prompt):
+
+  ```cmd
+  .venv\Scripts\activate
+  ```
+
+  - On MacOS/Linux:
+
+  ```bash
+  source .venv/bin/activate
+  ```  
 
 * Install required Python packages
 
