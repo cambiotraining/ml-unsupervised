@@ -26,4 +26,6 @@ title: "References and Resources"
 
 [8] [FAQs by the creator of tSNE](https://lvdmaaten.github.io/tsne/#faq)
 
+[9] [Other intricacies of tSNE](https://jlmelville.github.io/smallvis/swisssne.html)
+
 

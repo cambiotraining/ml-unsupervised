@@ -898,25 +898,26 @@ The most appropriate value of `perplexity` depends on the density of your data. 
 
 ## Interactive figure showing tSNE and perplexity
 
+Here is an interactive tSNE on the `Swiss roll` dataset (we will encounter this later). Play around with this figure!
+
 ```{python ch2-tsne-intreactive-perplexity-plotly}
 #| warning: false
 #| echo: false
 
 # pip install plotly scikit-learn
-
 import numpy as np
 from sklearn.datasets import make_swiss_roll
 from sklearn.preprocessing import StandardScaler
 from sklearn.manifold import TSNE
 import plotly.graph_objects as go
 
-# 1) Data: Swiss roll (3D) → t-SNE (2D)
+# Data
 X3d, t = make_swiss_roll(n_samples=2000, noise=0.05, random_state=42)
 X = StandardScaler().fit_transform(X3d)
 
-# 2) Precompute t-SNE embeddings for several perplexities
-perplexities = [5, 10, 20, 30, 40, 50]
-embeddings = {}
+# Precompute t-SNE for different perplexities
+perplexities = [5, 10, 20, 30, 40, 50, 60, 70, 100]
+embeds = {}
 for perp in perplexities:
     tsne = TSNE(
         n_components=2,
@@ -926,69 +927,57 @@ for perp in perplexities:
         learning_rate="auto",
         verbose=0,
     )
-    embeddings[perp] = tsne.fit_transform(X)
+    embeds[perp] = tsne.fit_transform(X)
 
-# 3) Build Plotly figure with frames, controlled by a slider
-first_perp = perplexities[0]
-first_xy = embeddings[first_perp]
-
-fig = go.Figure(
-    data=[
+# Build traces (one per perplexity), only first visible
+traces = []
+for i, perp in enumerate(perplexities):
+    xy = embeds[perp]
+    traces.append(
         go.Scattergl(
-            x=first_xy[:, 0],
-            y=first_xy[:, 1],
+            x=xy[:, 0],
+            y=xy[:, 1],
             mode="markers",
             marker=dict(size=4, color=t, colorscale="Turbo", showscale=True, opacity=0.85),
+            visible=(i == 0),
+            name=f"Perplexity {perp}",
             hovertemplate="x: %{x:.2f}<br>y: %{y:.2f}<br>t: %{marker.color:.1f}<extra></extra>",
         )
-    ],
-    layout=go.Layout(
-        title=f"t-SNE with Perplexity = {first_perp}",
-        xaxis_title="t-SNE 1",
-        yaxis_title="t-SNE 2",
-        margin=dict(l=0, r=0, t=40, b=0),
-        updatemenus=[dict(
-            type="buttons",
-            showactive=False,
-            x=1.05, y=1.15,
-            buttons=[
-                dict(label="Play", method="animate", args=[None, {"frame": {"duration": 500, "redraw": True}, "fromcurrent": True}]),
-                dict(label="Pause", method="animate", args=[[None], {"mode": "immediate", "frame": {"duration": 0, "redraw": False}}]),
-            ],
-        )],
-        sliders=[dict(
-            active=0,
-            currentvalue={"prefix": "Perplexity: ", "xanchor": "right"},
-            pad={"t": 30},
-            steps=[
-                dict(
-                    label=str(perp),
-                    method="animate",
-                    args=[[f"perp-{perp}"], {"mode": "immediate", "frame": {"duration": 0, "redraw": True}}],
-                )
-                for perp in perplexities
-            ],
-        )],
-    ),
-    frames=[
-        go.Frame(
-            name=f"perp-{perp}",
-            data=[go.Scattergl(
-                x=embeddings[perp][:, 0],
-                y=embeddings[perp][:, 1],
-                mode="markers",
-                marker=dict(size=4, color=t, colorscale="Turbo", showscale=True, opacity=0.85),
-            )],
-            layout=go.Layout(title_text=f"t-SNE with Perplexity = {perp}"),
-        )
-        for perp in perplexities
-    ],
+    )
+
+# Slider steps to toggle visibility
+steps = []
+for i, perp in enumerate(perplexities):
+    vis = [False] * len(perplexities)
+    vis[i] = True
+    steps.append(dict(
+        label=str(perp),
+        method="update",
+        args=[
+            {"visible": vis},
+            {"title": f"t-SNE with Perplexity = {perp}"}
+        ],
+    ))
+
+fig = go.Figure(data=traces)
+fig.update_layout(
+    title=f"t-SNE with Perplexity = {perplexities[0]}",
+    xaxis_title="t-SNE 1",
+    yaxis_title="t-SNE 2",
+    margin=dict(l=0, r=0, t=40, b=0),
+    sliders=[dict(
+        active=0,
+        currentvalue={"prefix": "Perplexity: "},
+        pad={"t": 30},
+        steps=steps
+    )]
 )
 
-fig.show()
+fig
 ```
 
-## What does tSNE looks like compared to PCA?
+
+## What does tSNE look like compared to PCA?
 
 ```{python mnist}
 #| echo: false
