@@ -13,3 +13,4 @@ PyYAML
 pca
 pillow
 scanpy
+plotly

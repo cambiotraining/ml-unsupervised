@@ -12,10 +12,56 @@ title: When PCA or tSNE might not work
 
 
 
-## When PCA may *not* work
+## When PCA or tSNE may *not* work
+
+
+- **Nonlinear structure**
+  - Swiss roll/curved trajectories (e.g., differentiation trajectories); PCA flattens and mixes cells that are nearby in 2D but far along the curve.
+  - Concentric patterns (e.g., ring-like responses); PCA cannot separate circles.
+
+- **When variance ≠ signal**
+  - Batch effects or library size dominate variance in scRNA‑seq; PCs reflect technical factors rather than biology.
+  - Cell cycle effects overshadow subtle lineage differences.
+  - Rare cell types: biologically important but low variance, thus missed by top PCs.
+  <!-- 
+  - XOR-like structure: classes differ along interactions, not along single linear directions.
+  -->
+
+- **Outliers and heavy tails**
+  - A few extreme samples/genes drive the first PCs, masking true structure (common with QC issues or outlier libraries).
+
+- **Feature scaling and units**
+  - Mixed units or unscaled features: high-variance genes/proteins dominate; low-variance but important markers get ignored.
+
+<!--
+- **Compositional/count data**
+  - Microbiome (relative abundances) or RNA-seq counts: closure and zero inflation violate PCA assumptions; raw-count PCA is misleading.
+
+- **Multimodal mixtures**
+  - Multiple clusters with different orientations/variances: a single global linear projection can blur cluster separation.
+-->
+
+- **Time/phase structure**
+  - Periodic processes (cell cycle phases): PCA captures amplitude rather than phase, mixing states.
+
+- **p >> n instability**
+  - Many more genes than samples: PCs become noisy/unstable without regularization or careful preprocessing.
+
+- **Missing data**
+  - Nonrandom missingness (dropouts in scRNA‑seq) biases covariance; naive imputation can create artificial PCs.
+
+### Quick remedies
+- Nonlinear structure: t‑SNE/UMAP. <!--, diffusion maps, PHATE, kernel PCA. -->
+- Variance ≠ signal: regress out batch/cell cycle; use sctransform; combat/BBKNN/Harmony for batch correction; consider supervised methods (PLS/CCA) if labels exist.
+- Outliers/heavy tails: robust PCA, rank genes with robust dispersion, Winsorize/log1p.
+- Scaling/units: standardize features; use variance-stabilizing transforms (log1p, VST).
+<!--
+- Compositional data: CLR/ALR transforms; use compositional-aware methods before PCA.
+- p >> n: feature selection (highly variable genes), shrinkage covariance, cross-validation for PC selection.
+-->
+
 
 ### **Non-linear data**
-
 
 - **Non-linearity**: Data that lies on curved surfaces or when data has non-linear relationships.
 - **Single-cell data**: Biological data where cell types form non-linear clusters in high-dimensional space
@@ -23,6 +69,9 @@ title: When PCA or tSNE might not work
 ### **Categorical Features**
 - PCA may work poorly with categorical data unless properly encoded
 - One-hot encoding categorical features can create sparse, high-dimensional data where PCA may not capture meaningful structure
+
+
+TODO: time series data 
 
 <!-- TODO: CCA comment by Hugo -->
 
@@ -60,7 +109,267 @@ You just need to try a bunch of different techniques.
 
 
 
-### Demonstrating how PCA or tSNE may not work well
+### Demonstrating how PCA may not work well on the Swiss roll data
+
+* The `Swiss roll` dataset
+
+A 2D curve embedded in 3D that looks like a rolled sheet. You can play around with the plot below! 
+<!--; distances along the roll are nonlinear, so linear projections (like PCA) flatten and mix points that are far along the spiral but close in Euclidean space.-->
+
+```{python ch4-swissroll}
+#| warning: false
+#| echo: false
+
+from sklearn.datasets import make_swiss_roll
+import plotly.graph_objects as go
+
+X, t = make_swiss_roll(n_samples=2000, noise=0.05, random_state=42)
+
+fig = go.Figure(go.Scatter3d(
+    x=X[:,0], y=X[:,1], z=X[:,2],
+    mode="markers",
+    marker=dict(size=3, color=t, colorscale="Turbo", showscale=False, opacity=0.85)
+))
+fig.update_layout(scene=dict(aspectmode="data"))
+fig
+```
+
+* Performing PCA on the Swiss roll dataset
+
+```{python ch4-pca-notw-ro-swiss-roll}
+#| warning: false
+#| echo: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+from sklearn.datasets import make_swiss_roll, make_circles
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+
+def generate_swiss_roll(n_samples: int = 1500, noise: float = 0.05, random_state: int = 42):
+    X, t = make_swiss_roll(n_samples=n_samples, noise=noise, random_state=random_state)
+    # Only keep X, Y, Z
+    return X, t
+
+
+def generate_concentric_circles(n_samples: int = 1000, noise: float = 0.06, factor: float = 0.5, random_state: int = 42):
+    X, y = make_circles(n_samples=n_samples, noise=noise, factor=factor, random_state=random_state)
+    return X, y
+
+
+def apply_pca(X: np.ndarray, n_components: int = 2, scale: bool = True):
+    if scale:
+        X_proc = StandardScaler().fit_transform(X)
+    else:
+        X_proc = X
+    pca = PCA(n_components=n_components, random_state=0)
+    X_pca = pca.fit_transform(X_proc)
+    return X_pca, pca
+
+
+def plot_swiss_roll(X3d: np.ndarray, color: np.ndarray, Xpca: np.ndarray, out_prefix: str = "swiss_roll"):
+    # Figure 1: 3D Swiss roll
+    fig1 = plt.figure(figsize=(6, 5))
+    ax1 = fig1.add_subplot(1, 1, 1, projection="3d")
+    sc1 = ax1.scatter(X3d[:, 0], X3d[:, 1], X3d[:, 2], c=color, cmap="Spectral", s=5)
+    ax1.set_title("Swiss roll (3D)")
+    ax1.set_xlabel("X")
+    ax1.set_ylabel("Y")
+    ax1.set_zlabel("Z")
+    cbar1 = fig1.colorbar(sc1, ax=ax1, fraction=0.046, pad=0.04)
+    cbar1.set_label("Intrinsic parameter t")
+    fig1.tight_layout()
+    fig1.savefig(f"{out_prefix}_3d.png", dpi=200)
+    plt.show()
+    #plt.close(fig1)
+
+    # Figure 2: 2D PCA projection
+    fig2, ax2 = plt.subplots(1, 1, figsize=(6, 5))
+    sc2 = ax2.scatter(Xpca[:, 0], Xpca[:, 1], c=color, cmap="Spectral", s=5)
+    ax2.set_title("PCA projection (2D): flattens and mixes trajectory")
+    ax2.set_xlabel("PC1")
+    ax2.set_ylabel("PC2")
+    cbar2 = fig2.colorbar(sc2, ax=ax2, fraction=0.046, pad=0.04)
+    cbar2.set_label("Intrinsic parameter t")
+    fig2.tight_layout()
+    fig2.savefig(f"{out_prefix}_pca.png", dpi=200)
+    plt.show()
+    #plt.close(fig2)
+
+
+def plot_circles(X2d: np.ndarray, y: np.ndarray, Xpca: np.ndarray, out_prefix: str = "circles"):
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+    cmap = ListedColormap(["#1f77b4", "#ff7f0e"])  # blue, orange
+    axes[0].scatter(X2d[:, 0], X2d[:, 1], c=y, cmap=cmap, s=8)
+    axes[0].set_title("Concentric circles (nonlinear)")
+    axes[0].set_xlabel("x1")
+    axes[0].set_ylabel("x2")
+
+    axes[1].scatter(Xpca[:, 0], Xpca[:, 1], c=y, cmap=cmap, s=8)
+    axes[1].set_title("PCA projection: cannot separate rings linearly")
+    axes[1].set_xlabel("PC1")
+    axes[1].set_ylabel("PC2")
+
+    fig.tight_layout()
+    fig.savefig(f"{out_prefix}_pca.png", dpi=200)
+    plt.show()
+    #plt.close(fig)
+
+
+# Swiss roll example
+X3d, t = generate_swiss_roll(n_samples=1500, noise=0.05, random_state=42)
+Xpca_swiss, pca_swiss = apply_pca(X3d, n_components=2, scale=True)
+plot_swiss_roll(X3d, t, Xpca_swiss, out_prefix="swiss_roll")
+
+# Concentric circles example
+X2d, y = generate_concentric_circles(n_samples=1000, noise=0.06, factor=0.5, random_state=42)
+Xpca_circles, pca_circles = apply_pca(X2d, n_components=2, scale=True)
+plot_circles(X2d, y, Xpca_circles, out_prefix="circles")
+```
+
+* Performing tSNE on the Swiss roll dataset
+
+```{python ch4-tsne-swissroll}
+#| warning: false
+#| echo: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+from sklearn.datasets import make_swiss_roll, make_circles
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.manifold import TSNE
+
+
+def generate_swiss_roll(n_samples: int = 1500, noise: float = 0.05, random_state: int = 42):
+    X, t = make_swiss_roll(n_samples=n_samples, noise=noise, random_state=random_state)
+    # Only keep X, Y, Z
+    return X, t
+
+
+def generate_concentric_circles(n_samples: int = 1000, noise: float = 0.06, factor: float = 0.5, random_state: int = 42):
+    X, y = make_circles(n_samples=n_samples, noise=noise, factor=factor, random_state=random_state)
+    return X, y
+
+
+def apply_pca(X: np.ndarray, n_components: int = 2, scale: bool = True):
+    if scale:
+        X_proc = StandardScaler().fit_transform(X)
+    else:
+        X_proc = X
+    pca = PCA(n_components=n_components, random_state=0)
+    X_pca = pca.fit_transform(X_proc)
+    return X_pca, pca
+
+
+def apply_tsne(
+    X: np.ndarray,
+    n_components: int = 2,
+    perplexity: float = 30.0,
+    random_state: int = 42,
+    scale: bool = True,
+):
+    if scale:
+        X_proc = StandardScaler().fit_transform(X)
+    else:
+        X_proc = X
+    tsne = TSNE(
+        n_components=n_components,
+        perplexity=perplexity,
+        random_state=random_state,
+        init="pca",
+        learning_rate="auto",
+        verbose=0,
+    )
+    X_tsne = tsne.fit_transform(X_proc)
+    return X_tsne, tsne
+
+
+def plot_swiss_roll(X3d: np.ndarray, color: np.ndarray, Xpca: np.ndarray, out_prefix: str = "swiss_roll"):
+    # Figure 1: 3D Swiss roll
+    fig1 = plt.figure(figsize=(6, 5))
+    ax1 = fig1.add_subplot(1, 1, 1, projection="3d")
+    sc1 = ax1.scatter(X3d[:, 0], X3d[:, 1], X3d[:, 2], c=color, cmap="Spectral", s=5)
+    ax1.set_title("Swiss roll (3D)")
+    ax1.set_xlabel("X")
+    ax1.set_ylabel("Y")
+    ax1.set_zlabel("Z")
+    cbar1 = fig1.colorbar(sc1, ax=ax1, fraction=0.046, pad=0.04)
+    cbar1.set_label("Intrinsic parameter t")
+    fig1.tight_layout()
+    fig1.savefig(f"{out_prefix}_3d.png", dpi=200)
+    plt.show()
+    plt.close(fig1)
+
+    # Figure 2: 2D PCA projection
+    fig2, ax2 = plt.subplots(1, 1, figsize=(6, 5))
+    sc2 = ax2.scatter(Xpca[:, 0], Xpca[:, 1], c=color, cmap="Spectral", s=5)
+    ax2.set_title("PCA projection (2D): flattens and mixes trajectory")
+    ax2.set_xlabel("PC1")
+    ax2.set_ylabel("PC2")
+    cbar2 = fig2.colorbar(sc2, ax=ax2, fraction=0.046, pad=0.04)
+    cbar2.set_label("Intrinsic parameter t")
+    fig2.tight_layout()
+    fig2.savefig(f"{out_prefix}_pca.png", dpi=200)
+    plt.show()
+    plt.close(fig2)
+
+
+def plot_tsne_swiss(X_tsne: np.ndarray, color: np.ndarray, out_prefix: str = "swiss_roll_tsne"):
+    fig, ax = plt.subplots(1, 1, figsize=(6, 5))
+    sc = ax.scatter(X_tsne[:, 0], X_tsne[:, 1], s=5) # , c=color, cmap="Spectral"
+    ax.set_title("t-SNE (2D) of Swiss roll: preserves local neighbourhoods")
+    ax.set_xlabel("t-SNE 1")
+    ax.set_ylabel("t-SNE 2")
+    cbar = fig.colorbar(sc, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label("Intrinsic parameter t")
+    fig.tight_layout()
+    fig.savefig(f"{out_prefix}.png", dpi=200)
+    plt.show()
+    plt.close(fig)
+
+
+def plot_circles(X2d: np.ndarray, y: np.ndarray, Xpca: np.ndarray, out_prefix: str = "circles"):
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+    cmap = ListedColormap(["#1f77b4", "#ff7f0e"])  # blue, orange
+    axes[0].scatter(X2d[:, 0], X2d[:, 1], c=y, cmap=cmap, s=8)
+    axes[0].set_title("Concentric circles (nonlinear)")
+    axes[0].set_xlabel("x1")
+    axes[0].set_ylabel("x2")
+
+    axes[1].scatter(Xpca[:, 0], Xpca[:, 1], c=y, cmap=cmap, s=8)
+    axes[1].set_title("PCA projection: cannot separate rings linearly")
+    axes[1].set_xlabel("PC1")
+    axes[1].set_ylabel("PC2")
+
+    fig.tight_layout()
+    fig.savefig(f"{out_prefix}_pca.png", dpi=200)
+    plt.show()
+    plt.close(fig)
+
+
+# Swiss roll example
+#X3d, t = generate_swiss_roll(n_samples=1500, noise=0.05, random_state=42)
+#Xpca_swiss, pca_swiss = apply_pca(X3d, n_components=2, scale=True)
+#plot_swiss_roll(X3d, t, Xpca_swiss, out_prefix="swiss_roll")
+
+# t-SNE on Swiss roll
+Xtsne_swiss, tsne_swiss = apply_tsne(X3d, n_components=2, perplexity=30.0, random_state=42, scale=True)
+plot_tsne_swiss(Xtsne_swiss, t, out_prefix="swiss_roll_tsne")
+
+# Concentric circles example
+#X2d, y = generate_concentric_circles(n_samples=1000, noise=0.06, factor=0.5, random_state=42)
+#Xpca_circles, pca_circles = apply_pca(X2d, n_components=2, scale=True)
+#plot_circles(X2d, y, Xpca_circles, out_prefix="circles")
+```
+
+
+### Demonstrating how PCA or tSNE may not work well on biological data
 
 * Generate synthetic biological expression data: matrix of 200 samples × 10 genes, where Gene_1 and Gene_2 follow a clustering (four corner clusters) and the remaining genes are just Gaussian noise. You can see from the scatter of Gene_1 vs Gene_2 that the true structure is non-linear and not aligned with any single variance direction: PCA (or tSNE) may fail to unfold these clusters into separate principal components.
 
