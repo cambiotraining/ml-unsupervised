@@ -219,13 +219,14 @@ plt.title('Hierarchical Clustering Dendrogram (Iris Data)')
 plt.xlabel('Sample Index')
 plt.ylabel('Distance')
 plt.show()
-
 ```
 
 ### Scale the data
 
 ```{python ch4-lab-scale-data}
 #| warning: false
+
+from sklearn.preprocessing import StandardScaler
 
 # Load data
 iris = load_iris()
@@ -240,6 +241,7 @@ X_scaled = scaler.fit_transform(X)
 ### Perform hierarchical clustering
 
 ```{python ch4-hclsut_lab_afterscale}
+#| warning: false
 
 # Fit Agglomerative Clustering
 agg = AgglomerativeClustering(n_clusters=3)#, linkage='ward')
@@ -260,6 +262,8 @@ plt.show()
 ```
 
 ## Exercise (changing the linkage function)
+
+* Work in a group for this exercise
 
 * Let us try another linkage function
 
@@ -318,6 +322,28 @@ plt.xlabel('Sample Index')
 plt.ylabel('Distance')
 plt.show()
 ```
+
+
+## Alternative code using `sns.clustermap`
+
+There are many ways we can perform hierarchical clustering. An alternative is to use `sns.clustermap` using the `seaborn` package. The interface is similar and the plots can look of very professional quality.
+
+```python
+# Basic clustermap with scaling
+sns.clustermap(df, standard_scale=0, cmap='RdBu_r', center=0)
+
+# Different linkage methods
+sns.clustermap(df, method='average', standard_scale=0)
+
+# Different distance metrics  
+sns.clustermap(df, metric='correlation', method='average')
+
+# Comprehensive example
+sns.clustermap(df, method='average', metric='correlation', 
+               standard_scale=0, cmap='RdBu_r', center=0)
+```
+
+<!-- TODO: show different plots using sns.clustermap see python scripts in scripts directory sns_clustermap*.py -->
 
 
 ## Practical on cancer data
