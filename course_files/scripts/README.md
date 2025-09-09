@@ -27,3 +27,5 @@ Scripts for generating data
 13. `tsne_statquest_inspired.py` is a Python script that demonstrates the use of t-SNE for dimensionality reduction on the digits dataset, inspired by StatQuest's explanation of t-SNE. It includes visualizations of the t-SNE optimization process and the effects of different perplexity values.
 
 14. `*statquest*.py` are files which explain tSNE and are inspired by the videos created by StatQuest. 
+
+15. `sns_clustermap*.py` are Python scripts that demonstrates the use of seaborn's clustermap function to visualize hierarchical clustering on a sample dataset.

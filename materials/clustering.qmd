@@ -235,7 +235,6 @@ X = iris.data
 # scale the data
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-
 ```
 
 ### Perform hierarchical clustering
@@ -260,6 +259,73 @@ plt.xlabel('Sample Index')
 plt.ylabel('Distance')
 plt.show()
 ```
+
+
+## Alternative code using `sns.clustermap`
+
+There are many ways we can perform hierarchical clustering. An alternative is to use `sns.clustermap` using the `seaborn` package. The interface is similar and it can produce professional quality plots.
+
+```python
+
+import seaborn as sns
+
+# Basic clustermap with scaling
+sns.clustermap(X, z_score=0, cmap='RdBu_r', center=0)
+
+# Different linkage methods
+sns.clustermap(X, method='average', standard_scale=0)
+
+# Different distance metrics  
+sns.clustermap(X, metric='correlation', method='average')
+
+# Comprehensive example
+sns.clustermap(X, z_score=0, method='average', metric='correlation', 
+               cmap='RdBu_r', center=0)
+```
+
+<!-- TODO: show different plots using sns.clustermap see python scripts in scripts directory sns_clustermap*.py -->
+
+
+**`z_score=0`** (Scaling Direction)
+- **What it does**: Standardizes (z-scores) the data before clustering
+- **Options**:
+  - `0`: Scale rows (genes) - each gene's expression is standardized across samples
+  - `1`: Scale columns (samples) - each sample's expression is standardized across genes
+  - `None`: No scaling (use raw data)
+- **Why use `0`**: For gene expression, you want to compare expression patterns, not absolute levels
+
+
+**`cmap='RdBu_r'`** (Color Map)
+- **What it does**: Defines the color scheme for the heatmap
+- **`'RdBu_r'`**: Red-Blue reversed (red = high, blue = low, white = middle)
+- **Other options**: `'viridis'`, `'coolwarm'`, `'seismic'`, `'plasma'`, etc.
+- **Why use it**: Intuitive for biologists (red = high expression, blue = low expression)
+
+**`center=0`** (Color Center)
+- **What it does**: Centers the color map at this value
+- **`0`**: White color represents zero (after scaling, this is the mean)
+- **Other values**: Could center at 1 (for fold-change), or other biologically meaningful values
+- **Why use it**: Makes it easy to see above/below average expression
+
+**Additional Common Parameters**
+
+<!--#### **`figsize=(width, height)`**
+- **What it does**: Controls the size of the plot
+- **Example**: `figsize=(12, 8)` for a 12×8 inch plot-->
+
+#### **`row_cluster=True/False`**
+- **What it does**: Whether to cluster rows (genes)
+- **Default**: `True`
+
+#### **`col_cluster=True/False`**
+- **What it does**: Whether to cluster columns (samples)
+- **Default**: `True`
+
+#### **`cbar_kws`** (Color Bar Keywords)
+- **What it does**: Customize the color bar
+- **Example**: `cbar_kws={'label': 'Expression Level', 'shrink': 0.8}`
+
+
 
 ## Exercise (changing the linkage function)
 
@@ -324,26 +390,6 @@ plt.show()
 ```
 
 
-## Alternative code using `sns.clustermap`
-
-There are many ways we can perform hierarchical clustering. An alternative is to use `sns.clustermap` using the `seaborn` package. The interface is similar and the plots can look of very professional quality.
-
-```python
-# Basic clustermap with scaling
-sns.clustermap(df, standard_scale=0, cmap='RdBu_r', center=0)
-
-# Different linkage methods
-sns.clustermap(df, method='average', standard_scale=0)
-
-# Different distance metrics  
-sns.clustermap(df, metric='correlation', method='average')
-
-# Comprehensive example
-sns.clustermap(df, method='average', metric='correlation', 
-               standard_scale=0, cmap='RdBu_r', center=0)
-```
-
-<!-- TODO: show different plots using sns.clustermap see python scripts in scripts directory sns_clustermap*.py -->
 
 
 ## Practical on cancer data
@@ -395,12 +441,11 @@ labs = [label.strip('"') for label in labs]
 print(X[:5])
 print(X.shape)
 
-
 # Your code below ......
 
 ```
 
-* Write your code and work in pairs
+* Write your code while working in pairs or a group
 
 ::: {.callout-note collapse="true"}
 ## Click to expand
@@ -426,6 +471,7 @@ plt.show()
 ```
 :::
 <!-- end callout -->
+
 
 
 ### Exercise: try another linkage method and another distance metric
@@ -614,7 +660,7 @@ You will get a curve that starts high at _k_ = 1 and steadily goes down as _k_ i
 - At first, adding clusters dramatically reduces WCSS, because you are splitting large, heterogeneous clusters into more homogeneous groups.  
 - After some point, adding more clusters yields **diminishing returns**—each new cluster only slightly reduces WCSS.  
 
-The **elbow point** is the value of _k_ at which the decrease in WCSS “bends” most sharply—like an elbow in your arm. It balances model complexity (more clusters) against improved fit (lower WCSS).
+The **elbow point** is the value of _k_ at which the decrease in WCSS "bends" most sharply: like an elbow in your arm. It balances model complexity (more clusters) against improved fit (lower WCSS).
 
 ![An elbow point](images/elbow_point_clustering.png)
 
@@ -646,7 +692,6 @@ plt.figure()
 plt.scatter(X[:,0], X[:,1], c=kmeans.labels_)
 plt.title("K-means on Iris data")
 plt.show()
-
 ```
 
 ### Exercise (Evaluate k-means clusters using the within-cluster similarity)
@@ -688,7 +733,6 @@ plt.xlabel('Number of clusters')
 plt.ylabel('Within-Cluster Sum of Squares (WCSS)')
 plt.title('Elbow Method For Optimal')
 plt.show()
-
 ```
 
 ## Choosing Between Methods
@@ -732,6 +776,13 @@ plt.show()
 
 
 - **Key Code Patterns:**
+
+```python
+import seaborn as sns
+
+sns.clustermap(X, method='average', metric='correlation', 
+cmap='RdBu_r', center=0)
+```
 
 ```python
 # Basic hierarchical clustering
