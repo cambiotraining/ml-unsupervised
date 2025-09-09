@@ -17,4 +17,6 @@ book:
         - materials/applications.qmd
     - part: "Bonus Material"
       chapters:
+        - materials/umap.qmd
         - materials/bonus_material.qmd
+        
