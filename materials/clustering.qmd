@@ -530,11 +530,11 @@ def introduce_missing_data_patterns(complete_data, true_labels):
     print(f"\nMissing data summary:")
     print(f"Total missing values: {total_missing}")
     print(f"Missing percentage: {missing_percentage:.1f}%")
-    print(f"MCAR: {missing_info['MCAR']} values")
-    print(f"MAR: {missing_info['MAR']} values") 
-    print(f"MNAR samples: {missing_info['MNAR_samples']} samples")
-    print(f"MNAR genes: {missing_info['MNAR_genes']} genes")
-    print(f"Block missing: {missing_info['Block']} values")
+    #print(f"MCAR: {missing_info['MCAR']} values")
+    #print(f"MAR: {missing_info['MAR']} values") 
+    #print(f"MNAR samples: {missing_info['MNAR_samples']} samples")
+    #print(f"MNAR genes: {missing_info['MNAR_genes']} genes")
+    #print(f"Block missing: {missing_info['Block']} values")
     
     return missing_data, missing_info
 
@@ -589,7 +589,7 @@ complete_data, true_labels = create_synthetic_biological_data()
 missing_data, missing_info = introduce_missing_data_patterns(complete_data, true_labels)
     
 # Visualize missing patterns
-visualize_missing_patterns(complete_data, missing_data, true_labels)
+#visualize_missing_patterns(complete_data, missing_data, true_labels)
 
 # All the missing data is available in the variable missing_data
 # fill in your code here ...
