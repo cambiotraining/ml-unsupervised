@@ -791,6 +791,17 @@ create_static_optimization_frames()
 # anim = create_optimization_animation(save_gif=True)
 ```
 
+
+* An animation of how tSNE works
+
+<!--
+generated using 
+create_optimization_animation(save_gif=True)
+-->
+
+![Animation of how tSNE works](images/tsne_optimization_animation.gif)
+
+
 ## Using a t-distribution over points
 
 - **Problem in 2D**: When we compress high‑dimensional data into 2D, many points that were moderately far apart get squashed together. With a Gaussian in 2D, those "far" points all look similarly unlikely, which causes **crowding** in the center.

@@ -603,7 +603,7 @@ missing_data, missing_info = introduce_missing_data_patterns(complete_data, true
 Solutions: in scripts/missing_data_solutions.py 
 -->
 
-## Exercise on cancer data
+## (Optional) Exercise on cancer data
 
 * You have been given some data on cancer cell lines
 
