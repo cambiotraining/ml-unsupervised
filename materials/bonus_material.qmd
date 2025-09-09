@@ -1,5 +1,5 @@
 ---
-title: Bonus Material
+title: Mathematical Basics and Additional Material
 ---
 
 ::: {.callout-tip}

@@ -314,7 +314,7 @@ df_iris = pd.DataFrame({
     "species": [labels_iris[i] for i in y_iris]
 })
 
-plt.figure(figsize=(7,5))
+plt.figure()
 sns.scatterplot(data=df_iris, x="UMAP1", y="UMAP2", hue="species", s=60)
 plt.title("UMAP on Iris dataset (toy example)")
 plt.legend(loc="best")
