@@ -1272,7 +1272,7 @@ best_practices = """
 • Run multiple times with different random seeds
 • Try different perplexity values
 • Validate clusters with known markers
-• Use complementary methods (UMAP, PCA)
+• Use complementary methods (UMAP, PCA). For UMAP, see bonus material section.
 • Check for batch effects
 
 ⚠️ COMMON MISTAKES:

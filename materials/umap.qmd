@@ -6,20 +6,21 @@ title: UMAP (Optional)
 #### Learning Objectives
 
 - Brief introduction to UMAP
+- Code to perform UMAP on data
 :::
 
 
 
-# UMAP Intuition: A Simple Guide
+# UMAP Intuition
 
 ## What is UMAP?
 
-UMAP (Uniform Manifold Approximation and Projection) is a powerful tool that helps visualize high-dimensional data in 2D or 3D. Think of it as a "smart cartographer" that creates a map of your complex biological data, revealing hidden patterns and relationships.
+_UMAP_ (Uniform Manifold Approximation and Projection) is another powerful unsupervised machine learning technique that helps visualize high-dimensional data in 2D or 3D. Think of it as a "smart cartographer" that creates a map of your complex data, revealing hidden patterns.
 
 ## The Core Idea: Preserve Both Local and Global Structure
 
-### The Problem We're Solving
-- You have cells with 20,000+ gene measurements
+### The Problem We are Solving
+- Say you have cells with 20,000+ gene measurements
 - You want to see which cells are similar to each other
 - You want to understand both local neighborhoods AND global structure
 - But 20,000 dimensions are impossible to visualize!
@@ -58,7 +59,7 @@ UMAP creates a 2D layout where:
 ### What is a Manifold?
 Think of a manifold like the surface of a balloon:
 - From far away, it looks like a simple sphere
-- Up close, you can see it's actually a 2D surface curved in 3D space
+- Up close, you can see it is actually a 2D surface curved in 3D space
 - Your high-dimensional biological data might be "curved" in ways we can't see
 
 ### Why "Uniform"?
@@ -70,17 +71,11 @@ UMAP assumes your data is spread "uniformly" across this curved surface:
 ## UMAP vs t-SNE: Key Differences
 
 ### What UMAP Does Better
-1. **Preserves Global Structure**: 
+
+**Preserves Global Structure**: 
    - t-SNE: Focuses mainly on local neighborhoods
    - UMAP: Maintains both local AND global relationships
 
-2. **Faster Computation**:
-   - t-SNE: Can be slow for large datasets
-   - UMAP: Much faster, especially for big data
-
-3. **Better for New Data**:
-   - t-SNE: Hard to add new points to existing plot
-   - UMAP: Can more easily project new data onto existing map
 
 <!--
 ### Visual Comparison
@@ -185,6 +180,7 @@ This suggests: Major cell types (○, ●, △) with subtypes within each
 
 -->
 
+<!--
 ## When to Use UMAP
 
 ### Excellent for:
@@ -204,6 +200,9 @@ This suggests: Major cell types (○, ●, △) with subtypes within each
 - **Very small datasets**: "I only have 50 cells"
 - **Highly noisy data**: "My data is very messy"
 
+-->
+
+
 ## UMAP vs Other Methods
 
 ### UMAP vs PCA
@@ -214,11 +213,13 @@ This suggests: Major cell types (○, ●, △) with subtypes within each
 - **t-SNE**: Great for local structure, slower, harder to interpret distances
 - **UMAP**: Good for both local and global structure, faster, more interpretable
 
+<!--
 ### UMAP vs UMAP (Different Parameters)
 - **Low n_neighbors**: More local detail, more clusters
 - **High n_neighbors**: More global view, fewer clusters
 - **Low min_dist**: Tighter clusters, harder to see individual points
 - **High min_dist**: Looser clusters, easier to see individual points
+-->
 
 ## Practical Tips
 
@@ -258,6 +259,7 @@ The key insight: **UMAP preserves both local and global structure** - cells that
 
 This makes UMAP perfect for biologists who want to understand the complete structure of their complex, high-dimensional data - from individual cell relationships to overall tissue organization!
 
+<!--
 ## Next Steps
 
 1. **Try the simple UMAP code** with your own data
@@ -265,11 +267,14 @@ This makes UMAP perfect for biologists who want to understand the complete struc
 3. **Compare UMAP with t-SNE** on the same dataset
 4. **Validate results** with known biological markers
 5. **Use UMAP for hypothesis generation** and further experiments
+-->
 
-Remember: UMAP is a tool for exploration and visualization, not a replacement for careful biological analysis!
+_Remember_: UMAP is a tool for exploration and visualization, not a replacement for careful analysis!
 
 
 ## Hands-on with UMAP
+
+The way to use _UMAP_ is similar to how we did tSNE.
 
 ```{python ch-umap-install}
 #| warning: false
@@ -291,15 +296,12 @@ import seaborn as sns
 
 sns.set(style="whitegrid")  # nice simple plots
 
-# -----------------------
-# Example 1: Iris (simple, labelled)
-# -----------------------
 iris = datasets.load_iris()
 X_iris = iris.data           # 150 samples, 4 features (sepal/petal lengths/widths)
 y_iris = iris.target         # species labels (0,1,2)
 labels_iris = iris.target_names
 
-# Standardize features (very important for many dimension-reduction methods)
+# Standardize features 
 scaler = StandardScaler()
 X_iris_scaled = scaler.fit_transform(X_iris)
 
@@ -316,31 +318,34 @@ df_iris = pd.DataFrame({
 
 plt.figure()
 sns.scatterplot(data=df_iris, x="UMAP1", y="UMAP2", hue="species", s=60)
-plt.title("UMAP on Iris dataset (toy example)")
+plt.title("UMAP on Iris data")
 plt.legend(loc="best")
-plt.tight_layout()
 plt.show()
-
-# -----------------------
-# Tips & short explanations
-# -----------------------
-print("""
-Quick tips:
-- n_neighbors (default ~15): how many neighbors UMAP uses to learn local structure.
-  Smaller => captures very local structure (more fragmentation), larger => more global structure.
-- min_dist (default ~0.1): how tightly points are packed in the low-dimensional space.
-  Smaller => tighter clusters; larger => more spread out.
-- Always standardize or log-transform expression data before UMAP (depending on data type).
-- Try different random_state values or parameters to see what changes.
-
-Suggested exercises for learners:
-1. Change n_neighbors to 5 and then to 50 and observe how the plot changes.
-2. Change min_dist to 0.01 and 0.8 and observe clustering differences.
-3. Replace synthetic data with a small real gene-expression matrix and try the pipeline:
-   counts -> log1p -> StandardScaler -> UMAP.
-""")
 ```
 
+
+* Quick tips:
+
+- `n_neighbors` (default ~15): how many neighbors UMAP uses to learn local structure.
+
+  Smaller => captures very local structure (more fragmentation), larger => more global structure.
+
+- `min_dist` (default ~0.1): how tightly points are packed in the low-dimensional space.
+  Smaller => tighter clusters; larger => more spread out.
+
+- Always standardize or log-transform expression data before UMAP (depending on data type).
+
+- Try different random_state values or parameters to see what changes.
+
+
+* Exercises for learners:
+
+1. Change `n_neighbors` to 5 and then to 50 and observe how the plot changes.
+
+2. Change `min_dist` to 0.01 and 0.8 and observe clustering differences.
+
+3. Replace synthetic data with a small real gene-expression matrix and try the pipeline:
+   counts -> log1p -> StandardScaler -> UMAP.
 
 ```{python ch-umap-complexcode}
 #| warning: false
