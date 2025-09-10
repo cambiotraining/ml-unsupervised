@@ -29,7 +29,7 @@ open "/Applications/Python 3.10/Install Certificates.command"
 #| warning: false
 #| output: false
 
-!pip install pandas numpy scikit-learn seaborn matplotlib
+!pip install pandas numpy scikit-learn seaborn matplotlib scanpy pca
 ```
 
 * Loading data and data visualization
