@@ -67,14 +67,6 @@ github_url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/m
 # Read CSV file directly from GitHub
 diabetes_data = pd.read_csv(github_url)
 
-# ALTERNATIVE WAY TO READ FILE
-# find out which directory is your current working directory
-# os.getcwd()
-# now change directory to where your files are (my files are in the directory shown below)
-# os.chdir("'/Users/soumyabanerjee/soumya_cam_mac/teaching/ml-unsupervised/materials'") 
-# now read the file
-# diabates_data = pd.read_csv("course_files/scripts/diabetes_sample_data.csv")
-
 # Display basic information about the data
 print("\nData shape:", diabetes_data.shape)
 print("\nFirst 5 rows:")
