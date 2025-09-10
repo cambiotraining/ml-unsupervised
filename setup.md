@@ -218,12 +218,14 @@ python3 -m venv .venv
 pip install numpy pandas scikit-learn seaborn matplotlib scanpy pca
 ```
 
+<!--
 or
 
 ```python
 pip install -r requirements.txt
 ```
 
+-->
 
 
 ### Visual Studio Code

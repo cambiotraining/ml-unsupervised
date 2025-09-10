@@ -991,8 +991,7 @@ plt.show()
 ```python
 import seaborn as sns
 
-sns.clustermap(X, method='average', metric='correlation', 
-cmap='RdBu_r', center=0)
+sns.clustermap(X, method='average', metric='correlation', center=0)
 ```
 
 ```python
