@@ -34,6 +34,20 @@ open "/Applications/Python 3.10/Install Certificates.command"
 
 * Loading data and data visualization
 
+_Note_: Here is an alternative way to read a file
+
+```python
+import pandas as pd
+import os
+# find out which directory is your current working directory
+os.getcwd()
+# now change directory to where your files are (my files are in the directory shown below)
+os.chdir("/Users/soumyabanerjee/soumya_cam_mac/teaching/ml-unsupervised/") 
+# now read the file
+diabates_data = pd.read_csv("course_files/data/diabetes_sample_data.csv")
+```
+
+
 ```{python ch2-python-refresher}
 #| warning: false
 
@@ -89,16 +103,6 @@ print("Here is the mean/average:")
 print( np.mean(a) )
 ```
 
-* _Note_: Here is an alternative way to read a file
-
-```python
-# find out which directory is your current working directory
-os.getcwd()
-# now change directory to where your files are (my files are in the directory shown below)
-os.chdir("'/Users/soumyabanerjee/soumya_cam_mac/teaching/ml-unsupervised/materials'") 
-# now read the file
-diabates_data = pd.read_csv("course_files/scripts/diabetes_sample_data.csv")
-```
 
 * You can also go through this [Introduction to Visualization in Python course](https://kavihshah.github.io/Intro-to-Python/materials/13-data-visualisation-with-matplotlib-and-seaborn.html)
 

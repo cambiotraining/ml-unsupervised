@@ -188,7 +188,7 @@ git clone https://github.com/cambiotraining/ml-unsupervised
 * Navigate to the folder
 
 ```bash
-cd ml-unsupervised
+cd ml-unsupervised/course_files/data
 ```
 
 
