@@ -4,10 +4,12 @@ date: today
 number-sections: false
 ---
 
+<!--
 ::: {.callout-warning}
 This course is under construction. None of the information should be used
 until this message has been removed.
 :::
+-->
 
 ## Overview 
 
