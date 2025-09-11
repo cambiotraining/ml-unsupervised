@@ -81,6 +81,18 @@ or
 **Repository link:**  
 [https://cambiotraining.github.io/ml-unsupervised/](https://cambiotraining.github.io/ml-unsupervised/)
 
+In order to access the files on your computer, you can upload them to your Google Drive and mount the drive in Colab:
+
+```python
+from google.colab import drive
+import os
+
+drive.mount('/content/drive')
+os.chdir('/content/drive/My Drive/ml-unsupervised/course_files/data')
+```
+
+
+
 <!--
 ### Quarto
 

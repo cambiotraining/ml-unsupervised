@@ -617,6 +617,8 @@ Solutions: in scripts/missing_data_solutions.py
 
 <!-- TODO: find out what are labels -->
 
+<!-- TODO: silhouette plots -->
+
 ```{python ch4-exercise-cancer-starter-code}
 #| warning: false
 
