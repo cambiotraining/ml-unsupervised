@@ -615,28 +615,25 @@ Solutions: in scripts/missing_data_solutions.py
 
 * The data is in the variable named `X`
 
+<!-- TODO: find out what are labels -->
+
 ```{python ch4-exercise-cancer-starter-code}
 #| warning: false
 
 import numpy as np
+import pandas as pd
+import os
 import requests
-import io
 from sklearn.cluster import AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram, linkage
 import matplotlib.pyplot as plt
 
-# URLs for the raw data and labels from GitHub repository
-data_url = 'https://raw.githubusercontent.com/neelsoumya/python_machine_learning/main/data/NCI60data.npy'
-labs_url = 'https://raw.githubusercontent.com/neelsoumya/python_machine_learning/main/data/NCI60labs.csv'
+# Load data
+X = pd.read_csv("https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/refs/heads/main/course_files/data/cancer_data_saved_NC160.csv", index_col=0)
 
-# Load Data from GitHub
-response = requests.get(data_url)
-response.raise_for_status()
-X = np.load(io.BytesIO(response.content))
-print("NCI60 data loaded successfully from GitHub.")
 
-# Load Labels from GitHub
 print("Fetching labels from GitHub...")
+labs_url = 'https://raw.githubusercontent.com/neelsoumya/python_machine_learning/main/data/NCI60labs.csv'
 response = requests.get(labs_url)
 response.raise_for_status()
 # Read the raw text and split into lines.
@@ -648,12 +645,7 @@ labs = all_lines[1:]
 # The labels in the file are quoted (e.g., "CNS"), so we remove the quotes.
 labs = [label.strip('"') for label in labs]
 
-# The data is in the variable named X
-print(X[:5])
-print(X.shape)
-
 # Your code below ......
-
 ```
 
 * Write your code while working in pairs or a group
@@ -766,14 +758,55 @@ print(ari)
 print("Compares to true labels. Score is from -1 to 1. Higher is better")
 ```
 
+* Compare to literature and what others have done
+
+<!--
 * Plain old visual evaluation
 
  - compare to labels of what these cell lines are
  
 # TODO: XX what do these labels mean?
+-->
 
 ```{python ch4-labs-visual-evaluation}
 #| warning: false
+#| echo: false
+#| output: false
+
+import numpy as np
+import requests
+import io
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+import matplotlib.pyplot as plt
+
+# URLs for the raw data and labels from GitHub repository
+data_url = 'https://raw.githubusercontent.com/neelsoumya/python_machine_learning/main/data/NCI60data.npy'
+labs_url = 'https://raw.githubusercontent.com/neelsoumya/python_machine_learning/main/data/NCI60labs.csv'
+
+# Load Data from GitHub
+response = requests.get(data_url)
+response.raise_for_status()
+X = np.load(io.BytesIO(response.content))
+print("NCI60 data loaded successfully from GitHub.")
+
+# Load Labels from GitHub
+print("Fetching labels from GitHub...")
+response = requests.get(labs_url)
+response.raise_for_status()
+# Read the raw text and split into lines.
+all_lines = response.text.strip().splitlines()
+
+# Skip the first line (the header) to match the data dimensions.
+labs = all_lines[1:]
+
+# The labels in the file are quoted (e.g., "CNS"), so we remove the quotes.
+labs = [label.strip('"') for label in labs]
+
+# The data is in the variable named X
+print(X[:5])
+print(X.shape)
+
 
 dendrogram(Z, labels=labs)
 

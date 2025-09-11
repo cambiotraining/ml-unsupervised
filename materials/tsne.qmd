@@ -1512,6 +1512,10 @@ plt.show()
 ```
 
 
+## Other algorithms
+
+We have given a brief overview of some unsupervised machine learning techniques. There are many others. For example, you can also read about [UMAP](https://cambiotraining.github.io/ml-unsupervised/materials/umap.html)
+
 <!-- TODO: UMAP
 
 but it might be good if the course went a little further than what’s typically found in most introductory resources. Some additional methods worth at least mentioning are:
