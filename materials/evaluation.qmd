@@ -1,0 +1,246 @@
+---
+title: Evaluation for unsupervised machine learning
+---
+
+::: {.callout-tip}
+#### Learning Objectives
+
+- Bulleted list of learning objectives
+:::
+
+
+## Section
+
+
+---
+
+# Learning goals
+
+* Know the difference between **internal**, **external**, and **biological** evaluation.
+* Be able to compute and interpret common metrics (silhouette, Calinski–Harabasz, Davies–Bouldin, ARI, NMI, explained variance).
+* Learn practical diagnostics: elbow/gap, silhouette plot, stability/resampling, marker-gene enrichment, and visualization checks (UMAP/t-SNE).
+* Be able to choose metrics depending on whether you have ground truth, partial labels, or purely exploratory goals.
+* Communicate results in biologically meaningful ways (marker genes, composition, reproducibility).
+
+---
+
+# Conceptual framing (short)
+
+* **Internal metrics**: use only the data + clustering labels. Measure compactness vs separation (e.g., silhouette).
+* **External metrics**: require ground truth/labels (experimental groups, annotated cell types). Use ARI, NMI, precision/recall on pairwise same/different labels.
+* **Biological validation**: compare clusters to known marker genes, pathways, experimental metadata (batch, donor), or enrichment tests. Often the most important for biologists.
+
+---
+
+# Quick metrics cheat-sheet (what they tell you)
+
+* **Explained variance (PCA)** — fraction of variance captured by components (useful for dimensionality reduction decisions).
+* **Silhouette score** (−1..1) — how well each sample fits its cluster vs nearest other cluster; good general-purpose internal metric.
+* **Calinski–Harabasz** — ratio of between/within dispersion (higher = better).
+* **Davies–Bouldin** (lower = better) — average similarity between each cluster and its most similar one.
+* **Adjusted Rand Index (ARI)** — similarity between two labelings corrected for chance (commonly 0..1).
+* **Normalized Mutual Information (NMI)** — information overlap between labelings (0..1).
+* **Trustworthiness** (for embeddings like UMAP/t-SNE) — how well local neighborhoods are preserved.
+* **Stability / reproducibility** — how consistent cluster assignments are under subsampling / parameter changes (e.g., ARI between runs).
+
+---
+
+# Practical code snippets (copy into a Jupyter notebook)
+
+Replace `X` with your feature matrix (cells × genes or PCA components), and `y_true` with any ground-truth labels you might have.
+
+```python
+# Required packages
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.metrics import (
+    silhouette_score,
+    calinski_harabasz_score,
+    davies_bouldin_score,
+    adjusted_rand_score,
+    normalized_mutual_info_score
+)
+from sklearn.manifold import trustworthiness
+from sklearn.model_selection import train_test_split
+
+# 1) PCA explained variance (dimensionality reduction check)
+pca = PCA(n_components=20).fit(X)
+print("Explained variance ratio (first 10):", pca.explained_variance_ratio_[:10])
+print("Cumulative:", np.cumsum(pca.explained_variance_ratio_)[:10])
+
+# 2) Run simple clustering and internal metrics
+k = 6
+km = KMeans(n_clusters=k, random_state=0).fit(X)
+labels = km.labels_
+print("Silhouette:", silhouette_score(X, labels))
+print("Calinski-Harabasz:", calinski_harabasz_score(X, labels))
+print("Davies-Bouldin:", davies_bouldin_score(X, labels))
+
+# 3) If you have ground-truth labels (y_true)
+# print("ARI:", adjusted_rand_score(y_true, labels))
+# print("NMI:", normalized_mutual_info_score(y_true, labels))
+
+# 4) Trustworthiness for an embedding (e.g., embedding = UMAP_result)
+# trust = trustworthiness(X, embedding, n_neighbors=15)
+# print("Trustworthiness of embedding:", trust)
+
+# 5) Stability via subsampling
+def stability_score(clustering_fn, X, n_runs=10, sample_frac=0.8):
+    from sklearn.metrics import adjusted_rand_score
+    labels_list = []
+    rng = np.random.RandomState(0)
+    for i in range(n_runs):
+        idx = rng.choice(np.arange(X.shape[0]), size=int(sample_frac*X.shape[0]), replace=False)
+        labels_sub = clustering_fn(X[idx])
+        labels_list.append((idx, labels_sub))
+    # compute mean ARI between overlapping samples
+    aris = []
+    for i in range(len(labels_list)):
+        for j in range(i+1, len(labels_list)):
+            idx_i, lab_i = labels_list[i]
+            idx_j, lab_j = labels_list[j]
+            common = np.intersect1d(idx_i, idx_j)
+            if len(common) < 10:
+                continue
+            map_i = {v: k for k, v in enumerate(idx_i)}
+            map_j = {v: k for k, v in enumerate(idx_j)}
+            lab_i_common = [lab_i[map_i[c]] for c in common]
+            lab_j_common = [lab_j[map_j[c]] for c in common]
+            aris.append(adjusted_rand_score(lab_i_common, lab_j_common))
+    return np.mean(aris)
+
+# Example clustering function for kmeans on raw X
+clustering_fn = lambda Xsub: KMeans(n_clusters=k, random_state=0).fit(Xsub).labels_
+# print("Stability (mean ARI):", stability_score(clustering_fn, X, n_runs=6))
+```
+
+---
+
+# Visual diagnostics (what to show students)
+
+* **Silhouette plot**: for each cluster show silhouette widths; points near 1 are clean, negative means bad assignment.
+* **Elbow plot**: inertia/within-cluster sum of squares vs k (use with caution).
+* **UMAP/t-SNE** colored by cluster and colored by known biological metadata (donor, batch, cell cycle) — if clusters align with batch, that's a red flag.
+* **Heatmap** of marker genes (or top variable genes) with clusters as columns — helps biological interpretation.
+* **Violin/boxplots** of expression of canonical marker genes across clusters.
+* **Confusion matrix** comparing cluster labels vs known labels (if available).
+* **Stability heatmap** of ARI between parameter settings (k values, min\_samples for DBSCAN, perplexity for t-SNE).
+
+---
+
+# Biological validation techniques
+
+* Check expression of known **marker genes** per cluster — violin plots, fraction of cells expressing gene, median expression.
+* **Enrichment tests**: test if clusters are enriched for GO terms, pathways, or cell type marker sets.
+* Check **batch/donor composition** per cluster — if one donor dominates a cluster, suspect batch effect.
+* Use **pairwise marker identification** (differential expression between clusters) and then ask: does this match known biology?
+
+---
+
+# Hands-on classroom plan (90–120 minutes)
+
+1. **10 min** — Intuition + categories (internal / external / biological).
+2. **20 min** — Demo: run k-means on a tiny single-cell toy (PCA → kmeans), compute silhouette / CH / DB. Show silhouette plot and UMAP colored by clusters.
+3. **25 min** — Students exercise (paired): try k = 2..10, make elbow and silhouette; pick “best” k and justify biologically.
+4. **20 min** — Introduce external metrics (ARI/NMI). Give a partial ground truth (e.g., FACS labels) and compare clusterings. Interpret mismatch.
+5. **15 min** — Stability exercise: subsample and compute ARI between runs. Discuss parameter sensitivity (UMAP perplexity/embedding variance).
+6. **Final 10 min** — Discuss pitfalls & how to report results.
+
+---
+
+# Example mini-assignments (graded)
+
+1. **Compare 3 clustering algorithms** (k-means, hierarchical, DBSCAN) on a provided scRNA dataset: produce internal metric table, UMAPs, marker heatmap, and short writeup (max 500 words) interpreting differences and recommending one method.
+2. **Stability report**: for chosen clustering, show results of 10 subsamples, plot ARI distribution, and explain what it implies for reproducibility.
+3. **Biological validation**: pick 5 marker genes and show their distribution across clusters; perform enrichment test and conclude whether clusters are biologically meaningful.
+
+---
+
+# How to grade / rubric (suggested)
+
+* **40%** biological interpretability (marker genes, enrichment)
+* **30%** technical diagnostics (internal metrics, stability)
+* **20%** visualization & clarity (UMAPs, heatmaps, silhouette plot)
+* **10%** reproducibility (notebooks that run, parameter reporting)
+
+---
+
+# Common pitfalls to teach explicitly
+
+* Relying on a single metric (e.g., optimizing silhouette only) — always combine metrics + biology.
+* Over-interpreting t-SNE/UMAP global structure — these emphasize local neighborhoods; check trustworthiness.
+* Ignoring batch/donor effects — clusters that reflect batches are misleading.
+* Cherry-picking k or parameters to match prior beliefs — require pre-registered analysis choices or show sensitivity analyses.
+
+---
+
+# Quick “cheat-sheet” (one-paragraph version to hand out)
+
+* **No ground truth?** Use internal metrics (silhouette, CH, DB) + stability checks + marker gene verification.
+* **Have partial labels?** Use ARI/NMI to compare and treat labels as guides, not absolute truth.
+* **Embedding checks:** report PCA explained variance and trustworthiness for UMAP/t-SNE.
+* **Visualize:** always show embedding + gene heatmap + violin plots for markers.
+* **Reproducibility:** report parameters and run at least one sensitivity/subsampling analysis.
+
+---
+
+
+
+
+
+
+### Project using GapMinder data {#sec-gapminder}
+
+::::: {#ex-title .callout-exercise}
+
+#### exercise_title
+
+{{< level 3 >}}
+
+
+For this exercise we will be using the data from `data/surveys.csv`.
+
+ 
+:::: {.callout-answer collapse="true"}
+
+#### subheading in answer
+
+Description of answer.
+
+
+::: {.panel-tabset group="language"}
+
+## Python
+
+
+## R
+
+
+
+:::
+
+::::
+
+:::::
+
+ 
+
+::: {.callout-hint collapse=”true”}
+
+This is a hint
+
+:::
+
+
+
+
+
+
+## Summary
+
+::: {.callout-tip}
+#### Key Points
+
+- Last section of the page is a bulleted summary of the key points
+:::
