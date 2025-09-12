@@ -762,13 +762,11 @@ print("Compares to true labels. Score is from -1 to 1. Higher is better")
 
 * Compare to literature and what others have done
 
-<!--
 * Plain old visual evaluation
 
- - compare to labels of what these cell lines are
+ - compare to labels of what these cell lines are (assuming this is available)
  
-# TODO: XX what do these labels mean?
--->
+<!--TODO: XX what do these labels mean? -->
 
 ```{python ch4-labs-visual-evaluation}
 #| warning: false
@@ -900,7 +898,7 @@ clustering_fn = lambda Xsub: KMeans(n_clusters=k, random_state=0).fit(Xsub).labe
 
 A silhouette plot is a visual diagnostic for clustering quality that (1) computes a silhouette value for each sample and (2) shows the distribution of those values for every cluster. It helps you see which clusters are tight and well-separated and which contain ambiguous or poorly assigned samples.
 
-# TODO: simplify code below
+TODO: simplify code below
 
 ```{python ch-eval-silhouette-plots}
 #| warning: false
@@ -1189,7 +1187,7 @@ How to interpret (practical heuristics)
 
 * Silhouette plots for hierarchical clustering
 
-# TODO: simplify code below
+TODO: simplify code below
 
 ```{python ch-eval-silhouette-hclust}
 #| warning: false
