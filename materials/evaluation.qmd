@@ -8,15 +8,15 @@ title: Evaluation for unsupervised machine learning
 - How to evaluate unsupervised machine learning techniques
 - Silhouette plots
 - Know the difference between **internal**, **external**, and **biological** evaluation.
-- Be able to compute and interpret common metrics (silhouette, Calinski–Harabasz, Davies–Bouldin, ARI, NMI, explained variance).
-- Learn practical diagnostics: elbow/gap, silhouette plot, stability/resampling, marker-gene enrichment, and visualization checks (UMAP/t-SNE).
+- Be able to compute and interpret common metrics (silhouette,ARI).
+- Learn practical diagnostics: silhouette plot, .
 - Be able to choose metrics depending on whether you have ground truth, partial labels, or purely exploratory goals.
 - Communicate results in biologically meaningful ways (marker genes, composition, reproducibility).
 
 :::
 
 
-## Conceptual framing (short)
+## Conceptual framing
 
 * **Internal metrics**: use only the data + clustering labels. Measure compactness vs separation (e.g., silhouette).
 * **External metrics**: require ground truth/labels (experimental groups, annotated cell types). Use ARI, NMI, precision/recall on pairwise same/different labels.
@@ -24,7 +24,7 @@ title: Evaluation for unsupervised machine learning
 
 ---
 
-# Quick metrics cheat-sheet (what they tell you)
+## Quick metrics cheat-sheet (what they tell you)
 
 * **Explained variance (PCA)** — fraction of variance captured by components (useful for dimensionality reduction decisions).
 * **Silhouette score** (−1..1) — how well each sample fits its cluster vs nearest other cluster; good general-purpose internal metric.

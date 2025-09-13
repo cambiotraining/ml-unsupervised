@@ -822,7 +822,7 @@ dendrogram(Z)
  - **No "Correct" Answer** 
       - Unsupervised learning requires interpretation and domain knowledge
       - **Multiple Methods** - Try different linkage methods and distance metrics
-      - **Evaluation is Key** - Use both internal (silhouette) and external (ARI) metrics
+      - **Evaluation is Key** - Use both internal (silhouette) and external (ARI) metrics. See the next chapter for more on evaluation.
 
 
 :::
