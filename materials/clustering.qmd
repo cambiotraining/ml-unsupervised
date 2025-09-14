@@ -390,7 +390,7 @@ plt.show()
 ```
 
 
-## Exercise with missing data
+## Exercise with missing data {#sec-clustering-missing-data}
 
 Real-world data frequently has missing values. PCA and clustering techniques can struggle on missing data.
 
