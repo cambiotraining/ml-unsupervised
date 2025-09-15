@@ -439,9 +439,9 @@ plt.show()
 
 Real-world data frequently has missing values. PCA and clustering techniques can struggle on missing data.
 
-In this exercise, you will work in a group and apply hierarchical clustering and PCA and tSNE on data which has missing values.
+In this exercise, you will work in a group and apply hierarchical clustering, PCA and tSNE on data which has missing values.
 
-Run the code below. All the missing data is available in the variable `missing_data`.
+Run the code below. All the missing data will be available in the variable `missing_data`.
 
 
 ```{python ch3-exercise-missing-value}
