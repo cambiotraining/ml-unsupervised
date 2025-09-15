@@ -29,6 +29,14 @@ Download and unzip the folder to your Desktop to follow along with the materials
   <button class="btn"><i class="fa fa-download"></i> Download</button>
 </a>
 
+Alternatively you can use the link below to download the data from Google Drive:
+
+<!-- Note for Training Developers: add the link to 'href' -->
+<a href="https://drive.google.com/drive/folders/1c8fYDr7ab1jUx0FwOR4NZa9RfgzZN9OQ?usp=sharing">
+  <button class="btn"><i class="fa fa-download"></i> Download</button>
+</a>
+
+
 ## Software
 
 ### 📦 Installation Instructions (for Google Colab)

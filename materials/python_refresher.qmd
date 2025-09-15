@@ -21,7 +21,7 @@ try in the Terminal
 open "/Applications/Python 3.10/Install Certificates.command"
 -->
 
-* See Python setup instructions here @python-setup-instructions or [Python Installation](https://cambiotraining.github.io/ml-unsupervised/setup.html)
+* See Python setup instructions here: [Python Installation](https://cambiotraining.github.io/ml-unsupervised/setup.html)
 
 * Install Python packages
 
