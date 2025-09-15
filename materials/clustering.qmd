@@ -227,20 +227,62 @@ plt.show()
 #| warning: false
 
 from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_iris
+import pandas as pd
 
 # Load data
 iris = load_iris()
 X = iris.data
+
+# let us see what is in the data
+df_iris = load_iris(as_frame=True)
+print(df_iris.frame)
+#print(df_iris.frame.head())
 
 # scale the data
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 ```
 
+```{python ch3-hclust-alt-code}
+#| warning: false
+#| echo: false
+#| output: false
+#| eval: false
+
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# NO EVAL
+# scale data in data frame
+scaler = StandardScaler()
+df_iris_scaled = scaler.fit_transform(df_iris.frame)
+
+# then perform hierarchical clustering
+agg_df_iris = AgglomerativeClustering()
+labels_df_iris = agg_df_iris.fit_predict(df_iris_scaled)
+
+# compute linkage
+Z_df_iris = linkage(df_iris_scaled)
+
+# plot dendrogram
+plt.figure()
+dendrogram(Z_df_iris)
+
+sns.clustermap(df_iris_scaled)
+sns.clustermap(df_iris_scaled, z_score=0, center=0)
+```
+
 ### Perform hierarchical clustering
 
 ```{python ch4-hclsut_lab_afterscale}
 #| warning: false
+
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
 
 # Fit Agglomerative Clustering
 agg = AgglomerativeClustering(n_clusters=3)#, linkage='ward')
@@ -263,7 +305,7 @@ plt.show()
 
 ## Alternative code using `sns.clustermap`
 
-There are many ways we can perform hierarchical clustering. An alternative is to use `sns.clustermap` using the `seaborn` package. The interface is similar and it can produce professional quality plots.
+There are many ways we can perform hierarchical clustering. An alternative is to use `sns.clustermap` using the `seaborn` package (see [here](https://seaborn.pydata.org/generated/seaborn.clustermap.html)). The interface is similar and it can produce professional quality plots.
 
 ```python
 
@@ -281,6 +323,9 @@ sns.clustermap(X, metric='correlation', method='average')
 # Comprehensive example
 sns.clustermap(X, z_score=0, method='average', metric='correlation', 
                cmap='RdBu_r', center=0)
+
+# or if you prefer just the default options
+sns.clustermap(X, z_score=0, center=0)
 ```
 
 <!-- TODO: show different plots using sns.clustermap see python scripts in scripts directory sns_clustermap*.py -->
