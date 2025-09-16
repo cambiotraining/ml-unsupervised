@@ -236,7 +236,8 @@ X = iris.data
 
 # let us see what is in the data
 df_iris = load_iris(as_frame=True)
-print(df_iris.frame)
+data_frame_iris = df_iris.frame
+print(data_frame_iris)
 #print(df_iris.frame.head())
 
 # scale the data
@@ -258,7 +259,7 @@ import seaborn as sns
 # NO EVAL
 # scale data in data frame
 scaler = StandardScaler()
-df_iris_scaled = scaler.fit_transform(df_iris.frame)
+df_iris_scaled = scaler.fit_transform(data_frame_iris)
 
 # then perform hierarchical clustering
 agg_df_iris = AgglomerativeClustering()
@@ -272,7 +273,7 @@ plt.figure()
 dendrogram(Z_df_iris)
 
 sns.clustermap(df_iris_scaled)
-sns.clustermap(df_iris_scaled, z_score=0, center=0)
+sns.clustermap(data_frame_iris, z_score=0, center=0)
 ```
 
 ### Perform hierarchical clustering
@@ -312,17 +313,17 @@ There are many ways we can perform hierarchical clustering. An alternative is to
 import seaborn as sns
 
 # Basic clustermap with scaling
-sns.clustermap(X, z_score=0, cmap='RdBu_r', center=0)
+sns.clustermap(X, cmap='RdBu_r', z_score=0, center=0)
 
 # Different linkage methods
-sns.clustermap(X, method='average', standard_scale=0)
+sns.clustermap(X, method='average', z_score=0, center = 0)
 
 # Different distance metrics  
-sns.clustermap(X, metric='correlation', method='average')
+sns.clustermap(X, metric='correlation', method='average', z_score=0, center = 0)
 
 # Comprehensive example
-sns.clustermap(X, z_score=0, method='average', metric='correlation', 
-               cmap='RdBu_r', center=0)
+sns.clustermap(X, method='average', metric='correlation', 
+               cmap='RdBu_r', z_score=0, center=0)
 
 # or if you prefer just the default options
 sns.clustermap(X, z_score=0, center=0)
