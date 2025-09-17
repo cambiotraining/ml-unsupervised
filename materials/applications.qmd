@@ -5,12 +5,22 @@ title: Hands-on exercises (Applications of unsupervised machine learning)
 ::: {.callout-tip}
 #### Learning Objectives
 
-- Porjects and practical examples of data that you try unsupervised learning techniques on
+- Projects and practical examples of data that you try unsupervised learning techniques on
 - Learn how to evaluate the performance of unsupervised learning methods
 - Interpret and communicate the results of these models to each other
 :::
 <!-- end callout -->
 
+
+## Fun fact
+
+::: {.callout-tip}
+**Did you know?**: that unsupervised machine learning is the first step in building _large-language models (LLMs)_.
+
+[Watch this short video by 3blue1brown](https://www.youtube.com/watch?v=LPZh9BOjkQs)
+
+:::
+<!-- end callout -->
 
 
 ## Exercises
