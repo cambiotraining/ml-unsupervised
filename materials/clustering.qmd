@@ -245,37 +245,6 @@ scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 ```
 
-```{python ch3-hclust-alt-code}
-#| warning: false
-#| echo: false
-#| output: false
-#| eval: false
-
-from sklearn.cluster import AgglomerativeClustering
-from scipy.cluster.hierarchy import linkage, dendrogram
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-# NO EVAL
-# scale data in data frame
-scaler = StandardScaler()
-df_iris_scaled = scaler.fit_transform(data_frame_iris)
-
-# then perform hierarchical clustering
-agg_df_iris = AgglomerativeClustering()
-labels_df_iris = agg_df_iris.fit_predict(df_iris_scaled)
-
-# compute linkage
-Z_df_iris = linkage(df_iris_scaled)
-
-# plot dendrogram
-plt.figure()
-dendrogram(Z_df_iris)
-
-sns.clustermap(df_iris_scaled)
-sns.clustermap(data_frame_iris, z_score=0, center=0)
-```
-
 ### Perform hierarchical clustering
 
 ```{python ch4-hclsut_lab_afterscale}
@@ -371,6 +340,40 @@ sns.clustermap(X, z_score=0, center=0)
 - **What it does**: Customize the color bar
 - **Example**: `cbar_kws={'label': 'Expression Level', 'shrink': 0.8}`
 
+
+* Here is some code to use `sns.clustermap`
+
+
+```{python ch3-hclust-alt-code}
+#| warning: false
+
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
+# scale data in data frame
+scaler = StandardScaler()
+df_iris_scaled = scaler.fit_transform(data_frame_iris)
+
+sns.clustermap(df_iris_scaled)
+sns.clustermap(data_frame_iris, z_score=0, center=0)
+```
+
+<!--
+MORE CODE
+# then perform hierarchical clustering
+agg_df_iris = AgglomerativeClustering()
+labels_df_iris = agg_df_iris.fit_predict(df_iris_scaled)
+
+# compute linkage
+Z_df_iris = linkage(df_iris_scaled)
+
+# plot dendrogram
+plt.figure()
+dendrogram(Z_df_iris)
+-->
 
 
 ## Exercise (changing the linkage function)
