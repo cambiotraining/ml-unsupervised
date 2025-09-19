@@ -16,6 +16,8 @@ These materials are released under a [CC BY 4.0](LICENSE.md) license.
    python3 -m venv .venv
 ```
 
+* Activate environment
+
 ```bash
 source .venv/bin/activate
 ```
