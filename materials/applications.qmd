@@ -27,6 +27,9 @@ title: Hands-on exercises (Applications of unsupervised machine learning)
 
 * Break up into small groups and work on any one of the following small projects.
 
+* None of the projects require any knowledge of biology or any other field.
+
+
 ### Project using electronic healthcare records data {#sec-exr_title_EHR}
 
 ::::: {#ex-title-EHR .callout-exercise}

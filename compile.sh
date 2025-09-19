@@ -5,6 +5,9 @@
 
 echo "Compiling materials... \n"
 
+source .venv/bin/activate
+
+
 echo "Installing required Python packages... \n"
 # It installs the required Python packages and compiles the Quarto documents.
 pip install -r requirements.txt
