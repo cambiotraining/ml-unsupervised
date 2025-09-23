@@ -98,6 +98,9 @@ import os
 
 drive.mount('/content/drive')
 os.chdir('/content/drive/My Drive/ml-unsupervised/course_files/data')
+
+import pandas as pd
+pd.read_csv('diabetes_sample_data.csv')
 ```
 
 * If you have your files in a different directory, please change the path in the `os.chdir()` command above accordingly.
