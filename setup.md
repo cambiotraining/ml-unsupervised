@@ -102,7 +102,7 @@ os.chdir('/content/drive/My Drive/ml-unsupervised/course_files/data')
 
 * If you have your files in a different directory, please change the path in the `os.chdir()` command above accordingly.
 
-* If you have a local Python installation (see [@python-setup-instructions]), you can also run the notebooks and scripts there (see instructions below). This assumes that you have downloaded and unzipped the data folder to your computer (in a folder called `course_files`) and that you have installed the required packages (see [@python-setup-instructions]).
+* If you have a local Python installation (see @python-setup-instructions), you can also run the notebooks and scripts there (see instructions below). This assumes that you have downloaded and unzipped the data folder to your computer (in a folder called `course_files`) and that you have installed the required packages (see @python-setup-instructions).
 
 ```python
 import os
