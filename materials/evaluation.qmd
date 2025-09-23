@@ -724,12 +724,15 @@ How to interpret (practical heuristics)
 - Mean silhouette ≲ 0.25 → little structure; clustering may be unreliable. (These are rules of thumb — context and domain knowledge matter.)
 
 
+<!--
 * Silhouette plots for hierarchical clustering
 
-TODO: simplify code below
+-->
 
 ```{python ch-eval-silhouette-hclust}
 #| warning: false
+#| echo: false
+#| output: false
 
 import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster, dendrogram
