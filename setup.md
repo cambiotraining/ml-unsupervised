@@ -90,7 +90,7 @@ or
 [https://cambiotraining.github.io/ml-unsupervised/](https://cambiotraining.github.io/ml-unsupervised/)
 
 
-* (Optional) In order to access the files on your computer, you can save them to your Google Drive (in a directory named `ml-unsupervised`) and mount the drive in Colab:
+* (Optional) In order to access the files on your computer, you can save them to your Google Drive (in a directory named `ml-unsupervised`) and mount the drive in Colab. Open a new Google Colab notebook. Then create a new code cell and type the following commands (and then click the play button to run the cell):
 
 ```python
 from google.colab import drive
@@ -105,6 +105,7 @@ pd.read_csv('diabetes_sample_data.csv')
 
 * If you have your files in a different directory, please change the path in the `os.chdir()` command above accordingly.
 
+* [A template notebook](https://github.com/cambiotraining/ml-unsupervised/blob/main/course_files/data/teaching.ipynb) is also available to get you started.
 
 <!--
 ### Quarto
