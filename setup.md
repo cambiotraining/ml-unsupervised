@@ -77,13 +77,14 @@ or
 
 - Open a new notebook in [Google Colab](https://colab.research.google.com/)
 
-- Run the commands in code cells.
-
-- You can now create notebooks and run any of the scripts in Google Colab.
-
 - If you want to run the notebooks in Colab, you can also use the "Open in Colab" badge below:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
+
+
+- Run the commands in code cells.
+
+- You can now create notebooks and run any of the scripts in Google Colab.
 
 
 **Repository link:**  
@@ -95,17 +96,31 @@ or
 ```python
 from google.colab import drive
 import os
+import pandas as pd
 
 drive.mount('/content/drive')
 os.chdir('/content/drive/My Drive/ml-unsupervised/course_files/data')
 
-import pandas as pd
 pd.read_csv('diabetes_sample_data.csv')
 ```
+
+* Google Colab will ask you to authenticate your Google account the first time you run the `drive.mount()` command. 
+  Follow the instructions in the output cell to complete the authentication process. You will need a gmail account or you can use your cam.ac.uk account. Some screenshots are shown below to guide you through the process:
+
+![Colab Authentication Step 1](images/colab_1.png)
+
+![Colab Authentication Step 2](images/colab_2.png)
+
+![Colab Authentication Step 3](images/colab_3.png)
 
 * If you have your files in a different directory, please change the path in the `os.chdir()` command above accordingly.
 
 * [A template notebook](https://github.com/cambiotraining/ml-unsupervised/blob/main/course_files/data/teaching.ipynb) is also available to get you started.
+
+* Google Colab comes with most of the required packages pre-installed. 
+  If you need to install any additional packages, you can do so using the `!pip install package-name` command in a code cell.
+
+* Ensure that the data files are located in the `ml-unsupervised/course_files/data/` folder.
 
 <!--
 ### Quarto
