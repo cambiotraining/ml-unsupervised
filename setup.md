@@ -127,7 +127,6 @@ My Drive/
 └─ ml-unsupervised/
    ├─ course_files/
    │  ├─ data/
-   │  │  ├─ 
 
 ```
 
@@ -222,7 +221,7 @@ rm singularity.deb
 -->
 
 
-### Run locally {#python-setup-instructions}
+### (Optional) Run locally {#python-setup-instructions}
 
 * Install Python (we recommend using [Anaconda](https://www.anaconda.com/products/distribution) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) to manage your Python environment).
 
