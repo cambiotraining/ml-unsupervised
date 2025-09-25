@@ -122,6 +122,17 @@ pd.read_csv('diabetes_sample_data.csv')
 
 * Ensure that the data files are located in the `ml-unsupervised/course_files/data/` folder.
 
+* Your directory structure should look like this:
+
+```
+ml-unsupervised/
+├── course_files/
+│   ├── data/
+│   │   ├── diabetes_sample_data.csv
+```
+
+
+
 <!--
 ### Quarto
 
