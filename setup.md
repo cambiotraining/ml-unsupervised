@@ -120,17 +120,16 @@ pd.read_csv('diabetes_sample_data.csv')
 * Google Colab comes with most of the required packages pre-installed. 
   If you need to install any additional packages, you can do so using the `!pip install package-name` command in a code cell.
 
-* Ensure that the data files are located in the `ml-unsupervised/course_files/data/` folder.
-
-* Your directory structure should look like this:
+* Ensure that the data files are located in the `ml-unsupervised/course_files/data/` folder. Download the data files and and copy the data folder into your Google Drive root (folder name: `ml-unsupervised`) if you want to access the files from Colab. Your directory structure should look like this:
 
 ```
-ml-unsupervised/
-├── course_files/
-│   ├── data/
-│   │   ├── diabetes_sample_data.csv
-```
+My Drive/
+└─ ml-unsupervised/
+   ├─ course_files/
+   │  ├─ data/
+   │  │  ├─ 
 
+```
 
 
 <!--
