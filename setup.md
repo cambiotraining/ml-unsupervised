@@ -271,6 +271,14 @@ pip install numpy pandas scikit-learn seaborn matplotlib scanpy pca
 
 * If you have a local Python installation (see above), you can also run the scripts there (see instructions below). This assumes that you have downloaded and unzipped the data folder to your computer (in a folder called `course_files`) and that you have installed the required packages (see above).
 
+Your directory structure should look like this:
+
+```
+course_files/
+└─ data/
+
+```
+
 ```python
 import os
 
@@ -291,8 +299,11 @@ or
 ```python
 pip install -r requirements.txt
 ```
-
 -->
+
+* [A template Python script](https://github.com/cambiotraining/ml-unsupervised/blob/main/course_files/data/teaching.py) is also available to get you started. 
+
+
 
 
 ### Visual Studio Code
