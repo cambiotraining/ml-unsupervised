@@ -306,7 +306,7 @@ pip install -r requirements.txt
 
 
 
-### Visual Studio Code
+### (Optional) Visual Studio Code
 
 ::: {.panel-tabset group="os"}
 
