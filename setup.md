@@ -90,7 +90,7 @@ or
 [https://cambiotraining.github.io/ml-unsupervised/](https://cambiotraining.github.io/ml-unsupervised/)
 
 
-* (Optional) In order to access the files on your computer, you can save them to your Google Drive (in a directory named `ml-unsupervised`) and mount the drive in Colab. Open a new Google Colab notebook. Then create a new code cell and type the following commands (and then click the play button to run the cell):
+* (Optional) In order to access the files on your computer, you can save them to your Google Drive (in a directory named `data`) and mount the drive in Colab. Open a new Google Colab notebook. Then create a new code cell and type the following commands (and then click the play button to run the cell):
 
 ```python
 from google.colab import drive
@@ -98,7 +98,7 @@ import os
 import pandas as pd
 
 drive.mount('/content/drive')
-os.chdir('/content/drive/My Drive/ml-unsupervised/course_files/data')
+os.chdir('/content/drive/My Drive/data')
 
 pd.read_csv('diabetes_sample_data.csv')
 ```
@@ -119,14 +119,11 @@ pd.read_csv('diabetes_sample_data.csv')
 * Google Colab comes with most of the required packages pre-installed. 
   If you need to install any additional packages, you can do so using the `!pip install package-name` command in a code cell.
 
-* Ensure that the data files are located in the `ml-unsupervised/course_files/data/` folder. Download the data files and and copy the data folder into your Google Drive root (folder name: `ml-unsupervised`) if you want to access the files from Colab. Your directory structure should look like this:
+* Create a new folder named `data` in the `My Drive` folder. Download the data files and and copy the files into the `data` folder (if you want to access the files from Colab). Your directory structure should look like this:
 
 ```
 My Drive/
-└─ ml-unsupervised/
-   ├─ course_files/
-   │  ├─ data/
-
+└─ data/
 ```
 
 
@@ -268,13 +265,13 @@ pip install numpy pandas scikit-learn seaborn matplotlib scanpy pca
 ```
 
 
-* If you have a local Python installation (see above), you can also run the scripts there (see instructions below). This assumes that you have downloaded and unzipped the data folder to your computer (in a folder called `course_files`) and that you have installed the required packages (see above).
+* If you have a local Python installation (see above), you can also run the scripts there (see instructions below). This assumes that you have downloaded and unzipped the data folder to your computer (in a folder called `data`) and that you have installed the required packages (see above).
 
 Your directory structure should look like this:
 
 ```
-course_files/
-└─ data/
+data/
+└─ 
 
 ```
 
@@ -285,7 +282,7 @@ import os
 print( os.getcwd() )
 
 # change directory to where the data is stored
-os.chdir('course_files/data/')
+os.chdir('data/')
 
 # where are we now?
 print( os.getcwd() )
