@@ -26,6 +26,11 @@ By the end of this module, learners will be able to:
 :::
 
 
+## Setup instructions
+
+Please go through the setup instructions [here](https://cambiotraining.github.io/ml-unsupervised/setup.html)
+
+
 ## Poll
 
 What would you like to get out this course? Please click the link below and let me know your thoughts.
