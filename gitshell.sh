@@ -5,6 +5,8 @@ git config --global user.email neel.soumya@gmail.com
 
 git add _freeze/*
 
+git add setup.md materials/*.qmd
+
 
 
 
