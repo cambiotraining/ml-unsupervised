@@ -33,10 +33,14 @@ Please go through the setup instructions [here](https://cambiotraining.github.io
 
 ## Poll
 
-What would you like to get out this course? Please click the link below and let me know your thoughts.
+What would you like to get out this course? 
+
+<!--
+Please click the link below and let me know your thoughts.
 
 * [Poll](https://docs.google.com/document/d/140c9hqnLHyUKF3o03KSJJPk8_OKQFSiKm63EqRMfHvs/edit?usp=sharing)
 
+-->
 
 
 ## Introduction
