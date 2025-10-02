@@ -5,6 +5,7 @@ book:
         - materials/walkthrough.qmd
         - materials/python_refresher.qmd
         - materials/normalization.qmd
+        - materials/conceptual_basis_PCA.qmd
     - part: "Session 2: Dimensionality Reduction"
       chapters:
         - materials/tsne.qmd
