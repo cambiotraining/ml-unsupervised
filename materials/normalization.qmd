@@ -864,124 +864,6 @@ Look into the documentation available here for the [PCA package](https://erdogan
 
 
 
-## Exercise (theoretical) {#sec-ex-theoretical}
-
-::::: {#ex-titletheor .callout-exercise}
-
-#### exercise_theoretical
-
-{{< level 2 >}}
-
-Break up into groups and discuss the following problem:
-
-1. Shown are biological samples with scores
-
-2. The features are genes
-
-* Why are `Sample 33` and `Sample 24` separated from the rest? What can we say about `Gene1`, `Gene 2`, `Gene 3` and `Gene 4`?
-
-* Why is `Sample 2` separated from the rest? What can we say about `Gene1`, `Gene 2`, `Gene 3` and `Gene 4`?
-
-* Can we treat `Sample 2` as an outlier? Why or why not? Argue your case.
-
-The PCA biplot is shown below:
-
-```{python ch2-trick-question}
-#| echo: false
-#| warning: false
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-# -----------------------------------------------------------------------------
-# 1) Loadings matrix (genes × PCs) exactly as given:
-loadings = np.array([
-    [-0.5358995,   0.4181809,  -0.3412327,  0.6492278],   # Gene1
-    [-0.5831836,   0.1879856,  -0.2681484, -0.7430748],   # Gene2
-    [-0.2781909,  -0.8728062,  -0.3780158,  0.1338773],   # Gene3
-    [-0.5434321,  -0.1673186,   0.8177779,  0.08902432],  # Gene4
-])
-genes = ['Gene1', 'Gene2', 'Gene3', 'Gene4']
-
-
-# -----------------------------------------------------------------------------
-# 2) Approximate PC2/PC3 scores from your biplot.
-#    Fill in all 50 samples by eyeballing their (x, y) positions on the plot.
-scores_dict = {
-    # highlighted points:
-    'Sample2':  (0.8,  2.1),
-    'Sample24': (2.2, -0.5),
-    'Sample33': (2.0, -0.4),
-    # a few others for context:
-    'Sample45': (1.2,  0.6),
-    'Sample40': (1.8, -0.1),
-    'Sample11': (-0.9, 0.0),
-    'Sample39': (0.0, -1.2),
-    'Sample28': (-0.7, 1.1),
-    'Sample21': (-1.1, -0.8),
-}
-
-sample_labels = list(scores_dict.keys())
-sample_scores = np.array([scores_dict[s] for s in sample_labels])
-
-
-# -----------------------------------------------------------------------------
-# 3) Plot PC2 vs PC3 biplot:
-fig, ax = plt.subplots(figsize=(8,8))
-
-# 3a) scatter the samples
-ax.scatter(sample_scores[:,0], sample_scores[:,1],
-           c='black', s=30, alpha=0.8)
-for i, lbl in enumerate(sample_labels):
-    ax.text(sample_scores[i,0], sample_scores[i,1], lbl,
-            fontsize=8, ha='center', va='center')
-
-# 3b) draw the gene loadings as red arrows
-scale = 3.0
-#for i, gene in enumerate(genes):
-#    x_load = loadings[i,1] * scale  # PC2 loading
-#    y_load = loadings[i,2] * scale  # PC3 loading
-#    ax.arrow(0, 0, x_load, y_load,
-#             color='red', width=0.004, head_width=0.08,
-#             length_includes_head=True)
-#    ax.text(x_load*1.1, y_load*1.1, gene,
-#            color='red', fontsize=12, fontweight='bold')
-
-# -----------------------------------------------------------------------------
-# 4) Styling
-ax.axhline(0, color='gray', linewidth=1)
-ax.axvline(0, color='gray', linewidth=1)
-ax.set_xlabel('PC2', fontsize=14)
-ax.set_ylabel('PC3', fontsize=14)
-#ax.set_title('PCA Biplot', fontsize=10)
-ax.set_aspect('equal', 'box')
-ax.grid(False)
-
-plt.tight_layout()
-plt.show()
-```
-
-The table of loadings is shown below:
-
-```{python ch2-advanced-pca_loadings}
-#| echo: false
-#| warning: false
-
-pcs   = ['PC1', 'PC2', 'PC3', 'PC4']
-
-# 2) build a DataFrame
-df = pd.DataFrame(loadings, index=genes, columns=pcs)
-
-# 3) print it
-print(df.to_string(float_format="{:.6f}".format))
-```
-
-
-:::::
-<!-- end callout -->
-
-
-
 
 <!--
 ## Clustering Example
@@ -1143,7 +1025,7 @@ plt.show()
 All of these can be used to generate hypotheses. These hypotheses can be tested by collecting more data.
 
 
-## Though exercise
+## Thought exercise
 
 * Can you think of a technique where unsupervised learning gets used a lot? _Hint_: we use it almost every day now! (or atleast I do)
 
