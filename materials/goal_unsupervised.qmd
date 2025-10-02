@@ -1,0 +1,162 @@
+---
+title: Goal of Unsupervised Learning
+---
+
+::: {.callout-tip}
+#### Learning Objectives
+
+- Goals of unsupervised learning
+- Different ways in which unsupervised learning can be used
+:::
+
+
+## Goals of unsupervised learning
+
+* Finding patterns in data
+
+Here is an example from biological data (single-cell sequencing data) (the plot is from [2])[@Aschenbrenner2020].
+
+![Example tSNE ](https://gut.bmj.com/content/gutjnl/70/6/1023/F3.large.jpg)
+
+![Example heatmaps](https://gut.bmj.com/content/gutjnl/70/6/1023/F5.large.jpg)
+
+
+* Finding interesting patterns
+
+You can also use dimensionality reduction techniques (such as PCA) to find interesting patterns in your data.
+
+```{python ch2-outliers-pca}
+#| echo : false
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+# Set random seed
+np.random.seed(42)
+
+# 1. Generate data with outliers
+# Main cluster
+main_data = np.random.multivariate_normal(
+    mean=[0, 0, 0],
+    cov=[[1, 0.5, 0.3],
+         [0.5, 1, 0.4],
+         [0.3, 0.4, 1]],
+    size=950
+)
+
+# Outliers
+outliers = np.random.multivariate_normal(
+    mean=[5, 5, 5],
+    cov=[[0.5, 0.1, 0.1],
+         [0.1, 0.5, 0.1],
+         [0.1, 0.1, 0.5]],
+    size=50
+)
+
+# Combine data
+data = np.vstack([main_data, outliers])
+
+# 2. Apply PCA
+scaler = StandardScaler()
+data_scaled = scaler.fit_transform(data)
+pca = PCA(n_components=2)
+data_pca = pca.fit_transform(data_scaled)
+
+# 3. Plot PCA
+plt.figure()
+plt.scatter(data_pca[:-50, 0], data_pca[:-50, 1], c='blue', alpha=0.6, label='Normal Data')
+plt.scatter(data_pca[-50:, 0], data_pca[-50:, 1], c='red', alpha=0.8, s=100, label='Outliers')
+plt.title('PCA Projection - Outliers Highlighted')
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+```
+
+* Finding outliers
+
+You can also use dimensionality reduction techniques (such as PCA) to find outliers in your data.
+
+
+```{python ch2-one_outlier}
+#| echo : false
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+# Set random seed
+np.random.seed(42)
+
+# 1. Generate data with one outlier
+# Main cluster
+main_data = np.random.multivariate_normal(
+    mean=[0, 0, 0],
+    cov=[[1, 0.5, 0.3],
+         [0.5, 1, 0.4],
+         [0.3, 0.4, 1]],
+    size=999
+)
+
+# Single outlier point
+outlier = np.array([[10, 10, 10]])  # One extreme outlier point
+
+# Combine data
+data = np.vstack([main_data, outlier])
+
+# 2. Apply PCA
+scaler = StandardScaler()
+data_scaled = scaler.fit_transform(data)
+pca = PCA(n_components=2)
+data_pca = pca.fit_transform(data_scaled)
+
+# 3. Plot PCA
+plt.figure()
+plt.scatter(data_pca[:-1, 0], data_pca[:-1, 1], c='blue', alpha=0.6, label='Normal Data')
+plt.scatter(data_pca[-1, 0], data_pca[-1, 1], c='red', alpha=0.8, s=200, label='Single Outlier')
+plt.title('PCA Projection - Single Outlier Highlighted')
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+
+* Finding hypotheses
+
+All of these can be used to generate hypotheses. These hypotheses can be tested by collecting more data.
+
+
+## Thought exercise
+
+* Can you think of a technique where unsupervised learning gets used a lot? _Hint_: we use it almost every day now! (or atleast I do)
+
+::: {.callout-hint collapse=”true”}
+
+ChatGPT or Generative AI. The first step in processing the huge amount of text is to *reduce* the dimensions of the data using something similar to PCA.
+
+:::
+
+
+
+
+
+
+
+
+
+
+## Summary
+
+::: {.callout-tip}
+#### Key Points
+
+- The goal of unsupervised learning is to find patterns and form hypotheses.
+
+:::
