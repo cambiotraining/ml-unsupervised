@@ -217,6 +217,8 @@ plt.show()
 
 {{< level 1 >}}
 
+You should always visualize your data before trying any algorithms on it.
+
 Discuss in a group. What is wrong with the following plot?
 
 
@@ -458,6 +460,13 @@ import pandas as pd
 # Read the USArrests data directly from the GitHub raw URL
 url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/USArrests.csv"
 X = pd.read_csv(url, index_col=0)
+
+# alternatively if you have downloaded the data folder 
+#   on your computer try the following
+# import os
+# os.getcwd()
+# os.chdir("data")
+# X = pd.read_csv("USArrests.csv", index_col=0)
 
 # what is in the data?
 X.head()
