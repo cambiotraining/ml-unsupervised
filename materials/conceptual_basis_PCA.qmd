@@ -1,0 +1,106 @@
+---
+title: Conceptual and mathematical basis of PCA
+---
+
+::: {.callout-tip}
+#### Learning Objectives
+
+- Learn the concepts and mathematical basics behind PCA
+:::
+
+
+
+## Intuitive explanation of PCA
+
+[Explanation of PCA (by StatQuest)](https://www.youtube.com/watch?v=_UVHneBUBW0)
+
+
+
+## Differences between PCA and linear regression
+
+Does the figure above look similar to linear regression? Is PCA the same as linear regression?
+
+::: {.callout-tip}
+**NOTE (IMPORTANT CONCEPT)**: PCA is _not_ linear regression. It looks similar though, does it not?
+
+Linear regression is a predictive model. PCA is _not_. You cannot use PCA to predict anything. You can use PCA to only pick out patterns in your data.
+:::
+<!-- end callout -->
+
+
+## 📊 Key Concepts
+
+
+### 1. **Scores and Loadings**
+
+What is being plotted on the axes (PC1 and PC2) are the `scores`.
+
+The `scores` for each principal component are calculated as follows:
+
+$$
+PC_{1} = \alpha X + \beta Y + \gamma Z + .... 
+$$
+
+where $X$, $Y$ and $Z$ are the normalized *features*.
+
+The constants $\alpha$, $\beta$, $\gamma$ are determined by the PCA algorithm. They are called the `loadings`.
+
+### 2. **Linear combinations**
+
+
+::: {.callout-tip}
+**NOTE (IMPORTANT CONCEPT)**: The principal components are *linear combinations* of the original *features*. Hence they can be a bit difficult to interpret. 
+:::
+<!-- end callout -->
+
+
+
+### 3. **Variance**
+
+* Variance = how spread out the data is.
+* PCA finds directions (principal components) that maximize variance.
+
+
+
+---
+
+## 🔬 Example: Gene Expression Data
+
+* Rows = samples (patients)
+* Columns = gene expression levels
+
+### Goal:
+
+* Reduce dimensionality from 20,000 genes to 2-3 PCs
+* Visualize patterns between patient groups (e.g., healthy vs. cancer)
+
+```python
+# Sample Python code (requires numpy, sklearn, matplotlib)
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+X = ...  # gene expression matrix
+X_scaled = StandardScaler().fit_transform(X)
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+plt.scatter(X_pca[:, 0], X_pca[:, 1])
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.title('PCA of Gene Expression')
+plt.show()
+```
+
+
+
+
+## Summary
+
+::: {.callout-tip}
+#### Key Points
+
+- PCA is _not_ linear regression!
+ 
+:::
