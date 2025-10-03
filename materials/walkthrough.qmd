@@ -430,6 +430,8 @@ fig.update_layout(
 fig.show()
 ```
 
+
+
 ## Another intuition behind PCA
 
 Principal Component Analysis (PCA) reduces the number of dimensions in your data by finding the directions where the data varies the most and keeping only those directions.
@@ -446,6 +448,73 @@ PCA works the same way: it finds the *thin* directions in your data that do not 
 Say your data has too many *columns/dimensions/features*. Dimensionality reduction techniques (such as PCA) reduce the number of dimensions or the number of columns in your data.
 :::
 <!-- end callout -->
+
+
+## Coming back to the crime data
+
+* Original Data (4 Features)
+
+Our crime dataset has **4 features** (dimensions) for each state:
+
+| State        | Murder (per 100k) | Robbery (per 100k) | Population   | People Who Moved (per 100k) |
+|--------------|-------------------|--------------------|--------------|-----------------------------|
+| California   | 9.1               | 45.3               | 39,512,223   | 5,400                       |
+| Texas        | 7.8               | 38.6               | 28,995,881   | 4,100                       |
+| Florida      | 5.9               | 31.7               | 21,477,737   | 6,200                       |
+| New York     | 3.4               | 26.4               | 19,453,561   | 3,800                       |
+| Illinois     | 6.4               | 35.1               | 12,671,821   | 2,900                       |
+| Pennsylvania | 4.8               | 22.9               | 12,801,989   | 2,500                       |
+
+---
+
+## What PCA Does
+
+PCA finds **new features** (called Principal Components) that are combinations of the original features. These new features capture the most important patterns in the data.
+
+---
+
+## After PCA: Reduced to 2 New Features
+
+PCA transforms our data into **Principal Components (PC1 and PC2)**. These are the new, reduced features:
+
+| State        | PC1 (Primary Pattern) | PC2 (Secondary Pattern) | Variance Explained |
+|--------------|-----------------------|-------------------------|-------------------|
+| California   | 3.45                  | 0.82                    | PC1: 68%          |
+| Texas        | 2.18                  | -0.15                   | PC2: 23%          |
+| Florida      | 1.35                  | 1.24                    | **Total: 91%**    |
+| New York     | 0.92                  | -1.05                   |                   |
+| Illinois     | 0.31                  | 0.18                    |                   |
+| Pennsylvania | -0.22                 | -0.94                   |                   |
+
+---
+
+## What Did We Gain?
+
+### Before PCA:
+- **4 features** to track and visualize
+- Hard to see overall patterns
+- Features may be correlated (redundant information)
+
+### After PCA:
+- **2 features** capture 91% of the information
+- Easier to visualize (can plot in 2D)
+- New features are uncorrelated
+- Lost only 9% of information
+
+---
+
+## What Do the Principal Components Mean?
+
+**PC1 (Primary Pattern):** Combines all 4 original features with different weights. States with high PC1 values (like California) tend to have high values across multiple original features.
+
+**PC2 (Secondary Pattern):** Captures the remaining variation not explained by PC1. This might separate states based on different combinations of the original features.
+
+**Key Insight:** PC1 and PC2 are weighted combinations like:
+- PC1 = 0.45×Murder + 0.48×Robbery + 0.52×Population + 0.54×Migration
+- PC2 = 0.62×Murder - 0.15×Robbery - 0.68×Population + 0.35×Migration
+
+(These weights are determined by the data patterns, not chosen arbitrarily)
+
 
 
 
@@ -557,11 +626,14 @@ PCA can significantly reduce image data dimensionality while preserving salient 
 
 ![Information bottleneck](images/information_bottleneck.png)
 
-<!--
-, often called a latent code or embedding
--->
 
-In unsupervised learning, the __bottleneck concept__ refers to a deliberate  constraint where information is compressed through a narrow intermediate step. The model is trained to reconstruct the input data after passing it through this low-dimensional bottleneck, forcing it to learn a compact and informative representation of the underlying structure of the data. Since there are no labels guiding the learning process, the model relies solely on reconstructing its input as accurately as possible, using only the limited information passed through this narrow channel. This compression encourages the model to capture essential features while discarding noise or redundancy.
+In unsupervised learning, the __bottleneck concept__ refers to a deliberate  constraint where information is compressed through a narrow intermediate step. The model is trained to reconstruct the input data after passing it through this low-dimensional bottleneck, forcing it to learn a compact and informative representation of the underlying structure of the data. 
+
+
+_Note_: The figure shows features coming in from the right and getting compressed to fewer (new) features. What is not shown is that there are multiple rows in the dataset.
+
+Since there are no labels guiding the learning process, the model relies solely on reconstructing its input as accurately as possible, using only the limited information passed through this narrow channel. This compression encourages the model to capture essential features while discarding noise or redundancy.
+
 
 <!--
 The bottleneck acts as an inductive bias that promotes dimensionality reduction, feature learning, and denoising. By minimizing reconstruction error while constrained by a reduced latent space, the model implicitly discovers patterns, clusters, and hierarchies within the input data. In practical terms, this is a foundational principle behind many unsupervised representation learning methods, including classical autoencoders, variational autoencoders (VAEs), and self-supervised learning systems that rely on contrastive or generative objectives. The learned low-dimensional codes can then be used for downstream tasks such as clustering, visualization (e.g., with t-SNE or PCA), or as inputs to supervised models in a semi-supervised setting.
@@ -880,89 +952,6 @@ pendulum_anim = create_pendulum_animation()
 :::
 <!-- end callout -->
 
-
-## Intuitive explanation of PCA
-
-[Explanation of PCA (by StatQuest)](https://www.youtube.com/watch?v=_UVHneBUBW0)
-
-
-
-## Differences between PCA and linear regression
-
-Does the figure above look similar to linear regression? Is PCA the same as linear regression?
-
-::: {.callout-tip}
-**NOTE (IMPORTANT CONCEPT)**: PCA is _not_ linear regression. It looks similar though, does it not?
-
-Linear regression is a predictive model. PCA is _not_. You cannot use PCA to predict anything. You can use PCA to only pick out patterns in your data.
-:::
-<!-- end callout -->
-
-
-## 📊 Key Concepts
-
-
-### 1. **Scores and Loadings**
-
-What is being plotted on the axes (PC1 and PC2) are the `scores`.
-
-The `scores` for each principal component are calculated as follows:
-
-$$
-PC_{1} = \alpha X + \beta Y + \gamma Z + .... 
-$$
-
-where $X$, $Y$ and $Z$ are the normalized *features*.
-
-The constants $\alpha$, $\beta$, $\gamma$ are determined by the PCA algorithm. They are called the `loadings`.
-
-### 2. **Linear combinations**
-
-
-::: {.callout-tip}
-**NOTE (IMPORTANT CONCEPT)**: The principal components are *linear combinations* of the original *features*. Hence they can be a bit difficult to interpret. 
-:::
-<!-- end callout -->
-
-
-
-### 3. **Variance**
-
-* Variance = how spread out the data is.
-* PCA finds directions (principal components) that maximize variance.
-
-
-
----
-
-## 🔬 Example: Gene Expression Data
-
-* Rows = samples (patients)
-* Columns = gene expression levels
-
-### Goal:
-
-* Reduce dimensionality from 20,000 genes to 2-3 PCs
-* Visualize patterns between patient groups (e.g., healthy vs. cancer)
-
-```python
-# Sample Python code (requires numpy, sklearn, matplotlib)
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
-
-X = ...  # gene expression matrix
-X_scaled = StandardScaler().fit_transform(X)
-
-pca = PCA(n_components=2)
-X_pca = pca.fit_transform(X_scaled)
-
-plt.scatter(X_pca[:, 0], X_pca[:, 1])
-plt.xlabel('PC1')
-plt.ylabel('PC2')
-plt.title('PCA of Gene Expression')
-plt.show()
-```
 
 
 ## Lesson Summary
