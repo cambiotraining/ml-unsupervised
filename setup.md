@@ -224,21 +224,32 @@ rm singularity.deb
 
 * Install Visual Studio Code (see below) or [Spyder](https://www.spyder-ide.org/).
 
+<!--
 * Download the [material](https://github.com/cambiotraining/ml-unsupervised/archive/refs/heads/main.zip) or from an alternative link [here](https://drive.google.com/drive/folders/1c8fYDr7ab1jUx0FwOR4NZa9RfgzZN9OQ?usp=sharing) or clone the repository (optional, for full access)
 
+-->
+
+<!--
 ```bash
 git clone https://github.com/cambiotraining/ml-unsupervised
 ```
+-->
 
+Download the data folder from the link [here](https://drive.google.com/drive/folders/1c8fYDr7ab1jUx0FwOR4NZa9RfgzZN9OQ?usp=sharing) and save it on your computer.
 
-* Navigate to the folder
+* In Terminal/Command Prompt, navigate to the folder in which you save the `data` folder. Then change directory to the `data` folder: 
 
+```bash
+cd data
+```
+
+<!-- 
 ```bash
 cd ml-unsupervised/course_files/data
 ```
+-->
 
-
-* Setup a virtual environment (optional)
+* (Optional) Setup a virtual environment
 
 ```bash
 python3 -m venv .venv
