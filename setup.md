@@ -235,7 +235,7 @@ git clone https://github.com/cambiotraining/ml-unsupervised
 ```
 -->
 
-Download the data folder from the link [here](https://drive.google.com/drive/folders/1c8fYDr7ab1jUx0FwOR4NZa9RfgzZN9OQ?usp=sharing) and save it on your computer.
+Download the data folder from the link [here](https://drive.google.com/drive/folders/1c8fYDr7ab1jUx0FwOR4NZa9RfgzZN9OQ?usp=sharing) or unzip the file [here](https://github.com/cambiotraining/ml-unsupervised/raw/refs/heads/main/course_files/data/data.zip) and save it on your computer.
 
 * In Terminal/Command Prompt, navigate to the folder in which you save the `data` folder. Then change directory to the `data` folder: 
 
