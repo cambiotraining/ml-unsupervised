@@ -28,7 +28,9 @@ By the end of this module, learners will be able to:
 
 ## Setup instructions
 
-Please go through the setup instructions [here](https://cambiotraining.github.io/ml-unsupervised/setup.html)
+* Please go through the setup instructions [here](https://cambiotraining.github.io/ml-unsupervised/setup.html)
+
+* Walkthrough of getting setup with [Google Colab](https://colab.research.google.com/) in the web browser.
 
 
 ## Poll
