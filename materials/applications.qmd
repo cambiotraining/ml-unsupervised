@@ -1151,7 +1151,7 @@ Work in a group!
 
 <!--
 * You can stay in touch with your group members on `Slack` or `Discord` and discuss the latest papers using the tool `Hypothesis`. You can use this to run your own reading group or hackathon.
-->
+-->
 
 
 
