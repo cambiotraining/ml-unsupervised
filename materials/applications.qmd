@@ -1143,6 +1143,15 @@ Work in a group!
 :::
 
 
+## Wrap-up
+
+* Remember that learning does not stop once you leave class
+
+* Continue practicing your newly learnt skills on new data.
+
+<!--
+* You can stay in touch with your group members on `Slack` or `Discord` and discuss the latest papers using the tool `Hypothesis`. You can use this to run your own reading group or hackathon.
+->
 
 
 

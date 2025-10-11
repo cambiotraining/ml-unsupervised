@@ -166,6 +166,14 @@ $\phi$ is drawn uniformly from (1.5$\pi$, 4.5$\pi$) and $\psi$ is drawn uniforml
 - $\psi \sim \mathrm{Uniform}(0,\; 50)$
 
 
+## Reading papers
+
+* Remember that learning does not stop once you leave class
+
+* You can stay in touch with your group members on `Slack` or `Discord` and discuss the latest papers using the tool `Hypothesis`. You can use this to run your own reading group or hackathon.
+
+* Continue practicing your newly learnt skills on new data.
+
 
 ## Summary
 
