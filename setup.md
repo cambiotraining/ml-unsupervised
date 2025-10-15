@@ -127,7 +127,33 @@ My Drive/
 ```
 
 
+* (Optional) You can also follow the instructions below to setup from the browser.
+
+* Open a new [Google Colab notebook](https://colab.research.google.com/).
+
+![Step 1](materials/images/step1_browser.png)
+
+* Click on the folder icon on the left-hand side to open the file explorer.
+
+![Step 2](materials/images/step2_browser.png)
+
+* Right-click and then mount your Google Drive and then click on the `Run this cell` button.
+
+![Step 3](materials/images/step3_browser.png)
+
+* Create a new folder named `data` in the `My Drive` folder. Then upload the data files into the `data` folder.
+
+![Step 4](materials/images/step4_browser.png)
+
+
+
+<!-->
+### (Optional) Setup from the browser {#browser-setup-instructions}
+-->
+
+
 <!--
+
 ### Quarto
 
 To develop and render the course materials website, you will need to install _Quarto_:
