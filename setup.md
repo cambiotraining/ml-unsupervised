@@ -147,7 +147,7 @@ My Drive/
 
 
 
-<!-->
+<!--
 ### (Optional) Setup from the browser {#browser-setup-instructions}
 -->
 
