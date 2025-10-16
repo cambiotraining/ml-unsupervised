@@ -990,6 +990,17 @@ fig
 ```
 
 
+## Exercise: Building intuition on how to use tSNE
+
+* [Pitfalls in using tSNE](https://distill.pub/2016/misread-tsne/)
+
+* Let us read the paper *How to use t-SNE effectively* [@Wattenberg2016].
+
+* Distances are not preserved
+
+* Normal does not always look normal
+
+
 ## What does tSNE look like compared to PCA?
 
 ```{python mnist}
@@ -1118,17 +1129,6 @@ plt.show()
 * Which value of `perplexity` should you use?
 
 
-
-## Exercise: Building intuition on how to use tSNE
-
-
-* [Pitfalls in using tSNE](https://distill.pub/2016/misread-tsne/)
-
-* Let us read the paper *How to use t-SNE effectively* [@Wattenberg2016].
-
-* Distances are not preserved
-
-* Normal does not always look normal
 
 
 ## Key Concept
@@ -1545,3 +1545,5 @@ PCoA (principal coordinates analysis)
 [1] [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/)
 
 [2] [FAQs by the creator of tSNE](https://lvdmaaten.github.io/tsne/#faq)
+
+[3] [Other intricacies of tSNE](https://jlmelville.github.io/smallvis/swisssne.html)
