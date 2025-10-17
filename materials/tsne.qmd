@@ -1473,6 +1473,8 @@ plt.show()
 
 * Also annotate the plot by US states. _Hint_: Use the `plt.annotate()` function. The US states names are available in `df.index`.
 
+* Is `California` still far apart from `Vermont` even if you change the `perplexity` parameter?
+
 ```{python ch3-tsne_usarrestdata}
 #| eval: false
 #| echo: false
