@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10&nbsp; Clustering</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/evaluation.html" rel="next">
+<link href="../materials/tsne.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-92345c9efe84742c7f941ef7709b40c1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo light-content">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Applied Unsupervised Machine Learning</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/cambiotraining/ml-unsupervised"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:github" style="font-size: 1.25em;" aria-label="Icon github from fa6-brands Iconify.design set." title="CRIT GitHub"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/bioinfocambs.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:bluesky" style="font-size: 1.25em;" aria-label="Icon bluesky from fa6-brands Iconify.design set." title="CRIT Bluesky"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://genomic.social/@BioInfoCambs"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:mastodon" style="font-size: 1.25em;" aria-label="Icon mastodon from fa6-brands Iconify.design set." title="CRIT Mastodon"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bioinfotraining.bio.cam.ac.uk/"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="mdi:web" style="font-size: 1.25em;" aria-label="Icon web from mdi Iconify.design set." title="CRIT Website"></iconify-icon></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Clustering</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Applied Unsupervised Machine Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data &amp; Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">References and Resources</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Introduction to Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/python_refresher.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Refresher on Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/goal_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Goal of Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/conceptual_basis_PCA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conceptual and mathematical basis of PCA</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Dimensionality Reduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/tsne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">tSNE</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: Clustering</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/clustering.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Evaluation for unsupervised machine learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 4: Applications of Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/pca_tsne_notwork.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">When PCA or tSNE might not work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Hands-on exercises (Applications of unsupervised machine learning)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bonus Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/umap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">UMAP (Optional)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/bonus_material.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Mathematical Basics and Additional Material</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#warm-up-puzzle" id="toc-warm-up-puzzle" class="nav-link active" data-scroll-target="#warm-up-puzzle"><span class="header-section-number">10.1</span> Warm-up Puzzle</a></li>
+  <li><a href="#clustering-overview" id="toc-clustering-overview" class="nav-link" data-scroll-target="#clustering-overview"><span class="header-section-number">10.2</span> Clustering Overview</a></li>
+  <li><a href="#kmeans-clustering" id="toc-kmeans-clustering" class="nav-link" data-scroll-target="#kmeans-clustering"><span class="header-section-number">10.3</span> K‑Means Clustering</a>
+  <ul class="collapse">
+  <li><a href="#algorithm-steps" id="toc-algorithm-steps" class="nav-link" data-scroll-target="#algorithm-steps"><span class="header-section-number">10.3.1</span> Algorithm Steps</a></li>
+  <li><a href="#animation" id="toc-animation" class="nav-link" data-scroll-target="#animation"><span class="header-section-number">10.3.2</span> Animation</a></li>
+  <li><a href="#withincluster-variation" id="toc-withincluster-variation" class="nav-link" data-scroll-target="#withincluster-variation"><span class="header-section-number">10.3.3</span> Within–Cluster Variation</a></li>
+  <li><a href="#elbow-point" id="toc-elbow-point" class="nav-link" data-scroll-target="#elbow-point"><span class="header-section-number">10.3.4</span> Elbow point</a></li>
+  <li><a href="#exercise-k-means" id="toc-exercise-k-means" class="nav-link" data-scroll-target="#exercise-k-means"><span class="header-section-number">10.3.5</span> Exercise (k-means)</a></li>
+  <li><a href="#exercise-evaluate-k-means-clusters-using-the-within-cluster-similarity" id="toc-exercise-evaluate-k-means-clusters-using-the-within-cluster-similarity" class="nav-link" data-scroll-target="#exercise-evaluate-k-means-clusters-using-the-within-cluster-similarity"><span class="header-section-number">10.3.6</span> Exercise (Evaluate k-means clusters using the within-cluster similarity)</a></li>
+  </ul></li>
+  <li><a href="#hierarchical-clustering" id="toc-hierarchical-clustering" class="nav-link" data-scroll-target="#hierarchical-clustering"><span class="header-section-number">10.4</span> Hierarchical Clustering</a>
+  <ul class="collapse">
+  <li><a href="#agglomerative-bottomup" id="toc-agglomerative-bottomup" class="nav-link" data-scroll-target="#agglomerative-bottomup"><span class="header-section-number">10.4.1</span> Agglomerative (Bottom‑Up)</a></li>
+  <li><a href="#dendrogram" id="toc-dendrogram" class="nav-link" data-scroll-target="#dendrogram"><span class="header-section-number">10.4.2</span> Dendrogram</a></li>
+  <li><a href="#important-concepts" id="toc-important-concepts" class="nav-link" data-scroll-target="#important-concepts"><span class="header-section-number">10.4.3</span> Important Concepts</a></li>
+  <li><a href="#single-linkage" id="toc-single-linkage" class="nav-link" data-scroll-target="#single-linkage"><span class="header-section-number">10.4.4</span> Single Linkage</a></li>
+  <li><a href="#complete-linkage" id="toc-complete-linkage" class="nav-link" data-scroll-target="#complete-linkage"><span class="header-section-number">10.4.5</span> Complete Linkage</a></li>
+  <li><a href="#average-linkage-upgma" id="toc-average-linkage-upgma" class="nav-link" data-scroll-target="#average-linkage-upgma"><span class="header-section-number">10.4.6</span> Average Linkage (UPGMA)</a></li>
+  <li><a href="#weighted-linkage-wpgma" id="toc-weighted-linkage-wpgma" class="nav-link" data-scroll-target="#weighted-linkage-wpgma"><span class="header-section-number">10.4.7</span> Weighted Linkage (WPGMA)</a></li>
+  <li><a href="#centroid-linkage" id="toc-centroid-linkage" class="nav-link" data-scroll-target="#centroid-linkage"><span class="header-section-number">10.4.8</span> Centroid Linkage</a></li>
+  <li><a href="#median-linkage-wpgmc" id="toc-median-linkage-wpgmc" class="nav-link" data-scroll-target="#median-linkage-wpgmc"><span class="header-section-number">10.4.9</span> Median Linkage (WPGMC)</a></li>
+  <li><a href="#wards-method" id="toc-wards-method" class="nav-link" data-scroll-target="#wards-method"><span class="header-section-number">10.4.10</span> Ward’s Method</a></li>
+  </ul></li>
+  <li><a href="#practical" id="toc-practical" class="nav-link" data-scroll-target="#practical"><span class="header-section-number">10.5</span> Practical</a>
+  <ul class="collapse">
+  <li><a href="#scale-the-data" id="toc-scale-the-data" class="nav-link" data-scroll-target="#scale-the-data"><span class="header-section-number">10.5.1</span> Scale the data</a></li>
+  <li><a href="#perform-hierarchical-clustering" id="toc-perform-hierarchical-clustering" class="nav-link" data-scroll-target="#perform-hierarchical-clustering"><span class="header-section-number">10.5.2</span> Perform hierarchical clustering</a></li>
+  </ul></li>
+  <li><a href="#alternative-code-using-sns.clustermap" id="toc-alternative-code-using-sns.clustermap" class="nav-link" data-scroll-target="#alternative-code-using-sns.clustermap"><span class="header-section-number">10.6</span> Alternative code using <code>sns.clustermap</code></a></li>
+  <li><a href="#exercise-changing-the-linkage-function" id="toc-exercise-changing-the-linkage-function" class="nav-link" data-scroll-target="#exercise-changing-the-linkage-function"><span class="header-section-number">10.7</span> Exercise (changing the linkage function)</a></li>
+  <li><a href="#exercise-trying-a-different-dissimilarity-metric" id="toc-exercise-trying-a-different-dissimilarity-metric" class="nav-link" data-scroll-target="#exercise-trying-a-different-dissimilarity-metric"><span class="header-section-number">10.8</span> Exercise (trying a different <em>dissimilarity</em> metric)</a></li>
+  <li><a href="#sec-clustering-missing-data" id="toc-sec-clustering-missing-data" class="nav-link" data-scroll-target="#sec-clustering-missing-data"><span class="header-section-number">10.9</span> Exercise with missing data</a></li>
+  <li><a href="#choosing-between-methods" id="toc-choosing-between-methods" class="nav-link" data-scroll-target="#choosing-between-methods"><span class="header-section-number">10.10</span> Choosing Between Methods</a>
+  <ul class="collapse">
+  <li><a href="#hierarchical-clustering-1" id="toc-hierarchical-clustering-1" class="nav-link" data-scroll-target="#hierarchical-clustering-1"><span class="header-section-number">10.10.1</span> Hierarchical Clustering</a></li>
+  <li><a href="#kmeans" id="toc-kmeans" class="nav-link" data-scroll-target="#kmeans"><span class="header-section-number">10.10.2</span> K‑Means</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">10.11</span> Summary</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading"><span class="header-section-number">10.12</span> Further Reading</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Clustering</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>By the end of this lesson, students will be able to:</li>
+</ul>
+<ol type="1">
+<li><strong>Explain the goal and applications of clustering</strong>
+<ul>
+<li>Define unsupervised learning and distinguish clustering from classification.<br>
+</li>
+<li>Cite real‑world uses (e.g., customer segmentation, anomaly detection).</li>
+</ul></li>
+<li><strong>Describe and execute hierarchical clustering methods</strong>
+<ul>
+<li>Compute and interpret a dendrogram.<br>
+</li>
+<li>Apply various linkage criteria (single, complete, average, Ward’s, etc.) and distance metrics (Euclidean, Manhattan, cosine).</li>
+</ul></li>
+<li><strong>Implement and analyze K‑Means clustering</strong>
+<ul>
+<li>Articulate the iterative assignment–update steps and convergence conditions.<br>
+</li>
+<li>Write or follow pseudocode for K‑Means, including centroid initialization strategies.<br>
+</li>
+<li>Compute and interpret the within‑cluster variation objective.</li>
+</ul></li>
+<li><strong>Compare clustering techniques and select appropriately</strong>
+<ul>
+<li>Identify strengths and weaknesses of hierarchical vs.&nbsp;K‑Means approaches.<br>
+</li>
+<li>Choose between methods based on data characteristics (number of clusters, scalability, hierarchy needs).</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<!-- end callout -->
+<section id="warm-up-puzzle" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="warm-up-puzzle"><span class="header-section-number">10.1</span> Warm-up Puzzle</h2>
+<ul>
+<li><p>Is the picture below fake or real?</p></li>
+<li><p>How can a computer determine if the picture below is fake or real?</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/taj_mahal.jpg" class="img-fluid figure-img"></p>
+<figcaption>Taj Mahal bathed in the Northern Lights. Generated using the DALL-E tool.</figcaption>
+</figure>
+</div>
+</section>
+<section id="clustering-overview" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="clustering-overview"><span class="header-section-number">10.2</span> Clustering Overview</h2>
+<p>Clustering is an <strong>unsupervised learning</strong> technique used to group similar data points together. Unlike classification, there are no pre-defined labels. Instead, the algorithm tries to discover structure in the data by maximizing intra-cluster similarity and minimizing inter-cluster similarity.</p>
+<p><strong>Key points:</strong></p>
+<ul>
+<li><p><strong>Objective:</strong> Identify natural groupings in the data.</p></li>
+<li><p><strong>Applications:</strong> Customer segmentation, image compression, anomaly detection, document clustering.</p></li>
+</ul>
+</section>
+<section id="kmeans-clustering" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="kmeans-clustering"><span class="header-section-number">10.3</span> K‑Means Clustering</h2>
+<p>K‑Means is a clustering algorithm that aims to partition the data into <strong>K</strong> disjoint clusters.</p>
+<section id="algorithm-steps" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="algorithm-steps"><span class="header-section-number">10.3.1</span> Algorithm Steps</h3>
+<ol type="1">
+<li><p><strong>Choose K</strong>, the number of clusters.<br>
+</p></li>
+<li><p><strong>Initialization:</strong> Randomly select K initial centroids (or use k‑means++ for better seeding).<br>
+</p></li>
+<li><p><strong>Assignment Step:</strong></p>
+<pre class="pseudo"><code>for each data point x_i:
+    assign x_i to cluster j whose centroid μ_j is nearest (minimize ||x_i - μ_j||²)</code></pre></li>
+<li><p><strong>Update Step:</strong></p>
+<pre class="pseudo"><code>for each cluster j:
+    μ_j = (1 / |C_j|) * sum_{x_i in C_j} x_i</code></pre></li>
+<li><p><strong>Convergence Check:</strong></p>
+<ul>
+<li>Stop when assignments no longer change, OR</li>
+<li>The change in centroids is below a threshold, OR</li>
+<li>A maximum number of iterations is reached.</li>
+</ul></li>
+</ol>
+</section>
+<section id="animation" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="animation"><span class="header-section-number">10.3.2</span> Animation</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/animation_kmeans.gif" class="img-fluid figure-img"></p>
+<figcaption>Animation of k-means</figcaption>
+</figure>
+</div>
+<!-- created using kmeans_movie.py and kmeans_animation.ipynb -->
+</section>
+<section id="withincluster-variation" class="level3" data-number="10.3.3">
+<h3 data-number="10.3.3" class="anchored" data-anchor-id="withincluster-variation"><span class="header-section-number">10.3.3</span> Within–Cluster Variation</h3>
+<p>In <strong><span class="math inline">\(K\)</span></strong>‑means clustering, we partition our <span class="math inline">\(n\)</span> observations into <span class="math inline">\(K\)</span> disjoint clusters <span class="math inline">\(\{C_1, C_2, \dots, C_K\}\)</span>. A “good” clustering is one for which the <em>within‑cluster variation</em> is minimized.</p>
+</section>
+<section id="elbow-point" class="level3" data-number="10.3.4">
+<h3 data-number="10.3.4" class="anchored" data-anchor-id="elbow-point"><span class="header-section-number">10.3.4</span> Elbow point</h3>
+<p>When using <strong>k‑means clustering</strong>, one of the key questions is: how many clusters (k) should I choose? The <strong>elbow method</strong> is a simple, visual way to pick a reasonable <em>k</em> by looking at how the “within‑cluster” variation decreases as <em>k</em> increases.</p>
+<hr>
+<section id="the-withincluster-sum-of-squares-wcss" class="level4">
+<h4 class="anchored" data-anchor-id="the-withincluster-sum-of-squares-wcss">1. The Within‑Cluster Sum of Squares (WCSS)</h4>
+<p>For each choice of <em>k</em>, you run k‑means and compute the <strong>within‑cluster sum of squares</strong> (WCSS), also called <em>inertia</em> or <em>distortion</em>. This is the sum of squared Euclidean distances between each point and the centroid of its cluster:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/wcss_equation.png" class="img-fluid figure-img"></p>
+<figcaption>WCSS</figcaption>
+</figure>
+</div>
+<!--
+\[
+\text{WCSS}(k) = \sum_{i=1}^{k} \sum_{x \in C_i} \lVert x - \mu_i \rVert^2
+\]
+-->
+<ul>
+<li><span class="math inline">\(C_{i}\)</span> is cluster <em>i</em><br>
+</li>
+<li><span class="math inline">\(mu_{i}\)</span> is the centroid of cluster <em>i</em></li>
+</ul>
+<p>As <em>k</em> increases, WCSS will always decrease (or stay the same), because more centroids can only reduce distances.</p>
+</section>
+<section id="plotting-wcss-versus-k" class="level4">
+<h4 class="anchored" data-anchor-id="plotting-wcss-versus-k">2. Plotting WCSS versus <em>k</em></h4>
+<ol type="1">
+<li><strong>Choose a range</strong> for <em>k</em> (e.g.&nbsp;1 to 10).<br>
+</li>
+<li><strong>For each <em>k</em></strong>, fit k‑means and record <code>WCSS(k)</code>.<br>
+</li>
+<li><strong>Plot</strong> <code>WCSS(k)</code> on the <em>y</em>-axis against <em>k</em> on the <em>x</em>-axis.</li>
+</ol>
+<p>You will get a curve that starts high at <em>k</em> = 1 and steadily goes down as <em>k</em> increases.</p>
+<hr>
+</section>
+<section id="identifying-the-elbow" class="level4">
+<h4 class="anchored" data-anchor-id="identifying-the-elbow">3. Identifying the “Elbow”</h4>
+<ul>
+<li>At first, adding clusters dramatically reduces WCSS, because you are splitting large, heterogeneous clusters into more homogeneous groups.<br>
+</li>
+<li>After some point, adding more clusters yields <strong>diminishing returns</strong>—each new cluster only slightly reduces WCSS.</li>
+</ul>
+<p>The <strong>elbow point</strong> is the value of <em>k</em> at which the decrease in WCSS “bends” most sharply: like an elbow in your arm. It balances model complexity (more clusters) against improved fit (lower WCSS).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/elbow_point_clustering.png" class="img-fluid figure-img"></p>
+<figcaption>An elbow point</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="exercise-k-means" class="level3" data-number="10.3.5">
+<h3 data-number="10.3.5" class="anchored" data-anchor-id="exercise-k-means"><span class="header-section-number">10.3.5</span> Exercise (k-means)</h3>
+<ul>
+<li>NOTE: The <code>c</code> parameter in <code>plt.scatter()</code> is used to specify the color of the scatter plot points.</li>
+</ul>
+<div id="b4cc510f" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform k means with k = 2</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">2</span>, n_init<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>kmeans.fit(X)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># The cluster assignments of the observations are contained in kmeans.labels_</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>kmeans.labels_</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data, with each observation colored according to its cluster assignment.</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>plt.scatter(X[:,<span class="dv">0</span>], X[:,<span class="dv">1</span>], c<span class="op">=</span>kmeans.labels_)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"K-means on Iris data"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-2-output-1.png" width="571" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-evaluate-k-means-clusters-using-the-within-cluster-similarity" class="level3" data-number="10.3.6">
+<h3 data-number="10.3.6" class="anchored" data-anchor-id="exercise-evaluate-k-means-clusters-using-the-within-cluster-similarity"><span class="header-section-number">10.3.6</span> Exercise (Evaluate k-means clusters using the within-cluster similarity)</h3>
+<ul>
+<li>Find the optimal value of the number of clusters <span class="math inline">\(K\)</span></li>
+</ul>
+<div id="1cfdb860" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot WCSS (inertia) as a function of the number of clusters</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>wcss <span class="op">=</span> []</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># try a few different values of k</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>k_range <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k_var <span class="kw">in</span> k_range:</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>   <span class="co"># fit kmeans</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>   kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span>k_var, random_state<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>   kmeans.fit(X)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>   <span class="co"># append WCSS to a list</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>   wcss.append(kmeans.inertia_)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>plt.scatter( k_range , wcss )</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of clusters'</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Within-Cluster Sum of Squares (WCSS)'</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Elbow Method For Optimal'</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-3-output-1.png" width="593" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="hierarchical-clustering" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="hierarchical-clustering"><span class="header-section-number">10.4</span> Hierarchical Clustering</h2>
+<p>Hierarchical clustering builds a tree (dendrogram) of clusters using either a <strong>bottom‑up</strong> (agglomerative) or <strong>top‑down</strong> (divisive) approach.</p>
+<section id="agglomerative-bottomup" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="agglomerative-bottomup"><span class="header-section-number">10.4.1</span> Agglomerative (Bottom‑Up)</h3>
+<ol type="1">
+<li><p><strong>Initialization:</strong> Start with each data point as its own cluster.</p></li>
+<li><p><strong>Merge Steps:</strong></p>
+<ul>
+<li>Compute distance between every pair of clusters.<br>
+</li>
+<li>Merge the two closest clusters.<br>
+</li>
+<li>Update the distance matrix.</li>
+</ul></li>
+<li><p><strong>Termination:</strong> Repeat until all points are in a single cluster or a stopping criterion (e.g., desired number of clusters) is met.</p></li>
+</ol>
+</section>
+<section id="dendrogram" class="level3" data-number="10.4.2">
+<h3 data-number="10.4.2" class="anchored" data-anchor-id="dendrogram"><span class="header-section-number">10.4.2</span> Dendrogram</h3>
+<pre class="text"><code>        [ALL POINTS]
+         /      \
+    Cluster A   Cluster B
+     /    \       /    \
+    …      …     …      …</code></pre>
+<ul>
+<li><strong>Cutting the tree</strong> at different levels yields different numbers of clusters.</li>
+<li><strong>Linkage methods</strong> determine how distance between clusters is computed:
+<ul>
+<li><strong>Single linkage:</strong> Minimum pairwise distance<br>
+</li>
+<li><strong>Complete linkage:</strong> Maximum pairwise distance<br>
+</li>
+<li><strong>Average linkage:</strong> Average pairwise distance</li>
+</ul></li>
+</ul>
+</section>
+<section id="important-concepts" class="level3" data-number="10.4.3">
+<h3 data-number="10.4.3" class="anchored" data-anchor-id="important-concepts"><span class="header-section-number">10.4.3</span> Important Concepts</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Metric</strong><br>
+The <em>metric</em> (or <em>distance function</em> or <em>dissimilarity function</em>) defines how you measure the distance between individual data points. Common choices include Euclidean, Manhattan (cityblock), or cosine distance. This metric determines the raw pairwise distances.</li>
+</ul>
+<p><em>Manhattan distance</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/manhattan_distance.png" class="img-fluid figure-img"></p>
+<figcaption>Manhattan distance. Image created using DALL-E.</figcaption>
+</figure>
+</div>
+<p><em>Manhattan distance</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/manhattan_distance_complex.png" class="img-fluid figure-img"></p>
+<figcaption>Manhattan distance</figcaption>
+</figure>
+</div>
+<p><em>Euclidean distance</em></p>
+<p>How would a crow navigate in Manhattan? (I have never been to Manhattan, but the <code>internet</code> says there are crows in Manhattan, so it must be true).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/crow_manhattan.jpg" class="img-fluid figure-img"></p>
+<figcaption>A crow in Manhattan. Image created using DreamUp.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/euclidean_distance.png" class="img-fluid figure-img"></p>
+<figcaption>Euclidean distance</figcaption>
+</figure>
+</div>
+<ul>
+<li><strong>Linkage</strong><br>
+The <em>linkage</em> method defines how to compute the distance between two clusters based on the pairwise distances of their members. Examples:
+<ul>
+<li><strong>Single</strong>: the distance between the closest pair of points (one from each cluster).<br>
+</li>
+<li><strong>Complete</strong>: the distance between the farthest pair of points.<br>
+</li>
+<li><strong>Average</strong>: the average of all pairwise distances.<br>
+</li>
+<li><strong>Ward</strong>: the merge that minimizes the increase in total within‑cluster variance.</li>
+</ul></li>
+</ul>
+<p><em>Linkage function</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/linkage_function.png" class="img-fluid figure-img"></p>
+<figcaption>Linkage function</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- end callout -->
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 44%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Linkage Method</th>
+<th>How It Works</th>
+<th>Intuition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Single</strong></td>
+<td>Distance = minimum pairwise distance between points in the two clusters</td>
+<td>“Friends‑of‑friends” – clusters join if any two points are close, yielding chain‑like clusters</td>
+</tr>
+<tr class="even">
+<td><strong>Complete</strong></td>
+<td>Distance = maximum pairwise distance between points in the two clusters</td>
+<td>“Everyone must be close” – only merge when all points are relatively near, producing compact clusters</td>
+</tr>
+<tr class="odd">
+<td><strong>Average (UPGMA)</strong></td>
+<td>Distance = average of all pairwise distances between points in the two clusters</td>
+<td>Balances single and complete by averaging close and far pairs</td>
+</tr>
+<tr class="even">
+<td><strong>Weighted (WPGMA)</strong></td>
+<td>Distance = average of the previous cluster’s distance to the new cluster (equal weight per cluster)</td>
+<td>Prevents large clusters from dominating, giving equal say to each cluster</td>
+</tr>
+<tr class="odd">
+<td><strong>Centroid</strong></td>
+<td>Distance = distance between the centroids (mean vectors) of the two clusters</td>
+<td>Merges based on “centers of mass,” but centroids can shift non‑monotonically</td>
+</tr>
+<tr class="even">
+<td><strong>Median (WPGMC)</strong></td>
+<td>Distance = distance between the medians of the two clusters</td>
+<td>More robust to outliers than centroid linkage, but can also invert dendrogram order</td>
+</tr>
+<tr class="odd">
+<td><strong>Ward’s</strong></td>
+<td>Merge that minimizes the increase in total within‑cluster sum of squares (variance)</td>
+<td>Keeps clusters as tight and homogeneous as possible, often resulting in evenly sized groups</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="single-linkage" class="level3" data-number="10.4.4">
+<h3 data-number="10.4.4" class="anchored" data-anchor-id="single-linkage"><span class="header-section-number">10.4.4</span> Single Linkage</h3>
+<ul>
+<li><strong>How it works</strong>: Measures the distance between two clusters as the smallest distance between any single point in one cluster and any single point in the other.<br>
+</li>
+<li><strong>Intuition</strong>: “Friends‑of‑friends” clustering—if any two points (one from each cluster) are close, the clusters join. Can produce long, straggly chains of points.</li>
+</ul>
+</section>
+<section id="complete-linkage" class="level3" data-number="10.4.5">
+<h3 data-number="10.4.5" class="anchored" data-anchor-id="complete-linkage"><span class="header-section-number">10.4.5</span> Complete Linkage</h3>
+<ul>
+<li><strong>How it works</strong>: Measures the distance between two clusters as the largest distance between any point in one cluster and any point in the other.<br>
+</li>
+<li><strong>Intuition</strong>: “Everyone must be close”—clusters merge only when all their points are relatively near each other, leading to tight, compact groups.</li>
+</ul>
+</section>
+<section id="average-linkage-upgma" class="level3" data-number="10.4.6">
+<h3 data-number="10.4.6" class="anchored" data-anchor-id="average-linkage-upgma"><span class="header-section-number">10.4.6</span> Average Linkage (UPGMA)</h3>
+<ul>
+<li><strong>How it works</strong>: Takes the average of all pairwise distances between points in the two clusters.<br>
+</li>
+<li><strong>Intuition</strong>: A middle‑ground between single and complete linkage—balances the effect of very close and very far pairs by averaging them.</li>
+</ul>
+</section>
+<section id="weighted-linkage-wpgma" class="level3" data-number="10.4.7">
+<h3 data-number="10.4.7" class="anchored" data-anchor-id="weighted-linkage-wpgma"><span class="header-section-number">10.4.7</span> Weighted Linkage (WPGMA)</h3>
+<ul>
+<li><strong>How it works</strong>: Similar to average linkage, but treats each cluster as a single entity by averaging the distance from each original cluster to the target cluster, regardless of cluster size.<br>
+</li>
+<li><strong>Intuition</strong>: Prevents larger clusters from dominating the average—gives each cluster equal say in how far apart they are.</li>
+</ul>
+</section>
+<section id="centroid-linkage" class="level3" data-number="10.4.8">
+<h3 data-number="10.4.8" class="anchored" data-anchor-id="centroid-linkage"><span class="header-section-number">10.4.8</span> Centroid Linkage</h3>
+<ul>
+<li><strong>How it works</strong>: Computes the distance between the centroids (mean vectors) of the two clusters.<br>
+</li>
+<li><strong>Intuition</strong>: Clusters merge based on whether their “centers of mass” are close. Can sometimes lead to non‑monotonic merges if centroids shift oddly.</li>
+</ul>
+</section>
+<section id="median-linkage-wpgmc" class="level3" data-number="10.4.9">
+<h3 data-number="10.4.9" class="anchored" data-anchor-id="median-linkage-wpgmc"><span class="header-section-number">10.4.9</span> Median Linkage (WPGMC)</h3>
+<ul>
+<li><strong>How it works</strong>: Uses the median point of each cluster instead of the mean when computing distance between clusters.<br>
+</li>
+<li><strong>Intuition</strong>: Like centroid linkage but more robust to outliers, since the median isn’t pulled by extreme values—though can also cause inversion issues.</li>
+</ul>
+</section>
+<section id="wards-method" class="level3" data-number="10.4.10">
+<h3 data-number="10.4.10" class="anchored" data-anchor-id="wards-method"><span class="header-section-number">10.4.10</span> Ward’s Method</h3>
+<ul>
+<li><strong>How it works</strong>: At each step, merges the two clusters whose union leads to the smallest possible increase in total within‑cluster variance (sum of squared deviations).<br>
+</li>
+<li><strong>Intuition</strong>: Always chooses the merge that keeps clusters as tight and homogeneous as possible, often yielding groups of similar size and shape.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Concept about distances
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There is no single “best” distance metric for clustering—what works well for one dataset or problem may not work for another. The choice of distance metric (such as Euclidean, or Manhattan) depends on the nature of your data and what you want to capture about similarity.</p>
+<p>For example, Euclidean distance works well when the scale of features is meaningful and differences are linear, while cosine distance is better for text data or situations where the direction of the data matters more than its magnitude.</p>
+<p>It is important to experiment with different distance metrics and see which one produces clusters that make sense for your specific problem. Always check the results and, if possible, use domain knowledge to guide your choice.</p>
+</div>
+</div>
+<!-- end callout -->
+</section>
+</section>
+<section id="practical" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="practical"><span class="header-section-number">10.5</span> Practical</h2>
+<ul>
+<li><p><code>n_clusters</code> in <code>AgglomerativeClustering</code> specifies the number of clusters you want the algorithm to find. After building the hierarchical tree, the algorithm will cut the tree so that exactly <code>n_clusters</code> groups are formed. For example, <code>n_clusters</code>=3 will result in 3 clusters in your data.</p></li>
+<li><p>The default value for n_clusters in <code>AgglomerativeClustering</code> is 2. The default value for linkage is <code>ward</code>. So if you do not specify these parameters, the algorithm will produce 2 clusters using <code>Ward</code> linkage.</p></li>
+</ul>
+<div id="7a9873c2" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> linkage, dendrogram</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> AgglomerativeClustering</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Agglomerative Clustering</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>agg <span class="op">=</span> AgglomerativeClustering(n_clusters<span class="op">=</span><span class="dv">3</span>, linkage<span class="op">=</span><span class="st">'ward'</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> agg.fit_predict(X)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels)  <span class="co"># Cluster assignments for each sample</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> dendrogram, linkage</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute linkage matrix</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> linkage(X, method<span class="op">=</span><span class="st">'ward'</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot dendrogram</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>dendrogram(Z)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Hierarchical Clustering Dendrogram (Iris Data)'</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Sample Index'</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Distance'</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 2 2 2 0 2 2 2 2
+ 2 2 0 0 2 2 2 2 0 2 0 2 0 2 2 0 0 2 2 2 2 2 0 0 2 2 2 0 2 2 2 0 2 2 2 0 2
+ 2 0]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-4-output-2.png" width="809" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="scale-the-data" class="level3" data-number="10.5.1">
+<h3 data-number="10.5.1" class="anchored" data-anchor-id="scale-the-data"><span class="header-section-number">10.5.1</span> Scale the data</h3>
+<div id="7c1f2628" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># let us see what is in the data</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>df_iris <span class="op">=</span> load_iris(as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>data_frame_iris <span class="op">=</span> df_iris.frame</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data_frame_iris)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#print(df_iris.frame.head())</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># scale the data</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)  \
+0                  5.1               3.5                1.4               0.2   
+1                  4.9               3.0                1.4               0.2   
+2                  4.7               3.2                1.3               0.2   
+3                  4.6               3.1                1.5               0.2   
+4                  5.0               3.6                1.4               0.2   
+..                 ...               ...                ...               ...   
+145                6.7               3.0                5.2               2.3   
+146                6.3               2.5                5.0               1.9   
+147                6.5               3.0                5.2               2.0   
+148                6.2               3.4                5.4               2.3   
+149                5.9               3.0                5.1               1.8   
+
+     target  
+0         0  
+1         0  
+2         0  
+3         0  
+4         0  
+..      ...  
+145       2  
+146       2  
+147       2  
+148       2  
+149       2  
+
+[150 rows x 5 columns]</code></pre>
+</div>
+</div>
+</section>
+<section id="perform-hierarchical-clustering" class="level3" data-number="10.5.2">
+<h3 data-number="10.5.2" class="anchored" data-anchor-id="perform-hierarchical-clustering"><span class="header-section-number">10.5.2</span> Perform hierarchical clustering</h3>
+<div id="207223f2" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> AgglomerativeClustering</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> linkage, dendrogram</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Agglomerative Clustering</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>agg <span class="op">=</span> AgglomerativeClustering(n_clusters<span class="op">=</span><span class="dv">3</span>)<span class="co">#, linkage='ward')</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> agg.fit_predict(X_scaled)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels)  <span class="co"># Cluster assignments for each sample</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute linkage matrix</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> linkage(X_scaled)<span class="co">#, method='ward')</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot dendrogram</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>dendrogram(Z)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Hierarchical Clustering Dendrogram (Iris Data)'</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Sample Index'</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Distance'</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 2 1 1 1 1 1 1 1 1 0 0 0 2 0 2 0 2 0 2 2 0 2 0 2 0 2 2 2 2 0 0 0 0
+ 0 0 0 0 0 2 2 2 2 0 2 0 0 2 2 2 2 0 2 2 2 2 2 0 2 2 0 0 0 0 0 0 2 0 0 0 0
+ 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-6-output-2.png" width="590" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="alternative-code-using-sns.clustermap" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="alternative-code-using-sns.clustermap"><span class="header-section-number">10.6</span> Alternative code using <code>sns.clustermap</code></h2>
+<p>There are many ways we can perform hierarchical clustering. An alternative is to use <code>sns.clustermap</code> using the <code>seaborn</code> package (see <a href="https://seaborn.pydata.org/generated/seaborn.clustermap.html">here</a>). The interface is similar and it can produce professional quality plots.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic clustermap with scaling</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>sns.clustermap(X, cmap<span class="op">=</span><span class="st">'RdBu_r'</span>, z_score<span class="op">=</span><span class="dv">0</span>, center<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Different linkage methods</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>sns.clustermap(X, method<span class="op">=</span><span class="st">'average'</span>, z_score<span class="op">=</span><span class="dv">0</span>, center <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Different distance metrics  </span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>sns.clustermap(X, metric<span class="op">=</span><span class="st">'correlation'</span>, method<span class="op">=</span><span class="st">'average'</span>, z_score<span class="op">=</span><span class="dv">0</span>, center <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprehensive example</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>sns.clustermap(X, method<span class="op">=</span><span class="st">'average'</span>, metric<span class="op">=</span><span class="st">'correlation'</span>, </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>               cmap<span class="op">=</span><span class="st">'RdBu_r'</span>, z_score<span class="op">=</span><span class="dv">0</span>, center<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co"># or if you prefer just the default options</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>sns.clustermap(X, z_score<span class="op">=</span><span class="dv">0</span>, center<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<!-- TODO: show different plots using sns.clustermap see python scripts in scripts directory sns_clustermap*.py -->
+<p><strong><code>z_score=0</code></strong> (Scaling Direction) - <strong>What it does</strong>: Standardizes (z-scores) the data before clustering - <strong>Options</strong>: - <code>0</code>: Scale rows (genes) - each gene’s expression is standardized across samples - <code>1</code>: Scale columns (samples) - each sample’s expression is standardized across genes - <code>None</code>: No scaling (use raw data) - <strong>Why use <code>0</code></strong>: For gene expression, you want to compare expression patterns, not absolute levels</p>
+<p><strong><code>cmap='RdBu_r'</code></strong> (Color Map) - <strong>What it does</strong>: Defines the color scheme for the heatmap - <strong><code>'RdBu_r'</code></strong>: Red-Blue reversed (red = high, blue = low, white = middle) - <strong>Other options</strong>: <code>'viridis'</code>, <code>'coolwarm'</code>, <code>'seismic'</code>, <code>'plasma'</code>, etc. - <strong>Why use it</strong>: Intuitive for biologists (red = high expression, blue = low expression)</p>
+<p><strong><code>center=0</code></strong> (Color Center) - <strong>What it does</strong>: Centers the color map at this value - <strong><code>0</code></strong>: White color represents zero (after scaling, this is the mean) - <strong>Other values</strong>: Could center at 1 (for fold-change), or other biologically meaningful values - <strong>Why use it</strong>: Makes it easy to see above/below average expression</p>
+<p><strong>Additional Common Parameters</strong></p>
+<!--#### **`figsize=(width, height)`**
+- **What it does**: Controls the size of the plot
+- **Example**: `figsize=(12, 8)` for a 12×8 inch plot-->
+<section id="row_clustertruefalse" class="level4">
+<h4 class="anchored" data-anchor-id="row_clustertruefalse"><strong><code>row_cluster=True/False</code></strong></h4>
+<ul>
+<li><strong>What it does</strong>: Whether to cluster rows (genes)</li>
+<li><strong>Default</strong>: <code>True</code></li>
+</ul>
+</section>
+<section id="col_clustertruefalse" class="level4">
+<h4 class="anchored" data-anchor-id="col_clustertruefalse"><strong><code>col_cluster=True/False</code></strong></h4>
+<ul>
+<li><strong>What it does</strong>: Whether to cluster columns (samples)</li>
+<li><strong>Default</strong>: <code>True</code></li>
+</ul>
+</section>
+<section id="cbar_kws-color-bar-keywords" class="level4">
+<h4 class="anchored" data-anchor-id="cbar_kws-color-bar-keywords"><strong><code>cbar_kws</code></strong> (Color Bar Keywords)</h4>
+<ul>
+<li><p><strong>What it does</strong>: Customize the color bar</p></li>
+<li><p><strong>Example</strong>: <code>cbar_kws={'label': 'Expression Level', 'shrink': 0.8}</code></p></li>
+<li><p>Here is some code to use <code>sns.clustermap</code></p></li>
+</ul>
+<div id="576dd6ba" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> AgglomerativeClustering</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> linkage, dendrogram</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>sns.clustermap(data_frame_iris, z_score<span class="op">=</span><span class="dv">0</span>, center<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-7-output-1.png" width="950" height="949" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<!--
+MORE CODE
+from sklearn.preprocessing import StandardScaler
+
+# scale data in data frame
+scaler = StandardScaler()
+df_iris_scaled = scaler.fit_transform(data_frame_iris)
+
+
+# then perform hierarchical clustering
+agg_df_iris = AgglomerativeClustering()
+labels_df_iris = agg_df_iris.fit_predict(df_iris_scaled)
+
+# compute linkage
+Z_df_iris = linkage(df_iris_scaled)
+
+# plot dendrogram
+plt.figure()
+dendrogram(Z_df_iris)
+
+sns.clustermap(df_iris_scaled)
+-->
+</section>
+</section>
+<section id="exercise-changing-the-linkage-function" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="exercise-changing-the-linkage-function"><span class="header-section-number">10.7</span> Exercise (changing the linkage function)</h2>
+<ul>
+<li><p>Work in a group for this exercise</p></li>
+<li><p>Let us try another linkage function</p></li>
+<li><p>Change the linkage function in <code>Z = linkage(X_scaled), method='ward')</code></p></li>
+<li><p>How does the clustering change as you change this to another function?</p></li>
+<li><p>How does this change if you do <em>not</em> scale the data?</p></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Click to expand
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div id="505cf168" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Agglomerative Clustering on unscaled data with 'average' linkage</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>agg <span class="op">=</span> AgglomerativeClustering(linkage<span class="op">=</span><span class="st">'average'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> agg.fit_predict(X)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute linkage matrix on unscaled data with 'average' linkage</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> linkage(X, method<span class="op">=</span><span class="st">'average'</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot dendrogram</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>dendrogram(Z)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Hierarchical Clustering Dendrogram (Iris Data, Unscaled, Average Linkage)'</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Sample Index'</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Distance'</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-8-output-1.png" width="628" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="exercise-trying-a-different-dissimilarity-metric" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="exercise-trying-a-different-dissimilarity-metric"><span class="header-section-number">10.8</span> Exercise (trying a different <em>dissimilarity</em> metric)</h2>
+<div id="4bf524f4" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Agglomerative Clustering on unscaled data with 'average' linkage and 'manhattan' distance</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>agg <span class="op">=</span> AgglomerativeClustering(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    linkage<span class="op">=</span><span class="st">'average'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    metric<span class="op">=</span><span class="st">'manhattan'</span>      <span class="co"># use metric instead of deprecated affinity</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute linkage matrix on unscaled data with 'average' linkage and 'cityblock' (manhattan) distance</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> linkage(X, method<span class="op">=</span><span class="st">'average'</span>, metric<span class="op">=</span><span class="st">'cityblock'</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot dendrogram</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>dendrogram(Z)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Hierarchical Clustering Dendrogram (Iris Data, Unscaled, Average Linkage, Manhattan Distance)'</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Sample Index'</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Distance'</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="clustering_files/figure-html/cell-9-output-1.png" width="789" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-clustering-missing-data" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="sec-clustering-missing-data"><span class="header-section-number">10.9</span> Exercise with missing data</h2>
+<p>Real-world data frequently has missing values. PCA and clustering techniques can struggle on missing data.</p>
+<p>In this exercise, you will work in a group and apply hierarchical clustering, PCA and tSNE on data which has missing values.</p>
+<p>Run the code below. All the missing data will be available in the variable <code>missing_data</code>.</p>
+<div id="40502a4d" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.manifold <span class="im">import</span> TSNE</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer, KNNImputer</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> dendrogram, linkage</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">'ignore'</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Set random seed for reproducibility</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_synthetic_biological_data():</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co">    Create synthetic gene expression data with biological structure and missingness.</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co">    - complete_data: Original data without missing values</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co">    - missing_data: Data with various missingness patterns</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co">    - true_labels: True cluster labels for evaluation</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print("Creating synthetic biological dataset...")</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    n_samples <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    n_genes <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    n_clusters <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create base data structure</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, (n_samples, n_genes))</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add biological structure (clusters)</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    cluster_size <span class="op">=</span> n_samples <span class="op">//</span> n_clusters</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cluster 1: High expression in genes 0-12, samples 0-24</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    data[<span class="dv">0</span>:<span class="dv">25</span>, <span class="dv">0</span>:<span class="dv">13</span>] <span class="op">+=</span> <span class="fl">2.5</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cluster 2: High expression in genes 13-25, samples 25-49  </span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    data[<span class="dv">25</span>:<span class="dv">50</span>, <span class="dv">13</span>:<span class="dv">26</span>] <span class="op">+=</span> <span class="fl">2.0</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cluster 3: High expression in genes 26-37, samples 50-74</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    data[<span class="dv">50</span>:<span class="dv">75</span>, <span class="dv">26</span>:<span class="dv">38</span>] <span class="op">+=</span> <span class="fl">1.8</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cluster 4: Low expression in genes 38-49, samples 75-99</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>    data[<span class="dv">75</span>:<span class="dv">100</span>, <span class="dv">38</span>:<span class="dv">50</span>] <span class="op">-=</span> <span class="fl">2.2</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add some noise</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    data <span class="op">+=</span> np.random.normal(<span class="dv">0</span>, <span class="fl">0.5</span>, data.shape)</span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create sample and gene names</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>    sample_names <span class="op">=</span> [<span class="ss">f'Sample_</span><span class="sc">{</span>i<span class="sc">:03d}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_samples)]</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>    gene_names <span class="op">=</span> [<span class="ss">f'Gene_</span><span class="sc">{</span><span class="bu">chr</span>(<span class="dv">65</span><span class="op">+</span>i<span class="op">//</span><span class="dv">26</span>)<span class="sc">}{</span><span class="bu">chr</span>(<span class="dv">65</span><span class="op">+</span>i<span class="op">%</span><span class="dv">26</span>)<span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_genes)]</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create DataFrame</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>    complete_data <span class="op">=</span> pd.DataFrame(data, index<span class="op">=</span>sample_names, columns<span class="op">=</span>gene_names)</span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create true cluster labels</span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>    true_labels <span class="op">=</span> np.repeat(<span class="bu">range</span>(n_clusters), cluster_size)</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(true_labels) <span class="op">&lt;</span> n_samples:</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>        true_labels <span class="op">=</span> np.append(true_labels, [n_clusters<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> (n_samples <span class="op">-</span> <span class="bu">len</span>(true_labels)))</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"Created dataset: {complete_data.shape[0]} samples × {complete_data.shape[1]} genes")</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"True clusters: {n_clusters}")</span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> complete_data, true_labels</span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> introduce_missing_data_patterns(complete_data, true_labels):</span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a><span class="co">    Introduce different types of missing data patterns.</span></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a><span class="co">    - complete_data: Original complete dataset</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a><span class="co">    - true_labels: True cluster labels</span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a><span class="co">    - missing_data: Dataset with missing values</span></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a><span class="co">    - missing_info: Information about missingness patterns</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print("\nIntroducing missing data patterns...")</span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>    missing_data <span class="op">=</span> complete_data.copy()</span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>    missing_info <span class="op">=</span> {}</span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pattern 1: Missing Completely At Random (MCAR) - 5% random missing</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print("1. Adding MCAR missingness (5% random)...")</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>    mcar_mask <span class="op">=</span> np.random.random(missing_data.shape) <span class="op">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>    missing_data[mcar_mask] <span class="op">=</span> np.nan</span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>    missing_info[<span class="st">'MCAR'</span>] <span class="op">=</span> mcar_mask.<span class="bu">sum</span>()</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pattern 2: Missing At Random (MAR) - correlated with expression level</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print("2. Adding MAR missingness (correlated with high expression)...")</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Higher chance of missing for high expression values</span></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>    high_expr_mask <span class="op">=</span> missing_data <span class="op">&gt;</span> missing_data.quantile(<span class="fl">0.8</span>)</span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>    mar_probability <span class="op">=</span> np.where(high_expr_mask, <span class="fl">0.15</span>, <span class="fl">0.02</span>)  <span class="co"># 15% for high, 2% for low</span></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>    mar_mask <span class="op">=</span> np.random.random(missing_data.shape) <span class="op">&lt;</span> mar_probability</span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>    missing_data[mar_mask] <span class="op">=</span> np.nan</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>    missing_info[<span class="st">'MAR'</span>] <span class="op">=</span> mar_mask.<span class="bu">sum</span>()</span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pattern 3: Missing Not At Random (MNAR) - systematic missing</span></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print("3. Adding MNAR missingness (systematic missing)...")</span></span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Missing entire samples (simulating failed experiments)</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>    failed_samples <span class="op">=</span> np.random.choice(missing_data.index, size<span class="op">=</span><span class="dv">8</span>, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>    missing_data.loc[failed_samples, :] <span class="op">=</span> np.nan</span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>    missing_info[<span class="st">'MNAR_samples'</span>] <span class="op">=</span> <span class="bu">len</span>(failed_samples)</span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Missing entire genes (simulating detection failures)</span></span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>    failed_genes <span class="op">=</span> np.random.choice(missing_data.columns, size<span class="op">=</span><span class="dv">5</span>, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>    missing_data.loc[:, failed_genes] <span class="op">=</span> np.nan</span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>    missing_info[<span class="st">'MNAR_genes'</span>] <span class="op">=</span> <span class="bu">len</span>(failed_genes)</span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pattern 4: Block missingness (simulating batch effects)</span></span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print("4. Adding block missingness (batch effects)...")</span></span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Missing blocks of data (simulating different experimental conditions)</span></span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>    block_start_row <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>    block_end_row <span class="op">=</span> <span class="dv">35</span></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>    block_start_col <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>    block_end_col <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>    missing_data.iloc[block_start_row:block_end_row, block_start_col:block_end_col] <span class="op">=</span> np.nan</span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>    missing_info[<span class="st">'Block'</span>] <span class="op">=</span> (block_end_row <span class="op">-</span> block_start_row) <span class="op">*</span> (block_end_col <span class="op">-</span> block_start_col)</span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate total missingness</span></span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>    total_missing <span class="op">=</span> missing_data.isnull().<span class="bu">sum</span>().<span class="bu">sum</span>()</span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>    total_values <span class="op">=</span> missing_data.size</span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>    missing_percentage <span class="op">=</span> (total_missing <span class="op">/</span> total_values) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Missing data summary:"</span>)</span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Total missing values: </span><span class="sc">{</span>total_missing<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Missing percentage: </span><span class="sc">{</span>missing_percentage<span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"MCAR: {missing_info['MCAR']} values")</span></span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"MAR: {missing_info['MAR']} values") </span></span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"MNAR samples: {missing_info['MNAR_samples']} samples")</span></span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"MNAR genes: {missing_info['MNAR_genes']} genes")</span></span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(f"Block missing: {missing_info['Block']} values")</span></span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> missing_data, missing_info</span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> visualize_missing_patterns(complete_data, missing_data, true_labels):</span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a><span class="co">    Visualize the missing data patterns.</span></span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Creating missing data visualizations..."</span>)</span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">12</span>))</span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot 1: Complete data heatmap</span></span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>    sns.heatmap(complete_data.iloc[:<span class="dv">50</span>, :<span class="dv">30</span>], cmap<span class="op">=</span><span class="st">'RdBu_r'</span>, center<span class="op">=</span><span class="dv">0</span>, </span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>                cbar_kws<span class="op">=</span>{<span class="st">'label'</span>: <span class="st">'Expression Level'</span>})</span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Complete Data (First 50 samples, 30 genes)'</span>)</span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Genes'</span>)</span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Samples'</span>)</span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot 2: Missing data pattern</span></span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a>    missing_mask <span class="op">=</span> missing_data.iloc[:<span class="dv">50</span>, :<span class="dv">30</span>].isnull()</span>
+<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a>    sns.heatmap(missing_mask, cmap<span class="op">=</span><span class="st">'Reds'</span>, cbar_kws<span class="op">=</span>{<span class="st">'label'</span>: <span class="st">'Missing (1=Yes, 0=No)'</span>})</span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Missing Data Pattern'</span>)</span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Genes'</span>)</span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Samples'</span>)</span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot 3: Missing data by sample</span></span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>    missing_by_sample <span class="op">=</span> missing_data.isnull().<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a>    plt.bar(<span class="bu">range</span>(<span class="bu">len</span>(missing_by_sample)), missing_by_sample)</span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Missing Values per Sample'</span>)</span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Sample Index'</span>)</span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Number of Missing Values'</span>)</span>
+<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot 4: Missing data by gene</span></span>
+<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">4</span>)</span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a>    missing_by_gene <span class="op">=</span> missing_data.isnull().<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a>    plt.bar(<span class="bu">range</span>(<span class="bu">len</span>(missing_by_gene)), missing_by_gene)</span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'Missing Values per Gene'</span>)</span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Gene Index'</span>)</span>
+<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Number of Missing Values'</span>)</span>
+<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a><span class="co"># Create synthetic data</span></span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>complete_data, true_labels <span class="op">=</span> create_synthetic_biological_data()</span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a><span class="co"># Introduce missing data patterns</span></span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>missing_data, missing_info <span class="op">=</span> introduce_missing_data_patterns(complete_data, true_labels)</span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize missing patterns</span></span>
+<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize_missing_patterns(complete_data, missing_data, true_labels)</span></span>
+<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a><span class="co"># All the missing data is available in the variable missing_data</span></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a><span class="co"># fill in your code here ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Missing data summary:
+Total missing values: 1346
+Missing percentage: 26.9%</code></pre>
+</div>
+</div>
+<ul>
+<li>All the missing data is available in the variable <code>missing_data</code>. Now perform hierarchical clustering, PCA and tSNE on this data.</li>
+</ul>
+<!--
+Solutions: in scripts/missing_data_solutions.py 
+-->
+</section>
+<section id="choosing-between-methods" class="level2" data-number="10.10">
+<h2 data-number="10.10" class="anchored" data-anchor-id="choosing-between-methods"><span class="header-section-number">10.10</span> Choosing Between Methods</h2>
+<section id="hierarchical-clustering-1" class="level3" data-number="10.10.1">
+<h3 data-number="10.10.1" class="anchored" data-anchor-id="hierarchical-clustering-1"><span class="header-section-number">10.10.1</span> Hierarchical Clustering</h3>
+<ul>
+<li>No need to pre-specify number of clusters (can decide by cutting dendrogram).</li>
+<li>Produces a full hierarchy of clusters.</li>
+</ul>
+</section>
+<section id="kmeans" class="level3" data-number="10.10.2">
+<h3 data-number="10.10.2" class="anchored" data-anchor-id="kmeans"><span class="header-section-number">10.10.2</span> K‑Means</h3>
+<ul>
+<li>Requires pre-specifying <span class="math inline">\(K\)</span>.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="summary" class="level2" data-number="10.11">
+<h2 data-number="10.11" class="anchored" data-anchor-id="summary"><span class="header-section-number">10.11</span> Summary</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Key Points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Hierarchical clustering builds a tree-like structure (dendrogram) to group similar data points
+<ul>
+<li><strong>Distance Metrics</strong> How we measure similarity between points:</li>
+<li>Euclidean distance (straight-line distance)</li>
+<li>Manhattan distance (city-block distance)</li>
+<li>Cosine distance (for directional data)</li>
+</ul></li>
+<li><strong>Linkage Methods</strong>
+<ul>
+<li>How we measure distance between clusters:</li>
+<li><strong>Single</strong>: Uses closest pair of points (can create chains)</li>
+<li><strong>Complete</strong>: Uses farthest pair of points (creates compact clusters)</li>
+<li><strong>Average</strong>: Uses average of all pairwise distances (balanced approach)</li>
+<li><strong>Ward’s</strong>: Minimizes increase in variance (creates similar-sized clusters)</li>
+</ul></li>
+<li><strong>Dendrogram</strong>
+<ul>
+<li>Visual representation showing how clusters merge:</li>
+<li>Height shows distance when clusters merged</li>
+<li>Cutting at different heights gives different numbers of clusters</li>
+</ul></li>
+<li><strong>Key Code Patterns:</strong></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>sns.clustermap(X, method<span class="op">=</span><span class="st">'average'</span>, metric<span class="op">=</span><span class="st">'correlation'</span>, z_score <span class="op">=</span> <span class="dv">0</span>, center<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic hierarchical clustering</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> AgglomerativeClustering</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>agg <span class="op">=</span> AgglomerativeClustering(n_clusters<span class="op">=</span><span class="dv">3</span>, linkage<span class="op">=</span><span class="st">'ward'</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> agg.fit_predict(X)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create dendrogram</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> dendrogram, linkage</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> linkage(X, method<span class="op">=</span><span class="st">'ward'</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>dendrogram(Z)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Important Takeaways</strong></p></li>
+<li><p><strong>No “Correct” Answer</strong></p>
+<ul>
+<li>Unsupervised learning requires interpretation and domain knowledge</li>
+<li><strong>Multiple Methods</strong> - Try different linkage methods and distance metrics</li>
+<li><strong>Evaluation is Key</strong> - Use both internal (silhouette) and external (ARI) metrics. See the next chapter for more on evaluation.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="further-reading" class="level2" data-number="10.12">
+<h2 data-number="10.12" class="anchored" data-anchor-id="further-reading"><span class="header-section-number">10.12</span> Further Reading</h2>
+<ul>
+<li><a href="https://www.statlearning.com/">Introduction to Statistical Learning in Python (ISLP)</a></li>
+<li><a href="https://github.com/intro-stat-learning/ISLP_labs/blob/stable/Ch12-unsup-lab.ipynb">IPython notebook from ISLP book</a></li>
+<li>Scikit‑learn documentation:
+<ul>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">AgglomerativeClustering</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">KMeans</a></li>
+</ul></li>
+<li><a href="https://seaborn.pydata.org/archive/0.12/generated/seaborn.clustermap.html">Documentation of sns.clustermap</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/tsne.html" class="pagination-link" aria-label="tSNE">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">tSNE</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/evaluation.html" class="pagination-link" aria-label="Evaluation for unsupervised machine learning">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Evaluation for unsupervised machine learning</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Cambridge Research Informatics Training</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
