@@ -3,7 +3,7 @@ title: "Normalizing your data and PCA"
 format: html
 ---
 
-# Introduction
+## Introduction
 
 This chapter demonstrates basic unsupervised machine learning concepts using Python.
 
