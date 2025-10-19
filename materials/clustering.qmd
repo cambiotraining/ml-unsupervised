@@ -809,7 +809,9 @@ missing_data, missing_info = introduce_missing_data_patterns(complete_data, true
 
 ```
 
-* All the missing data is available in the variable `missing_data`. Now perform hierarchical clustering, PCA and tSNE on this data.
+* All the missing data is available in the variable `missing_data`. 
+
+* Now perform hierarchical clustering, PCA and tSNE on this data.
 
 
 <!--

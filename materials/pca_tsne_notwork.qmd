@@ -1457,6 +1457,8 @@ plt.show()
 #### Key Points
 
 - PCA or tSNE are not magic bullets and may not _work_ all the time 
+- Usually you need to try a bunch of different techniques
+- Remember that unsupervised machine learning is _exploratory_
 :::
 
 

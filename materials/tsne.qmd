@@ -1407,7 +1407,9 @@ plt.show()
 
 
 
-## Exercise: hands-on practical applying tSNE to another dataset
+## Exercise: Hands-on practical applying tSNE to another dataset
+
+* Work in a group.
 
 * Load the US Arrests data in Python and perform tSNE on this (pair up with a person)
 
