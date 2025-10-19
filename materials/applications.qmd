@@ -406,7 +406,7 @@ plt.show()
 
  - What are your key findings? 
  - Do you think we can find partitions of patients/clusters of patients?
- - What can you do with these partitions?
+ - Once you discover these partitions/clusters, what will you do with this information?
 
 
 
@@ -676,7 +676,9 @@ sns.clustermap(.......)
 <!-- end callout -->
 
 
+<!--
 TODO: XX refine and introduce `sns.clustermap` elsewhere also
+-->
 
 
 ```{python ch4-singlecell-clustermap}
