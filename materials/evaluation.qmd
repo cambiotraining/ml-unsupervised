@@ -122,7 +122,7 @@ plt.show()
 ::: {.callout-tip}
 ## Important Concept (recall)
 
-* There is not "correct" answer in unsupervised machine learning!
+* There is no "correct" answer in unsupervised machine learning!
 
 * So how do you know when you are done? 
 :::
@@ -199,6 +199,7 @@ print(ari)
 print("Compares to true labels. Score is from -1 to 1. Higher is better")
 ```
 
+<!--
 * Silhouette plots
 
 A silhouette plot is a visual diagnostic for clustering quality that (1) computes a silhouette value for each sample and (2) shows the distribution of those values for every cluster. It helps you see which clusters are tight and well-separated and which contain ambiguous or poorly assigned samples.
@@ -214,10 +215,12 @@ A silhouette plot is a visual diagnostic for clustering quality that (1) compute
 - Negative values → sample is likely assigned to the wrong cluster.
 
 - The red dashed line is the average silhouette score; use it as a quick summary, but always inspect per-cluster distributions — a high average can hide poorly-formed small clusters.
+-->
 
 
 ```{python ch3-eval-sil-plot-simple}
 #| warning: false
+#| echo: false
 
 def plot_silhouette_simple(X, labels, metric='manhattan'):
     """
@@ -419,6 +422,7 @@ pca2 = PCA(n_components=2).fit_transform(X)
 plot_silhouette(X, labels, embedding=pca2, title=f"k={k}")
 ```
 
+<!--
 * Notes on interpreting silhouette plots
 
 - Each horizontal block is a cluster; the width at a given vertical position is the silhouette value of a sample.
@@ -430,7 +434,7 @@ plot_silhouette(X, labels, embedding=pca2, title=f"k={k}")
 - Negative values → sample is likely assigned to the wrong cluster.
 
 - The red dashed line is the average silhouette score; use it as a quick summary, but always inspect per-cluster distributions — a high average can hide poorly-formed small clusters.
-
+-->
 
 * Compare to literature and what others have done
 
@@ -938,7 +942,6 @@ clustering_fn = lambda Xsub: KMeans(n_clusters=k, random_state=0).fit(Xsub).labe
 
 
 -->
-
 
 
 
