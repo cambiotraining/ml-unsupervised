@@ -31,3 +31,5 @@ Scripts for generating data
 15. `sns_clustermap*.py` are Python scripts that demonstrates the use of seaborn's clustermap function to visualize hierarchical clustering on a sample dataset.
 
 16. `missing_data_solutions.py` is a Python script that generates a synthetic dataset with various missing data patterns (MCAR, MAR, MNAR, block missingness) and visualizes the missing data using heatmaps and bar plots.
+
+17. `silhouette.py` is a Python script that demonstrates the calculation and visualization of silhouette scores for clustering results on a sample dataset. It includes functions to compute silhouette scores, plot silhouette diagrams, and interpret the results.

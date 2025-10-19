@@ -7,7 +7,7 @@ title: Evaluation for unsupervised machine learning
 
 - How to evaluate unsupervised machine learning techniques
 - Know the difference between **internal**, **external**, and **biological** evaluation.
-- Be able to compute and interpret common metrics (silhouette, ARI).
+- Be able to compute and interpret common metrics (silhouette).
 - Learn practical diagnostics: silhouette plot .
 - Be able to choose metrics depending on whether you have ground truth, partial labels, or purely exploratory goals.
 - Communicate results in biologically meaningful ways (marker genes).
@@ -18,7 +18,8 @@ title: Evaluation for unsupervised machine learning
 ## Conceptual framing
 
 * **Internal metrics**: use only the data + clustering labels. Measure compactness vs separation (e.g., silhouette).
-* **External metrics**: require ground truth/labels (experimental groups, annotated cell types). Use ARI, NMI, precision/recall on pairwise same/different labels.
+* **External metrics**: require ground truth/labels (experimental groups, annotated cell types). 
+<!--Use ARI, NMI, precision/recall on pairwise same/different labels.-->
 * **Biological validation**: compare clusters to known marker genes, pathways, experimental metadata (batch, donor), or enrichment tests. Often the most important for biologists.
 
 ---
@@ -27,11 +28,13 @@ title: Evaluation for unsupervised machine learning
 
 * **Explained variance (PCA)** — fraction of variance captured by components (useful for dimensionality reduction decisions).
 * **Silhouette score** (−1..1) — how well each sample fits its cluster vs nearest other cluster; good general-purpose internal metric.
+<!--
 * **Calinski–Harabasz** — ratio of between/within dispersion (higher = better).
 * **Davies–Bouldin** (lower = better) — average similarity between each cluster and its most similar one.
 * **Adjusted Rand Index (ARI)** — similarity between two labelings corrected for chance (commonly 0..1).
 * **Normalized Mutual Information (NMI)** — information overlap between labelings (0..1).
 * **Trustworthiness** (for embeddings like UMAP/t-SNE) — how well local neighborhoods are preserved.
+-->
 * **Stability / reproducibility** — how consistent cluster assignments are under parameter changes.
 
 ---
