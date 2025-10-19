@@ -8,7 +8,6 @@ title: Evaluation for unsupervised machine learning
 - How to evaluate unsupervised machine learning techniques
 - Know the difference between **internal**, **external**, and **biological** evaluation.
 - Be able to compute and interpret common metrics (silhouette).
-- Learn practical diagnostics: silhouette plot .
 - Be able to choose metrics depending on whether you have ground truth, partial labels, or purely exploratory goals.
 - Communicate results in biologically meaningful ways (marker genes).
 
@@ -221,6 +220,7 @@ A silhouette plot is a visual diagnostic for clustering quality that (1) compute
 ```{python ch3-eval-sil-plot-simple}
 #| warning: false
 #| echo: false
+#| output: false
 
 def plot_silhouette_simple(X, labels, metric='manhattan'):
     """
@@ -307,6 +307,7 @@ plot_silhouette_simple(X, cluster_labels, metric='manhattan')
 ```{python ch-eval-silhouette-plots}
 #| warning: false
 #| echo: false
+#| output: false
 
 """
 Silhouette plot utilities.
