@@ -13,6 +13,7 @@ book:
     - part: "Session 3: Clustering" 
       chapters:
         - materials/clustering.qmd
+        - materials/missing_data.qmd
         - materials/evaluation.qmd
     - part: "Session 4: Applications of Unsupervised Learning"
       chapters:

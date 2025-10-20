@@ -1,0 +1,239 @@
+---
+title: Missing values in unsupervised machine learning
+---
+
+::: {.callout-tip}
+#### Learning Objectives
+
+- Missing values in unsupervised machine learning problems.
+:::
+
+
+
+## Exercise with missing data {#sec-clustering-missing-data}
+
+Real-world data frequently has missing values. PCA and clustering techniques can struggle on missing data.
+
+In this exercise, you will work in a group and apply hierarchical clustering, PCA and tSNE on data which has missing values.
+
+Run the code below. All the missing data will be available in the variable `missing_data`.
+
+
+```{python ch3-exercise-missing-value}
+#| warning: false
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.impute import SimpleImputer, KNNImputer
+from sklearn.preprocessing import StandardScaler
+from scipy.cluster.hierarchy import dendrogram, linkage
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+def create_synthetic_biological_data():
+    """
+    Create synthetic gene expression data with biological structure and missingness.
+    
+    Returns:
+    - complete_data: Original data without missing values
+    - missing_data: Data with various missingness patterns
+    - true_labels: True cluster labels for evaluation
+    """
+    #print("Creating synthetic biological dataset...")
+    
+    # Parameters
+    n_samples = 100
+    n_genes = 50
+    n_clusters = 4
+    
+    # Create base data structure
+    data = np.random.normal(0, 1, (n_samples, n_genes))
+    
+    # Add biological structure (clusters)
+    cluster_size = n_samples // n_clusters
+    
+    # Cluster 1: High expression in genes 0-12, samples 0-24
+    data[0:25, 0:13] += 2.5
+    # Cluster 2: High expression in genes 13-25, samples 25-49  
+    data[25:50, 13:26] += 2.0
+    # Cluster 3: High expression in genes 26-37, samples 50-74
+    data[50:75, 26:38] += 1.8
+    # Cluster 4: Low expression in genes 38-49, samples 75-99
+    data[75:100, 38:50] -= 2.2
+    
+    # Add some noise
+    data += np.random.normal(0, 0.5, data.shape)
+    
+    # Create sample and gene names
+    sample_names = [f'Sample_{i:03d}' for i in range(n_samples)]
+    gene_names = [f'Gene_{chr(65+i//26)}{chr(65+i%26)}' for i in range(n_genes)]
+    
+    # Create DataFrame
+    complete_data = pd.DataFrame(data, index=sample_names, columns=gene_names)
+    
+    # Create true cluster labels
+    true_labels = np.repeat(range(n_clusters), cluster_size)
+    if len(true_labels) < n_samples:
+        true_labels = np.append(true_labels, [n_clusters-1] * (n_samples - len(true_labels)))
+    
+    #print(f"Created dataset: {complete_data.shape[0]} samples × {complete_data.shape[1]} genes")
+    #print(f"True clusters: {n_clusters}")
+    
+    return complete_data, true_labels
+
+def introduce_missing_data_patterns(complete_data, true_labels):
+    """
+    Introduce different types of missing data patterns.
+    
+    Parameters:
+    - complete_data: Original complete dataset
+    - true_labels: True cluster labels
+    
+    Returns:
+    - missing_data: Dataset with missing values
+    - missing_info: Information about missingness patterns
+    """
+    #print("\nIntroducing missing data patterns...")
+    
+    missing_data = complete_data.copy()
+    missing_info = {}
+    
+    # Pattern 1: Missing Completely At Random (MCAR) - 5% random missing
+    #print("1. Adding MCAR missingness (5% random)...")
+    mcar_mask = np.random.random(missing_data.shape) < 0.05
+    missing_data[mcar_mask] = np.nan
+    missing_info['MCAR'] = mcar_mask.sum()
+    
+    # Pattern 2: Missing At Random (MAR) - correlated with expression level
+    #print("2. Adding MAR missingness (correlated with high expression)...")
+    # Higher chance of missing for high expression values
+    high_expr_mask = missing_data > missing_data.quantile(0.8)
+    mar_probability = np.where(high_expr_mask, 0.15, 0.02)  # 15% for high, 2% for low
+    mar_mask = np.random.random(missing_data.shape) < mar_probability
+    missing_data[mar_mask] = np.nan
+    missing_info['MAR'] = mar_mask.sum()
+    
+    # Pattern 3: Missing Not At Random (MNAR) - systematic missing
+    #print("3. Adding MNAR missingness (systematic missing)...")
+    # Missing entire samples (simulating failed experiments)
+    failed_samples = np.random.choice(missing_data.index, size=8, replace=False)
+    missing_data.loc[failed_samples, :] = np.nan
+    missing_info['MNAR_samples'] = len(failed_samples)
+    
+    # Missing entire genes (simulating detection failures)
+    failed_genes = np.random.choice(missing_data.columns, size=5, replace=False)
+    missing_data.loc[:, failed_genes] = np.nan
+    missing_info['MNAR_genes'] = len(failed_genes)
+    
+    # Pattern 4: Block missingness (simulating batch effects)
+    #print("4. Adding block missingness (batch effects)...")
+    # Missing blocks of data (simulating different experimental conditions)
+    block_start_row = 20
+    block_end_row = 35
+    block_start_col = 10
+    block_end_col = 20
+    missing_data.iloc[block_start_row:block_end_row, block_start_col:block_end_col] = np.nan
+    missing_info['Block'] = (block_end_row - block_start_row) * (block_end_col - block_start_col)
+    
+    # Calculate total missingness
+    total_missing = missing_data.isnull().sum().sum()
+    total_values = missing_data.size
+    missing_percentage = (total_missing / total_values) * 100
+    
+    print(f"\nMissing data summary:")
+    print(f"Total missing values: {total_missing}")
+    print(f"Missing percentage: {missing_percentage:.1f}%")
+    #print(f"MCAR: {missing_info['MCAR']} values")
+    #print(f"MAR: {missing_info['MAR']} values") 
+    #print(f"MNAR samples: {missing_info['MNAR_samples']} samples")
+    #print(f"MNAR genes: {missing_info['MNAR_genes']} genes")
+    #print(f"Block missing: {missing_info['Block']} values")
+    
+    return missing_data, missing_info
+
+def visualize_missing_patterns(complete_data, missing_data, true_labels):
+    """
+    Visualize the missing data patterns.
+    """
+    print("\nCreating missing data visualizations...")
+    
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    
+    # Plot 1: Complete data heatmap
+    plt.subplot(2, 2, 1)
+    sns.heatmap(complete_data.iloc[:50, :30], cmap='RdBu_r', center=0, 
+                cbar_kws={'label': 'Expression Level'})
+    plt.title('Complete Data (First 50 samples, 30 genes)')
+    plt.xlabel('Genes')
+    plt.ylabel('Samples')
+    
+    # Plot 2: Missing data pattern
+    plt.subplot(2, 2, 2)
+    missing_mask = missing_data.iloc[:50, :30].isnull()
+    sns.heatmap(missing_mask, cmap='Reds', cbar_kws={'label': 'Missing (1=Yes, 0=No)'})
+    plt.title('Missing Data Pattern')
+    plt.xlabel('Genes')
+    plt.ylabel('Samples')
+    
+    # Plot 3: Missing data by sample
+    plt.subplot(2, 2, 3)
+    missing_by_sample = missing_data.isnull().sum(axis=1)
+    plt.bar(range(len(missing_by_sample)), missing_by_sample)
+    plt.title('Missing Values per Sample')
+    plt.xlabel('Sample Index')
+    plt.ylabel('Number of Missing Values')
+    
+    # Plot 4: Missing data by gene
+    plt.subplot(2, 2, 4)
+    missing_by_gene = missing_data.isnull().sum(axis=0)
+    plt.bar(range(len(missing_by_gene)), missing_by_gene)
+    plt.title('Missing Values per Gene')
+    plt.xlabel('Gene Index')
+    plt.ylabel('Number of Missing Values')
+    
+    plt.tight_layout()
+    plt.show()
+
+
+# Create synthetic data
+complete_data, true_labels = create_synthetic_biological_data()
+    
+# Introduce missing data patterns
+missing_data, missing_info = introduce_missing_data_patterns(complete_data, true_labels)
+    
+# Visualize missing patterns
+#visualize_missing_patterns(complete_data, missing_data, true_labels)
+
+# All the missing data is available in the variable missing_data
+# fill in your code here ...
+
+```
+
+* All the missing data is available in the variable `missing_data`. 
+
+* Now perform hierarchical clustering, PCA and tSNE on this data.
+
+* How would you _impute_ (infer) missing values? i.e. figure out what the values may have been and fill them in. 
+
+<!--
+Solutions: in scripts/missing_data_solutions.py 
+-->
+
+
+
+## Summary
+
+::: {.callout-tip}
+#### Key Points
+
+- Missing data comes up a lot in data science problem.
+- Many machine learning techniques struggle on missing data.
+- You can use various techniques to _impute_ missing values.
+:::
