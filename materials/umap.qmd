@@ -301,6 +301,24 @@ X_iris = iris.data           # 150 samples, 4 features (sepal/petal lengths/widt
 y_iris = iris.target         # species labels (0,1,2)
 labels_iris = iris.target_names
 
+# create a data frame for easier viewing
+df_iris_simple = pd.DataFrame(X_iris, columns = iris.feature_names)
+
+df_iris_simple['species'] = iris.target
+df_iris_simple['species_name'] = df_iris_simple['species'].map( {0:'setosa', 1:'versicolor', 2:'virginica'} )
+
+# display basic information
+print(df_iris_simple.head)
+
+# scatter plots
+plt.figure()
+plt.scatter(X_iris[:,0], X_iris[:,1], c = iris.target, cmap='viridis')
+plt.xlabel(iris.feature_names[0])
+plt.ylabel(iris.feature_names[1])
+plt.title('Sepal length vs. Sepal width')
+plt.colorbar(label='species')
+plt.show()
+
 # Standardize features 
 scaler = StandardScaler()
 X_iris_scaled = scaler.fit_transform(X_iris)
@@ -322,6 +340,7 @@ plt.title("UMAP on Iris data")
 plt.legend(loc="best")
 plt.show()
 ```
+
 
 
 * Quick tips:
@@ -346,6 +365,7 @@ plt.show()
 
 3. Replace synthetic data with a small real gene-expression matrix and try the pipeline:
    counts -> log1p -> StandardScaler -> UMAP.
+
 
 ```{python ch-umap-complexcode}
 #| warning: false
