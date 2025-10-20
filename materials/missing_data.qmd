@@ -220,7 +220,14 @@ missing_data, missing_info = introduce_missing_data_patterns(complete_data, true
 
 * Now perform hierarchical clustering, PCA and tSNE on this data.
 
-* How would you _impute_ (infer) missing values? i.e. figure out what the values may have been and fill them in. 
+* How would you _impute_ (infer) missing values? i.e. figure out what the values may have been and fill them in.
+
+::: {.callout-hint collapse=”true”}
+
+Look into the [impute](https://scikit-learn.org/stable/modules/impute.html) functions in _scikit-learn_.
+
+:::
+
 
 <!--
 Solutions: in scripts/missing_data_solutions.py 
