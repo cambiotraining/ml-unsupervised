@@ -198,6 +198,34 @@ print(ari)
 print("Compares to true labels. Score is from -1 to 1. Higher is better")
 ```
 
+
+### Intuition of silhouette score
+
+Think of each data point as asking two questions:
+
+- **How close am I to points in my own cluster?** (call this **a**)  
+- **How close would I be, on average, to the _nearest other_ cluster?** (call this **b**)
+
+The silhouette value for the point compares those two answers:
+
+- If **a** is much smaller than **b** (you are much closer to your own cluster than to any other), the silhouette is close to **+1** → *great fit*.  
+- If **a ≈ b**, silhouette is near **0** → *on the boundary between clusters*.  
+- If **a > b**, silhouette is **negative** → *probably misassigned* (you are closer to another cluster than your own).
+
+Numerically:
+
+\[
+s = \frac{b - a}{\max(a, b)}
+\]
+
+So
+
+\[
+s \in [-1,\,1]
+\]
+
+
+
 <!--
 * Silhouette plots
 

@@ -625,6 +625,125 @@ plt.show()
 ```
 
 
+## Theoretical exercise: distance functions and the thin line between unsupervised and supervised machine learning
+
+* We often think the choice between supervised and unsupervised machine learning is obvious: "if you have labels, use supervised; otherwise use unsupervised". In practice the decision can be subtle and depends on the problem framing, available data, and what constitutes a useful output.
+
+* This also impacts the choice of distance metric to use. We use whatever distance metric allows us to get the job done. 
+
+* For each scenario: state your choice (supervised / unsupervised / hybrid)
+
+* _Scenario 1_: Discovering shopper archetypes: A marketing team wants to segment shoppers into behavioural archetypes to send them targetted ads/promotions through loyalty cards.
+
+```{python ch5_thinline_shopperdata}
+#| warning: false
+#| echo: false
+
+# Creating a simple illustrative figure (PNG) that matches the R Markdown example:
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+np.random.seed(42)
+x = np.arange(1,21)
+
+# Define three shopper series similar to the R example
+shopper1 = np.array([4]*5 + [1]*5 + [3]*5 + [0]*5)
+shopper2 = np.array([14,13,12,15,13,6,7,6,5,14,13,10,8,7,12,14,13,6,7,6])
+shopper3 = np.array([2,1,0,1,2,1,3,2,1,2,1,3,2,1,4,3,2,1,0,1])
+
+plt.figure(figsize=(8,5))
+plt.plot(x, shopper1, marker='o', label='Shopper 1')
+plt.plot(x, shopper2, marker='o', label='Shopper 2')
+plt.plot(x, shopper3, marker='o', label='Shopper 3')
+plt.xticks(x)
+plt.xlabel('Item index')
+plt.ylabel('Purchase count')
+plt.title('Three example shoppers — 20 items')
+plt.legend(loc='upper right')
+plt.tight_layout()
+plt.show()
+```
+
+* _Scenario 2_: Detecting fraud / unusual shopping sessions: A small fraction of sessions are flagged as fraudulent (labels exist for some known fraud cases). The team wants to detect new, unseen fraud patterns.
+
+* _Scenario 3_: You have just started working for an exciting startup. *StreamVision* is a video streaming platform with 500 million subscribers worldwide. The platform hosts over 1500000 movies and TV shows across various genres. The company has noticed that users often struggle to find content they enjoy, leading to decreased engagement and higher churn rates. The content team has collected interaction data and wants to understand viewing patterns to improve the user experience.
+
+StreamVision's executive team has set the following objectives:
+
+1. **Increase user engagement**: Help users discover content they're likely to enjoy
+2. **Reduce decision fatigue**: Minimize the time users spend browsing without watching
+3. **Optimize content acquisition**: Understand what types of content resonate with different user segments
+4. **Personalize the experience**: Create tailored homepages for different user groups
+
+
+The analytics team has prepared two datasets for analysis:
+
+#### Dataset 1: User Viewing History (Sample)
+
+This dataset contains information about user interactions with content over the past 6 months. Each row represents viewing activity aggregated by user and content item.
+
+| User_ID | Content_ID | Watch_Time_Minutes | Completion_Rate | Rating_Given | Rewatch_Count | Days_Since_Release | User_Tenure_Days |
+|---------|------------|-------------------|-----------------|--------------|---------------|-------------------|------------------|
+| U10023 | C4521 | 127 | 0.98 | 5 | 0 | 456 | 892 |
+| U10023 | C7834 | 45 | 0.35 | NULL | 0 | 12 | 892 |
+| U10023 | C2109 | 156 | 1.00 | 5 | 2 | 1203 | 892 |
+| U20441 | C4521 | 18 | 0.14 | 2 | 0 | 456 | 234 |
+| U20441 | C8821 | 201 | 0.95 | 4 | 0 | 89 | 234 |
+| U31205 | C7834 | 121 | 0.94 | 5 | 1 | 12 | 1456 |
+| U31205 | C2109 | 162 | 1.00 | 5 | 0 | 1203 | 1456 |
+| U31205 | C9012 | 89 | 0.88 | 4 | 0 | 678 | 1456 |
+
+**Field Descriptions:**
+- **User_ID**: Unique identifier for each subscriber
+- **Content_ID**: Unique identifier for each movie/show
+- **Watch_Time_Minutes**: Total time user spent watching this content
+- **Completion_Rate**: Percentage of content watched (0-1 scale)
+- **Rating_Given**: Explicit rating (1-5 stars, NULL if not rated)
+- **Rewatch_Count**: Number of times user has rewatched this content
+- **Days_Since_Release**: How many days ago the content was added to platform
+- **User_Tenure_Days**: How long the user has been subscribed
+
+#### Dataset 2: Content Metadata (Sample)
+
+This dataset describes characteristics of each piece of content in the StreamVision library.
+
+| Content_ID | Title | Primary_Genre | Secondary_Genre | Runtime_Minutes | Release_Year | IMDB_Score | Language | Director_Style_Code | Lead_Actor_Popularity |
+|------------|-------|---------------|-----------------|-----------------|--------------|------------|----------|---------------------|---------------------|
+| C4521 | Midnight Runner | Action | Thriller | 132 | 2019 | 7.2 | English | D_034 | 8.1 |
+| C7834 | The Quiet Garden | Drama | Romance | 128 | 2024 | 6.8 | English | D_102 | 6.9 |
+| C2109 | Starship Protocol | Sci-Fi | Action | 156 | 2017 | 8.4 | English | D_034 | 9.2 |
+| C8821 | Voices Within | Documentary | Biography | 212 | 2023 | 8.9 | English | D_201 | 7.5 |
+| C9012 | Summer of '82 | Comedy | Drama | 101 | 2020 | 7.6 | English | D_178 | 7.8 |
+
+**Field Descriptions:**
+- **Content_ID**: Unique identifier matching the viewing history dataset
+- **Title**: Name of the movie/show
+- **Primary_Genre**: Main genre classification
+- **Secondary_Genre**: Additional genre classification
+- **Runtime_Minutes**: Total length of content
+- **Release_Year**: Year the content was originally released
+- **IMDB_Score**: External quality metric (1-10 scale)
+- **Language**: Primary language of the content
+- **Director_Style_Code**: Encoded style signature of the director
+- **Lead_Actor_Popularity**: Popularity metric of main actor (1-10 scale)
+
+### Analysis Questions
+
+The product team has posed several questions they'd like you to explore:
+
+1. **User Segmentation**: Are there natural groups of users with similar viewing preferences? How would you characterize these groups?
+
+2. **Content Discovery**: How can we identify which content items are similar to each other, even if they don't share obvious genre tags?
+
+3. **Cold Start Problem**: For new users with limited viewing history, how might we determine which user segment they belong to based on their first few viewing choices?
+
+4. **Content Gaps**: Are there user segments that might be underserved by the current content library?
+
+5. **Personalization Strategy**: Given these insights, what approach would you recommend for creating personalized homepages?
+
+
+
 ## Exercise with missing data {#sec-clustering-missing-data}
 
 Real-world data frequently has missing values. PCA and clustering techniques can struggle on missing data.
