@@ -13,7 +13,7 @@ title: Clustering
 
 2. **Describe and execute hierarchical clustering methods**  
    - Compute and interpret a dendrogram.  
-   - Apply various linkage criteria (single, complete, average, Ward’s, etc.) and distance metrics (Euclidean, Manhattan, cosine).
+   - Apply various linkage criteria (single, complete, average, Ward’s, etc.) and distance metrics (Euclidean, Manhattan).
 
 3. **Implement and analyze K‑Means clustering**  
    - Articulate the iterative assignment–update steps and convergence conditions.  
@@ -141,12 +141,34 @@ The **elbow point** is the value of _k_ at which the decrease in WCSS "bends" mo
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.datasets import load_iris
 
 # Load data
 iris = load_iris()
 X = iris.data
+
+# create a data frame for easier viewing
+df_iris_simple = pd.DataFrame(X, columns = iris.feature_names)
+
+df_iris_simple['species'] = iris.target
+df_iris_simple['species_name'] = df_iris_simple['species'].map( {0:'setosa', 1:'versicolor', 2:'virginica'} )
+
+# display basic information
+print(df_iris_simple.head)
+
+# scatter plots
+plt.figure()
+plt.scatter(X[:,0], X[:,1], c = iris.target, cmap='viridis')
+plt.xlabel(iris.feature_names[0])
+plt.ylabel(iris.feature_names[1])
+plt.title('Sepal length vs. Sepal width')
+plt.colorbar(label='species')
+plt.show()
+```
+
+```{python ch3-kmeans-perform-simple}
 
 # Perform k means with k = 2
 kmeans = KMeans(n_clusters=2, random_state=2, n_init=20)

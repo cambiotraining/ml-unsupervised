@@ -1069,6 +1069,7 @@ plt.show()
 ## Simple code to perform tSNE (hands-on exercise)
 
 Let us now practice performing tSNE on some data. We will use the `iris` data. The **Iris dataset** is a small, classic dataset in machine learning.  
+
 It contains measurements of **150 flowers** from three species of iris (*setosa, versicolor, virginica*).  
 
 For each flower, four features are recorded:
@@ -1083,11 +1084,31 @@ For each flower, four features are recorded:
 import matplotlib.pyplot as plt
 from sklearn import datasets
 from sklearn.manifold import TSNE
+import pandas as pd
 
 # Load the Iris dataset
 iris = datasets.load_iris()
 X = iris.data            # The features (measurements)
 y = iris.target          # The species labels (0, 1, 2)
+
+# create a data frame for easier viewing
+df_iris_simple = pd.DataFrame(X, columns = iris.feature_names)
+
+df_iris_simple['species'] = iris.target
+df_iris_simple['species_name'] = df_iris_simple['species'].map( {0:'setosa', 1:'versicolor', 2:'virginica'} )
+
+# display basic information
+print(df_iris_simple.head)
+
+# scatter plots
+plt.figure()
+plt.scatter(X[:,0], X[:,1], c = iris.target, cmap='viridis')
+plt.xlabel(iris.feature_names[0])
+plt.ylabel(iris.feature_names[1])
+plt.title('Sepal length vs. Sepal width')
+plt.colorbar(label='species')
+plt.show()
+
 
 # Run t-SNE to reduce the data to 2 dimensions
 tsne = TSNE(n_components=2, random_state=0, perplexity=30)

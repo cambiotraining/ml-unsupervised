@@ -1246,7 +1246,7 @@ plt.show()
 
 #### What if data has categorical features?
 
-* PCA may not work if you have categorical features
+* PCA may or may not work if you have categorical features.
 
 For example, if you have data that looks like this ....
 
