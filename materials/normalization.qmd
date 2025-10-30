@@ -319,6 +319,7 @@ X = np.vstack([
 plt.scatter(X[:, 0], X[:, 1])
 plt.title("Synthetic Data")
 plt.show()
+
 ```
 
 ## PCA Example
@@ -331,7 +332,7 @@ plt.show()
 
 ```{python ch1-simple-pca-code-show}
 #| echo: true
-#| fig-cap: "A simple PCA plot"
+#| fig-cap: "A simple PCA plot (biplot)"
 
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
@@ -633,7 +634,7 @@ Here is an intutive explanation of the PCA biplot.
 
 * Interpretation of loadings:
 
-- PC1 (Urbanization axis): All crime variables (Murder, Assault, Rape) load positively, while UrbanPop has a smaller positive loading. This suggests PC1 captures overall crime levels.
+- PC1 (Urbanization axis): All crime variables (Murder, Assault, ViolentCrime) load positively, while UrbanPop has a smaller positive loading. This suggests PC1 captures overall crime levels.
 
 <!--
 - PC2 (Crime vs Urbanization axis): UrbanPop loads strongly negative, while crime variables load positively, creating a contrast between urban vs rural crime patterns.
@@ -754,7 +755,7 @@ Install the `pca` Python package
 from pca import pca
 import pandas as pd
 
-# Load the US Arrests data
+# Load the US Arrests data (available online)
 # Read the USArrests data directly from the GitHub raw URL
 url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/USArrests.csv"
 df = pd.read_csv(url, index_col=0)

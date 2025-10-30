@@ -29,6 +29,10 @@ title: Hands-on exercises (Applications of unsupervised machine learning)
 
 * None of the projects require any knowledge of biology or any other field.
 
+* If you are unsure, pick the first project on electronic healthcare records.
+
+* I will be doing a live coding session (code walkthrough).
+
 
 ### Project using electronic healthcare records data {#sec-exr_title_EHR}
 
