@@ -460,6 +460,7 @@ import pandas as pd
 # Load the US Arrests data
 # Read the USArrests data directly from the GitHub raw URL
 url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/main/course_files/data/USArrests.csv"
+
 X = pd.read_csv(url, index_col=0)
 
 # alternatively if you have downloaded the data folder 
@@ -470,7 +471,8 @@ X = pd.read_csv(url, index_col=0)
 # X = pd.read_csv("USArrests.csv", index_col=0)
 
 # what is in the data?
-X.head()
+#X.head()
+
 ```
 
 * Normalize the data
