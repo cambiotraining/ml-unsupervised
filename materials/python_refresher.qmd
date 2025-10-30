@@ -146,14 +146,14 @@ url = "https://raw.githubusercontent.com/cambiotraining/ml-unsupervised/refs/hea
 crime_data = pd.read_csv(url)
 
 # Display the shape of the data
-print("Shape of the dataset:", crime_data.shape)
+print("Shape of the dataset: ", crime_data.shape)
 
 # Display the first 3 rows
-print("\nFirst 3 rows:")
+print("\nFirst 3 rows: ")
 print(crime_data.head(3))
 
 # Display column names
-print("\nColumn names:")
+print("\nColumn names: ")
 print(crime_data.columns)
 ```
 

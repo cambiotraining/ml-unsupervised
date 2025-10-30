@@ -471,7 +471,7 @@ X = pd.read_csv(url, index_col=0)
 # X = pd.read_csv("USArrests.csv", index_col=0)
 
 # what is in the data?
-#X.head()
+X.head()
 
 ```
 
