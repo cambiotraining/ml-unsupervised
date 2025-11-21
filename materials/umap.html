@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15&nbsp; UMAP (Optional)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/bonus_material.html" rel="next">
+<link href="../materials/applications.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fd4369bcce5669dc6f092a5d180a1716.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo light-content">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Applied Unsupervised Machine Learning</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/cambiotraining/ml-unsupervised"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:github" style="font-size: 1.25em;" aria-label="Icon github from fa6-brands Iconify.design set." title="CRIT GitHub"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/bioinfocambs.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:bluesky" style="font-size: 1.25em;" aria-label="Icon bluesky from fa6-brands Iconify.design set." title="CRIT Bluesky"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://genomic.social/@BioInfoCambs"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:mastodon" style="font-size: 1.25em;" aria-label="Icon mastodon from fa6-brands Iconify.design set." title="CRIT Mastodon"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bioinfotraining.bio.cam.ac.uk/"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="mdi:web" style="font-size: 1.25em;" aria-label="Icon web from mdi Iconify.design set." title="CRIT Website"></iconify-icon></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">UMAP (Optional)</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Applied Unsupervised Machine Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data &amp; Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">References and Resources</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Introduction to Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/python_refresher.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Refresher on Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/goal_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Goal of Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/conceptual_basis_PCA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conceptual and mathematical basis of PCA</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Dimensionality Reduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/tsne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">tSNE</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: Clustering</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/missing_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Missing values in unsupervised machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Evaluation for unsupervised machine learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 4: Applications of Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/pca_tsne_notwork.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">When PCA or tSNE might not work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Hands-on exercises (Applications of unsupervised machine learning)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bonus Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/umap.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">UMAP (Optional)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/bonus_material.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Mathematical Basics and Additional Material</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#umap-intuition" id="toc-umap-intuition" class="nav-link active" data-scroll-target="#umap-intuition"><span class="header-section-number">16</span> UMAP Intuition</a>
+  <ul class="collapse">
+  <li><a href="#what-is-umap" id="toc-what-is-umap" class="nav-link" data-scroll-target="#what-is-umap"><span class="header-section-number">16.1</span> What is UMAP?</a></li>
+  <li><a href="#the-core-idea-preserve-both-local-and-global-structure" id="toc-the-core-idea-preserve-both-local-and-global-structure" class="nav-link" data-scroll-target="#the-core-idea-preserve-both-local-and-global-structure"><span class="header-section-number">16.2</span> The Core Idea: Preserve Both Local and Global Structure</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-we-are-solving" id="toc-the-problem-we-are-solving" class="nav-link" data-scroll-target="#the-problem-we-are-solving"><span class="header-section-number">16.2.1</span> The Problem We are Solving</a></li>
+  <li><a href="#the-solution" id="toc-the-solution" class="nav-link" data-scroll-target="#the-solution"><span class="header-section-number">16.2.2</span> The Solution</a></li>
+  </ul></li>
+  <li><a href="#how-umap-works-the-intuition" id="toc-how-umap-works-the-intuition" class="nav-link" data-scroll-target="#how-umap-works-the-intuition"><span class="header-section-number">16.3</span> How UMAP Works: The Intuition</a>
+  <ul class="collapse">
+  <li><a href="#step-1-build-a-graph-of-relationships" id="toc-step-1-build-a-graph-of-relationships" class="nav-link" data-scroll-target="#step-1-build-a-graph-of-relationships"><span class="header-section-number">16.3.1</span> Step 1: Build a Graph of Relationships</a></li>
+  <li><a href="#step-2-create-a-2d-map" id="toc-step-2-create-a-2d-map" class="nav-link" data-scroll-target="#step-2-create-a-2d-map"><span class="header-section-number">16.3.2</span> Step 2: Create a 2D Map</a></li>
+  </ul></li>
+  <li><a href="#the-manifold-concept" id="toc-the-manifold-concept" class="nav-link" data-scroll-target="#the-manifold-concept"><span class="header-section-number">16.4</span> The “Manifold” Concept</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-manifold" id="toc-what-is-a-manifold" class="nav-link" data-scroll-target="#what-is-a-manifold"><span class="header-section-number">16.4.1</span> What is a Manifold?</a></li>
+  <li><a href="#why-uniform" id="toc-why-uniform" class="nav-link" data-scroll-target="#why-uniform"><span class="header-section-number">16.4.2</span> Why “Uniform”?</a></li>
+  </ul></li>
+  <li><a href="#umap-vs-t-sne-key-differences" id="toc-umap-vs-t-sne-key-differences" class="nav-link" data-scroll-target="#umap-vs-t-sne-key-differences"><span class="header-section-number">16.5</span> UMAP vs t-SNE: Key Differences</a>
+  <ul class="collapse">
+  <li><a href="#what-umap-does-better" id="toc-what-umap-does-better" class="nav-link" data-scroll-target="#what-umap-does-better"><span class="header-section-number">16.5.1</span> What UMAP Does Better</a></li>
+  </ul></li>
+  <li><a href="#key-parameters-to-understand" id="toc-key-parameters-to-understand" class="nav-link" data-scroll-target="#key-parameters-to-understand"><span class="header-section-number">16.6</span> Key Parameters to Understand</a>
+  <ul class="collapse">
+  <li><a href="#n_neighbors-default-15" id="toc-n_neighbors-default-15" class="nav-link" data-scroll-target="#n_neighbors-default-15"><span class="header-section-number">16.6.1</span> n_neighbors (Default: 15)</a></li>
+  <li><a href="#min_dist-default-0.1" id="toc-min_dist-default-0.1" class="nav-link" data-scroll-target="#min_dist-default-0.1"><span class="header-section-number">16.6.2</span> min_dist (Default: 0.1)</a></li>
+  <li><a href="#metric-default-euclidean" id="toc-metric-default-euclidean" class="nav-link" data-scroll-target="#metric-default-euclidean"><span class="header-section-number">16.6.3</span> metric (Default: ‘euclidean’)</a></li>
+  </ul></li>
+  <li><a href="#umap-vs-other-methods" id="toc-umap-vs-other-methods" class="nav-link" data-scroll-target="#umap-vs-other-methods"><span class="header-section-number">16.7</span> UMAP vs Other Methods</a>
+  <ul class="collapse">
+  <li><a href="#umap-vs-pca" id="toc-umap-vs-pca" class="nav-link" data-scroll-target="#umap-vs-pca"><span class="header-section-number">16.7.1</span> UMAP vs PCA</a></li>
+  <li><a href="#umap-vs-t-sne" id="toc-umap-vs-t-sne" class="nav-link" data-scroll-target="#umap-vs-t-sne"><span class="header-section-number">16.7.2</span> UMAP vs t-SNE</a></li>
+  </ul></li>
+  <li><a href="#practical-tips" id="toc-practical-tips" class="nav-link" data-scroll-target="#practical-tips"><span class="header-section-number">16.8</span> Practical Tips</a>
+  <ul class="collapse">
+  <li><a href="#start-with-default-parameters" id="toc-start-with-default-parameters" class="nav-link" data-scroll-target="#start-with-default-parameters"><span class="header-section-number">16.8.1</span> 1. Start with Default Parameters</a></li>
+  <li><a href="#try-different-n_neighbors-values" id="toc-try-different-n_neighbors-values" class="nav-link" data-scroll-target="#try-different-n_neighbors-values"><span class="header-section-number">16.8.2</span> 2. Try Different n_neighbors Values</a></li>
+  <li><a href="#adjust-min_dist-for-readability" id="toc-adjust-min_dist-for-readability" class="nav-link" data-scroll-target="#adjust-min_dist-for-readability"><span class="header-section-number">16.8.3</span> 3. Adjust min_dist for Readability</a></li>
+  <li><a href="#use-multiple-runs" id="toc-use-multiple-runs" class="nav-link" data-scroll-target="#use-multiple-runs"><span class="header-section-number">16.8.4</span> 4. Use Multiple Runs</a></li>
+  <li><a href="#validate-with-biology" id="toc-validate-with-biology" class="nav-link" data-scroll-target="#validate-with-biology"><span class="header-section-number">16.8.5</span> 5. Validate with Biology</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">16.9</span> Summary</a></li>
+  <li><a href="#hands-on-with-umap" id="toc-hands-on-with-umap" class="nav-link" data-scroll-target="#hands-on-with-umap"><span class="header-section-number">16.10</span> Hands-on with UMAP</a></li>
+  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1"><span class="header-section-number">16.11</span> Summary</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">UMAP (Optional)</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Brief introduction to UMAP</li>
+<li>Code to perform UMAP on data</li>
+</ul>
+</div>
+</div>
+<section id="umap-intuition" class="level1" data-number="16">
+<h1 data-number="16"><span class="header-section-number">16</span> UMAP Intuition</h1>
+<section id="what-is-umap" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="what-is-umap"><span class="header-section-number">16.1</span> What is UMAP?</h2>
+<p><em>UMAP</em> (Uniform Manifold Approximation and Projection) is another powerful unsupervised machine learning technique that helps visualize high-dimensional data in 2D or 3D. Think of it as a “smart cartographer” that creates a map of your complex data, revealing hidden patterns.</p>
+</section>
+<section id="the-core-idea-preserve-both-local-and-global-structure" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="the-core-idea-preserve-both-local-and-global-structure"><span class="header-section-number">16.2</span> The Core Idea: Preserve Both Local and Global Structure</h2>
+<section id="the-problem-we-are-solving" class="level3" data-number="16.2.1">
+<h3 data-number="16.2.1" class="anchored" data-anchor-id="the-problem-we-are-solving"><span class="header-section-number">16.2.1</span> The Problem We are Solving</h3>
+<ul>
+<li>Say you have cells with 20,000+ gene measurements</li>
+<li>You want to see which cells are similar to each other</li>
+<li>You want to understand both local neighborhoods AND global structure</li>
+<li>But 20,000 dimensions are impossible to visualize!</li>
+</ul>
+</section>
+<section id="the-solution" class="level3" data-number="16.2.2">
+<h3 data-number="16.2.2" class="anchored" data-anchor-id="the-solution"><span class="header-section-number">16.2.2</span> The Solution</h3>
+<p>UMAP takes your high-dimensional data and creates a 2D map where: - <strong>Similar cells stay close together</strong> (local structure preserved) - <strong>Different cells stay far apart</strong> (global structure preserved) - <strong>Both local neighborhoods AND global relationships are maintained</strong></p>
+</section>
+</section>
+<section id="how-umap-works-the-intuition" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="how-umap-works-the-intuition"><span class="header-section-number">16.3</span> How UMAP Works: The Intuition</h2>
+<section id="step-1-build-a-graph-of-relationships" class="level3" data-number="16.3.1">
+<h3 data-number="16.3.1" class="anchored" data-anchor-id="step-1-build-a-graph-of-relationships"><span class="header-section-number">16.3.1</span> Step 1: Build a Graph of Relationships</h3>
+<pre><code>Original Space (20,000+ genes):
+Cell A: [Gene1=5, Gene2=10, Gene3=2, ... Gene20000=8]
+Cell B: [Gene1=6, Gene2=11, Gene3=3, ... Gene20000=9]
+Cell C: [Gene1=50, Gene2=100, Gene3=20, ... Gene20000=80]
+
+UMAP creates a "friendship network":
+- A and B are close friends (very similar)
+- A and C are distant acquaintances (very different)
+- B and C are also distant acquaintances</code></pre>
+</section>
+<section id="step-2-create-a-2d-map" class="level3" data-number="16.3.2">
+<h3 data-number="16.3.2" class="anchored" data-anchor-id="step-2-create-a-2d-map"><span class="header-section-number">16.3.2</span> Step 2: Create a 2D Map</h3>
+<pre><code>UMAP creates a 2D layout where:
+- Close friends (A and B) are placed near each other
+- Distant acquaintances (A and C, B and C) are placed far apart
+- The overall "social network" structure is preserved</code></pre>
+</section>
+</section>
+<section id="the-manifold-concept" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="the-manifold-concept"><span class="header-section-number">16.4</span> The “Manifold” Concept</h2>
+<section id="what-is-a-manifold" class="level3" data-number="16.4.1">
+<h3 data-number="16.4.1" class="anchored" data-anchor-id="what-is-a-manifold"><span class="header-section-number">16.4.1</span> What is a Manifold?</h3>
+<p>Think of a manifold like the surface of a balloon: - From far away, it looks like a simple sphere - Up close, you can see it is actually a 2D surface curved in 3D space - Your high-dimensional biological data might be “curved” in ways we can’t see</p>
+</section>
+<section id="why-uniform" class="level3" data-number="16.4.2">
+<h3 data-number="16.4.2" class="anchored" data-anchor-id="why-uniform"><span class="header-section-number">16.4.2</span> Why “Uniform”?</h3>
+<p>UMAP assumes your data is spread “uniformly” across this curved surface: - No empty regions (uniform coverage) - No overly crowded regions (uniform density) - This helps create a balanced, interpretable map</p>
+</section>
+</section>
+<section id="umap-vs-t-sne-key-differences" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="umap-vs-t-sne-key-differences"><span class="header-section-number">16.5</span> UMAP vs t-SNE: Key Differences</h2>
+<section id="what-umap-does-better" class="level3" data-number="16.5.1">
+<h3 data-number="16.5.1" class="anchored" data-anchor-id="what-umap-does-better"><span class="header-section-number">16.5.1</span> What UMAP Does Better</h3>
+<p><strong>Preserves Global Structure</strong>: - t-SNE: Focuses mainly on local neighborhoods - UMAP: Maintains both local AND global relationships</p>
+<!--
+### Visual Comparison
+```
+t-SNE Result:
+○○○○○  ●●●●●  △△△△△
+○○○○○  ●●●●●  △△△△△
+○○○○○  ●●●●●  △△△△△
+(Good local structure, but distances between clusters are meaningless)
+
+UMAP Result:
+○○○○○     ●●●●●     △△△△△
+○○○○○     ●●●●●     △△△△△
+○○○○○     ●●●●●     △△△△△
+(Both local structure AND meaningful distances between clusters)
+```
+-->
+</section>
+</section>
+<section id="key-parameters-to-understand" class="level2" data-number="16.6">
+<h2 data-number="16.6" class="anchored" data-anchor-id="key-parameters-to-understand"><span class="header-section-number">16.6</span> Key Parameters to Understand</h2>
+<section id="n_neighbors-default-15" class="level3" data-number="16.6.1">
+<h3 data-number="16.6.1" class="anchored" data-anchor-id="n_neighbors-default-15"><span class="header-section-number">16.6.1</span> n_neighbors (Default: 15)</h3>
+<ul>
+<li>Controls how many “friends” each cell considers</li>
+<li><strong>Low (5-10)</strong>: Focus on very close neighbors, creates many small clusters</li>
+<li><strong>High (30-50)</strong>: Consider more distant neighbors, creates fewer, larger clusters</li>
+<li><strong>Default (15)</strong>: Usually works well for most datasets</li>
+</ul>
+</section>
+<section id="min_dist-default-0.1" class="level3" data-number="16.6.2">
+<h3 data-number="16.6.2" class="anchored" data-anchor-id="min_dist-default-0.1"><span class="header-section-number">16.6.2</span> min_dist (Default: 0.1)</h3>
+<ul>
+<li>Controls how tightly packed points can be in the final map</li>
+<li><strong>Low (0.01)</strong>: Points can be very close together (tight clusters)</li>
+<li><strong>High (0.5)</strong>: Points spread out more (looser clusters)</li>
+<li><strong>Default (0.1)</strong>: Good balance between tightness and readability</li>
+</ul>
+</section>
+<section id="metric-default-euclidean" class="level3" data-number="16.6.3">
+<h3 data-number="16.6.3" class="anchored" data-anchor-id="metric-default-euclidean"><span class="header-section-number">16.6.3</span> metric (Default: ‘euclidean’)</h3>
+<ul>
+<li>How to measure distances between cells</li>
+<li><strong>‘euclidean’</strong>: Standard geometric distance (good for most data)</li>
+<li><strong>‘cosine’</strong>: Angle-based distance (good for normalized data)</li>
+<li><strong>‘manhattan’</strong>: City-block distance (good for sparse data)</li>
+</ul>
+<!--
+## Real Biological Examples
+
+### Single-Cell RNA Sequencing
+```
+Original data: 10,000 cells × 20,000 genes = 200 million data points
+
+UMAP reveals:
+- Clear cell type clusters (neurons, glia, immune cells)
+- Developmental trajectories (cells transitioning between types)
+- Meaningful distances between clusters (immune cells are far from neurons)
+- Sub-clusters within major cell types (different neuron subtypes)
+```
+
+### Protein Expression Data
+```
+Original data: 1,000 cells × 50 proteins = 50,000 data points
+
+UMAP reveals:
+- Protein co-expression patterns
+- Cell state transitions
+- Treatment response groups
+- Quality control issues (outliers, batch effects)
+```
+
+## Common Patterns in UMAP Plots
+
+### Clear Clusters with Meaningful Distances
+```
+○○○○○     ●●●●●     △△△△△
+○○○○○     ●●●●●     △△△△△
+○○○○○     ●●●●●     △△△△△
+
+This suggests: 3 distinct cell types with meaningful relationships
+- Distance between ○ and ● clusters tells you how different they are
+- Distance between ● and △ clusters tells you how different they are
+```
+
+### Developmental Trajectories
+```
+○○●●△△
+○○●●△△
+○○●●△△
+
+This suggests: Cells transitioning from ○ → ● → △
+- You can trace the developmental path
+- Intermediate cells show mixed characteristics
+```
+
+### Hierarchical Structure
+```
+    ○○○○○
+   ○○○○○○○
+  ○○○○○○○○○
+     ●●●●●
+    ●●●●●●●
+   ●●●●●●●●●
+      △△△△△
+     △△△△△△△
+    △△△△△△△△△
+
+This suggests: Major cell types (○, ●, △) with subtypes within each
+```
+
+-->
+<!--
+## When to Use UMAP
+
+### Excellent for:
+- **Exploratory data analysis**: "What's the overall structure of my data?"
+- **Cell type identification**: "How many different cell types do I have?"
+- **Trajectory analysis**: "How do cells transition between states?"
+- **Quality control**: "Are there any weird outliers or batch effects?"
+- **Comparative analysis**: "How do different conditions compare?"
+
+### Good for:
+- **Feature selection**: "Which genes/proteins are most important?"
+- **Clustering validation**: "Do my clusters make sense?"
+- **Hypothesis generation**: "These cells look similar, maybe they're related?"
+
+### Not ideal for:
+- **Exact quantitative comparisons**: "How similar are these cells exactly?"
+- **Very small datasets**: "I only have 50 cells"
+- **Highly noisy data**: "My data is very messy"
+
+-->
+</section>
+</section>
+<section id="umap-vs-other-methods" class="level2" data-number="16.7">
+<h2 data-number="16.7" class="anchored" data-anchor-id="umap-vs-other-methods"><span class="header-section-number">16.7</span> UMAP vs Other Methods</h2>
+<section id="umap-vs-pca" class="level3" data-number="16.7.1">
+<h3 data-number="16.7.1" class="anchored" data-anchor-id="umap-vs-pca"><span class="header-section-number">16.7.1</span> UMAP vs PCA</h3>
+<ul>
+<li><strong>PCA</strong>: Linear method, preserves variance, good for linear relationships</li>
+<li><strong>UMAP</strong>: Non-linear method, preserves local structure, good for complex relationships</li>
+</ul>
+</section>
+<section id="umap-vs-t-sne" class="level3" data-number="16.7.2">
+<h3 data-number="16.7.2" class="anchored" data-anchor-id="umap-vs-t-sne"><span class="header-section-number">16.7.2</span> UMAP vs t-SNE</h3>
+<ul>
+<li><strong>t-SNE</strong>: Great for local structure, slower, harder to interpret distances</li>
+<li><strong>UMAP</strong>: Good for both local and global structure, faster, more interpretable</li>
+</ul>
+<!--
+### UMAP vs UMAP (Different Parameters)
+- **Low n_neighbors**: More local detail, more clusters
+- **High n_neighbors**: More global view, fewer clusters
+- **Low min_dist**: Tighter clusters, harder to see individual points
+- **High min_dist**: Looser clusters, easier to see individual points
+-->
+</section>
+</section>
+<section id="practical-tips" class="level2" data-number="16.8">
+<h2 data-number="16.8" class="anchored" data-anchor-id="practical-tips"><span class="header-section-number">16.8</span> Practical Tips</h2>
+<section id="start-with-default-parameters" class="level3" data-number="16.8.1">
+<h3 data-number="16.8.1" class="anchored" data-anchor-id="start-with-default-parameters"><span class="header-section-number">16.8.1</span> 1. Start with Default Parameters</h3>
+<ul>
+<li>UMAP’s defaults work well for most biological data</li>
+<li>Don’t over-optimize parameters initially</li>
+</ul>
+</section>
+<section id="try-different-n_neighbors-values" class="level3" data-number="16.8.2">
+<h3 data-number="16.8.2" class="anchored" data-anchor-id="try-different-n_neighbors-values"><span class="header-section-number">16.8.2</span> 2. Try Different n_neighbors Values</h3>
+<ul>
+<li><strong>5-10</strong>: If you want to see fine-grained subpopulations</li>
+<li><strong>15-30</strong>: For general exploration (recommended)</li>
+<li><strong>50+</strong>: If you want to see only major cell types</li>
+</ul>
+</section>
+<section id="adjust-min_dist-for-readability" class="level3" data-number="16.8.3">
+<h3 data-number="16.8.3" class="anchored" data-anchor-id="adjust-min_dist-for-readability"><span class="header-section-number">16.8.3</span> 3. Adjust min_dist for Readability</h3>
+<ul>
+<li><strong>0.01-0.05</strong>: If points are too spread out</li>
+<li><strong>0.1-0.3</strong>: Default range (recommended)</li>
+<li><strong>0.5+</strong>: If clusters are too tight</li>
+</ul>
+</section>
+<section id="use-multiple-runs" class="level3" data-number="16.8.4">
+<h3 data-number="16.8.4" class="anchored" data-anchor-id="use-multiple-runs"><span class="header-section-number">16.8.4</span> 4. Use Multiple Runs</h3>
+<ul>
+<li>UMAP has some randomness</li>
+<li>Run multiple times to ensure results are consistent</li>
+<li>Use <code>random_state</code> parameter for reproducible results</li>
+</ul>
+</section>
+<section id="validate-with-biology" class="level3" data-number="16.8.5">
+<h3 data-number="16.8.5" class="anchored" data-anchor-id="validate-with-biology"><span class="header-section-number">16.8.5</span> 5. Validate with Biology</h3>
+<ul>
+<li>Always check if UMAP results make biological sense</li>
+<li>Compare with known cell type markers</li>
+<li>Look for expected developmental trajectories</li>
+</ul>
+</section>
+</section>
+<section id="summary" class="level2" data-number="16.9">
+<h2 data-number="16.9" class="anchored" data-anchor-id="summary"><span class="header-section-number">16.9</span> Summary</h2>
+<p>UMAP is like a smart cartographer who: 1. <strong>Studies your high-dimensional data</strong> (20,000+ genes/proteins) 2. <strong>Identifies both local neighborhoods AND global relationships</strong> 3. <strong>Creates a beautiful 2D map</strong> that preserves both types of structure 4. <strong>Reveals hidden patterns</strong> you couldn’t see before</p>
+<p>The key insight: <strong>UMAP preserves both local and global structure</strong> - cells that are similar stay close together, while the distances between different cell types remain meaningful.</p>
+<p>This makes UMAP perfect for biologists who want to understand the complete structure of their complex, high-dimensional data - from individual cell relationships to overall tissue organization!</p>
+<!--
+## Next Steps
+
+1. **Try the simple UMAP code** with your own data
+2. **Experiment with different parameters** to see how they affect the results
+3. **Compare UMAP with t-SNE** on the same dataset
+4. **Validate results** with known biological markers
+5. **Use UMAP for hypothesis generation** and further experiments
+-->
+<p><em>Remember</em>: UMAP is a tool for exploration and visualization, not a replacement for careful analysis!</p>
+</section>
+<section id="hands-on-with-umap" class="level2" data-number="16.10">
+<h2 data-number="16.10" class="anchored" data-anchor-id="hands-on-with-umap"><span class="header-section-number">16.10</span> Hands-on with UMAP</h2>
+<p>The way to use <em>UMAP</em> is similar to how we did tSNE.</p>
+<div id="3bb5ae27" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install umap<span class="op">-</span>learn</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="c62ef604" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> datasets</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(style<span class="op">=</span><span class="st">"whitegrid"</span>)  <span class="co"># nice simple plots</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> datasets.load_iris()</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>X_iris <span class="op">=</span> iris.data           <span class="co"># 150 samples, 4 features (sepal/petal lengths/widths)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>y_iris <span class="op">=</span> iris.target         <span class="co"># species labels (0,1,2)</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>labels_iris <span class="op">=</span> iris.target_names</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create a data frame for easier viewing</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>df_iris_simple <span class="op">=</span> pd.DataFrame(X_iris, columns <span class="op">=</span> iris.feature_names)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>df_iris_simple[<span class="st">'species'</span>] <span class="op">=</span> iris.target</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>df_iris_simple[<span class="st">'species_name'</span>] <span class="op">=</span> df_iris_simple[<span class="st">'species'</span>].<span class="bu">map</span>( {<span class="dv">0</span>:<span class="st">'setosa'</span>, <span class="dv">1</span>:<span class="st">'versicolor'</span>, <span class="dv">2</span>:<span class="st">'virginica'</span>} )</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># display basic information</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_iris_simple.head)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># scatter plots</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_iris[:,<span class="dv">0</span>], X_iris[:,<span class="dv">1</span>], c <span class="op">=</span> iris.target, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>plt.xlabel(iris.feature_names[<span class="dv">0</span>])</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>plt.ylabel(iris.feature_names[<span class="dv">1</span>])</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Sepal length vs. Sepal width'</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>plt.colorbar(label<span class="op">=</span><span class="st">'species'</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize features </span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>X_iris_scaled <span class="op">=</span> scaler.fit_transform(X_iris)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Run UMAP</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>umap_model <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span><span class="dv">15</span>, min_dist<span class="op">=</span><span class="fl">0.1</span>, n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>embedding_iris <span class="op">=</span> umap_model.fit_transform(X_iris_scaled)</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Put into DataFrame for plotting</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>df_iris <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"UMAP1"</span>: embedding_iris[:, <span class="dv">0</span>],</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"UMAP2"</span>: embedding_iris[:, <span class="dv">1</span>],</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"species"</span>: [labels_iris[i] <span class="cf">for</span> i <span class="kw">in</span> y_iris]</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>df_iris, x<span class="op">=</span><span class="st">"UMAP1"</span>, y<span class="op">=</span><span class="st">"UMAP2"</span>, hue<span class="op">=</span><span class="st">"species"</span>, s<span class="op">=</span><span class="dv">60</span>)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"UMAP on Iris data"</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"best"</span>)</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;bound method NDFrame.head of      sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)  \
+0                  5.1               3.5                1.4               0.2   
+1                  4.9               3.0                1.4               0.2   
+2                  4.7               3.2                1.3               0.2   
+3                  4.6               3.1                1.5               0.2   
+4                  5.0               3.6                1.4               0.2   
+..                 ...               ...                ...               ...   
+145                6.7               3.0                5.2               2.3   
+146                6.3               2.5                5.0               1.9   
+147                6.5               3.0                5.2               2.0   
+148                6.2               3.4                5.4               2.3   
+149                5.9               3.0                5.1               1.8   
+
+     species species_name  
+0          0       setosa  
+1          0       setosa  
+2          0       setosa  
+3          0       setosa  
+4          0       setosa  
+..       ...          ...  
+145        2    virginica  
+146        2    virginica  
+147        2    virginica  
+148        2    virginica  
+149        2    virginica  
+
+[150 rows x 6 columns]&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="umap_files/figure-html/cell-3-output-2.png" width="594" height="455" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="umap_files/figure-html/cell-3-output-3.png" width="593" height="455" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Quick tips:</p></li>
+<li><p><code>n_neighbors</code> (default ~15): how many neighbors UMAP uses to learn local structure.</p>
+<p>Smaller =&gt; captures very local structure (more fragmentation), larger =&gt; more global structure.</p></li>
+<li><p><code>min_dist</code> (default ~0.1): how tightly points are packed in the low-dimensional space. Smaller =&gt; tighter clusters; larger =&gt; more spread out.</p></li>
+<li><p>Always standardize or log-transform expression data before UMAP (depending on data type).</p></li>
+<li><p>Try different random_state values or parameters to see what changes.</p></li>
+<li><p>Exercises for learners:</p></li>
+</ul>
+<ol type="1">
+<li><p>Change <code>n_neighbors</code> to 5 and then to 50 and observe how the plot changes.</p></li>
+<li><p>Change <code>min_dist</code> to 0.01 and 0.8 and observe clustering differences.</p></li>
+<li><p>Replace synthetic data with a small real gene-expression matrix and try the pipeline: counts -&gt; log1p -&gt; StandardScaler -&gt; UMAP.</p></li>
+</ol>
+</section>
+<section id="summary-1" class="level2" data-number="16.11">
+<h2 data-number="16.11" class="anchored" data-anchor-id="summary-1"><span class="header-section-number">16.11</span> Summary</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Key Points
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>A brief introduction to UMAP</li>
+</ul>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../materials/applications.html" class="pagination-link" aria-label="Hands-on exercises (Applications of unsupervised machine learning)">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Hands-on exercises (Applications of unsupervised machine learning)</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/bonus_material.html" class="pagination-link" aria-label="Mathematical Basics and Additional Material">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Mathematical Basics and Additional Material</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Cambridge Research Informatics Training</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
