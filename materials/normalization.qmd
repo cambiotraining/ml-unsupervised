@@ -509,6 +509,12 @@ plt.show()
 
 * Label the plot by US State
 
+_Note_: These are now categorical, i.e. these take on discrete values (as opposed to continuous). 
+
+* In machine learning, we will need to deal with them differently.
+
+* Discussion: on how to _encode_ these values and how to ensure that these values are _equidistant_ from each other.
+
 ```{python ch1-pca-simple-label-pcaplot}
 #| warning: false
 

@@ -31,7 +31,7 @@ title: Hands-on exercises (Applications of unsupervised machine learning)
 
 * If you are unsure, pick the first project on electronic healthcare records.
 
-* I will be doing a live coding session (code walkthrough).
+* I will be doing a _live coding session_ (code walkthrough).
 
 
 ### Project using electronic healthcare records data {#sec-exr_title_EHR}
