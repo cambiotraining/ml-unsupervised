@@ -76,7 +76,7 @@ or
 
 - Open a new notebook in [Google Colab](https://colab.research.google.com/)
 
-- If you want to run the notebooks in Colab, you can also use the "Open in Colab" badge below:
+- If you want to run the notebooks in Colab, you can also use the _Open in Colab_ badge below:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com)
 
