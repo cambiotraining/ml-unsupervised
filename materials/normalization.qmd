@@ -517,6 +517,31 @@ _Note_: These are now categorical, i.e. these take on discrete values (as oppose
 
 * _Brain teaser_: How to encode 3 different values for 3 categories such that they are _equidistant_ from each other? Just coding them as 1, 2 and 3 may denote that the last category is more important (higher value) than the first.
 
+* Most ML models need numbers. Categorical values (e.g. `"red"`, `"green"`) are non-numeric and may have no natural order.
+
+Create one binary feature per category so the model sees independent numeric inputs (no implied order) (_one-hot-encoding_).
+
+
+| Color  | color_red | color_green | color_blue |
+|--------|:---------:|:-----------:|:----------:|
+| red    | 1         | 0           | 0          |
+| green  | 0         | 1           | 0          |
+| blue   | 0         | 0           | 1          |
+
+
+```python
+# pandas
+import pandas as pd
+df = pd.DataFrame({'color': ['red','green','blue']})
+pd.get_dummies(df, columns=['color'])
+# scikit-learn
+from sklearn.preprocessing import OneHotEncoder
+enc = OneHotEncoder(sparse=False)
+X = [['red'], ['green'], ['blue']]
+enc.fit_transform(X)
+# -> array([[1.,0.,0.],[0.,1.,0.],[0.,0.,1.]])
+```
+
 ```{python ch1-pca-simple-label-pcaplot}
 #| warning: false
 
