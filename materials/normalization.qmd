@@ -515,6 +515,8 @@ _Note_: These are now categorical, i.e. these take on discrete values (as oppose
 
 * Discussion: on how to _encode_ these values and how to ensure that these values are _equidistant_ from each other.
 
+* _Brain teaser_: How to encode 3 different values for 3 categories such that they are _equidistant_ from each other? Just coding them as 1, 2 and 3 may denote that the last category is more important (higher value) than the first.
+
 ```{python ch1-pca-simple-label-pcaplot}
 #| warning: false
 
