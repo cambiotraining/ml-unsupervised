@@ -132,6 +132,16 @@ The **elbow point** is the value of _k_ at which the decrease in WCSS "bends" mo
 ![An elbow point](images/elbow_point_clustering.png)
 
 
+### Stochasticity
+
+* _NOTE_: k-means belongs to a class of algorithms called `stochastic` or `randomized` algorithms, i.e. each time you run the algorithm, you will get a different answer. This is different to PCA where you will get the same answer
+
+* Sometimes the problems are so hard that you need these randomized algorithms. There are no easy ways to solve these problems.
+
+* This shows up a lot in machine learning (e.g. neural networks and large language models).
+
+* The _cost_ function and the landscape is very rugged. You can get stuck in _local minima_.
+
 ### Exercise (k-means)
 
 * NOTE: The `c` parameter in `plt.scatter()` is used to specify the color of the scatter plot points. 
