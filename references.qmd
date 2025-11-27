@@ -30,3 +30,5 @@ title: "References and Resources"
 
 [10] [Explanation of linkage functions](https://blog.quantinsti.com/hierarchical-clustering-python/)
 
+[11] [iPython notebook with all code](https://github.com/neelsoumya/ml-unsupervised/blob/main/teaching_25thNov2025.ipynb)
+
