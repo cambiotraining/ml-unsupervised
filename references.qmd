@@ -30,5 +30,7 @@ title: "References and Resources"
 
 [10] [Explanation of linkage functions](https://blog.quantinsti.com/hierarchical-clustering-python/)
 
-[11] [iPython notebook with all code](https://github.com/neelsoumya/ml-unsupervised/blob/main/teaching_25thNov2025.ipynb)
+[11] [Course by Andrew Ng on supervised and unsupervised machine learning](https://learn.deeplearning.ai/specializations/machine-learning/lesson/pzhlo/unsupervised-learning-part-1)
+
+[12] [iPython notebook with all code](https://github.com/neelsoumya/ml-unsupervised/blob/main/teaching_25thNov2025.ipynb)
 
