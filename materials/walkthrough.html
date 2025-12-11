@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Introduction to Unsupervised Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../materials/python_refresher.html" rel="next">
+<link href="../references.html" rel="prev">
+<link href="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university-of-cambridge-favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fd4369bcce5669dc6f092a5d180a1716.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo light-content">
+    <img src="../site_libs/quarto-contrib/quarto-project/cambiotraining/courseformat/img/university_crest_reversed.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Applied Unsupervised Machine Learning</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/cambiotraining/ml-unsupervised"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:github" style="font-size: 1.25em;" aria-label="Icon github from fa6-brands Iconify.design set." title="CRIT GitHub"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/bioinfocambs.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:bluesky" style="font-size: 1.25em;" aria-label="Icon bluesky from fa6-brands Iconify.design set." title="CRIT Bluesky"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://genomic.social/@BioInfoCambs"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa6-brands:mastodon" style="font-size: 1.25em;" aria-label="Icon mastodon from fa6-brands Iconify.design set." title="CRIT Mastodon"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://bioinfotraining.bio.cam.ac.uk/"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="mdi:web" style="font-size: 1.25em;" aria-label="Icon web from mdi Iconify.design set." title="CRIT Website"></iconify-icon></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Welcome</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Applied Unsupervised Machine Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data &amp; Setup</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">References and Resources</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Introduction to Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/walkthrough.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/python_refresher.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Refresher on Python</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Normalizing your data and PCA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/goal_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Goal of Unsupervised Learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/conceptual_basis_PCA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Conceptual and mathematical basis of PCA</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Dimensionality Reduction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/tsne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">tSNE</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: Clustering</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/missing_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Missing values in unsupervised machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Evaluation for unsupervised machine learning</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 4: Applications of Unsupervised Learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/pca_tsne_notwork.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">When PCA or tSNE might not work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Hands-on exercises (Applications of unsupervised machine learning)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bonus Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/umap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">UMAP (Optional)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../materials/bonus_material.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Mathematical Basics and Additional Material</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup-instructions" id="toc-setup-instructions" class="nav-link active" data-scroll-target="#setup-instructions"><span class="header-section-number">4.1</span> Setup instructions</a></li>
+  <li><a href="#poll" id="toc-poll" class="nav-link" data-scroll-target="#poll"><span class="header-section-number">4.2</span> Poll</a></li>
+  <li><a href="#video-tour" id="toc-video-tour" class="nav-link" data-scroll-target="#video-tour"><span class="header-section-number">4.3</span> Video tour</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">4.4</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#motivation" id="toc-motivation" class="nav-link" data-scroll-target="#motivation"><span class="header-section-number">4.4.1</span> Motivation</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.4.2</span> Example</a></li>
+  </ul></li>
+  <li><a href="#curse-of-dimensionality" id="toc-curse-of-dimensionality" class="nav-link" data-scroll-target="#curse-of-dimensionality"><span class="header-section-number">4.5</span> Curse of dimensionality</a></li>
+  <li><a href="#what-pca-does-to-the-data" id="toc-what-pca-does-to-the-data" class="nav-link" data-scroll-target="#what-pca-does-to-the-data"><span class="header-section-number">4.6</span> What PCA does to the data</a>
+  <ul class="collapse">
+  <li><a href="#projection-of-3d-data" id="toc-projection-of-3d-data" class="nav-link" data-scroll-target="#projection-of-3d-data"><span class="header-section-number">4.6.1</span> Projection of 3D Data</a></li>
+  </ul></li>
+  <li><a href="#another-intuition-behind-pca" id="toc-another-intuition-behind-pca" class="nav-link" data-scroll-target="#another-intuition-behind-pca"><span class="header-section-number">4.7</span> Another intuition behind PCA</a></li>
+  <li><a href="#coming-back-to-the-crime-data" id="toc-coming-back-to-the-crime-data" class="nav-link" data-scroll-target="#coming-back-to-the-crime-data"><span class="header-section-number">4.8</span> Coming back to the crime data</a></li>
+  <li><a href="#what-pca-does" id="toc-what-pca-does" class="nav-link" data-scroll-target="#what-pca-does"><span class="header-section-number">4.9</span> What PCA Does</a></li>
+  <li><a href="#after-pca-reduced-to-2-new-features" id="toc-after-pca-reduced-to-2-new-features" class="nav-link" data-scroll-target="#after-pca-reduced-to-2-new-features"><span class="header-section-number">4.10</span> After PCA: Reduced to 2 New Features</a></li>
+  <li><a href="#what-did-we-gain" id="toc-what-did-we-gain" class="nav-link" data-scroll-target="#what-did-we-gain"><span class="header-section-number">4.11</span> What Did We Gain?</a>
+  <ul class="collapse">
+  <li><a href="#before-pca" id="toc-before-pca" class="nav-link" data-scroll-target="#before-pca"><span class="header-section-number">4.11.1</span> Before PCA:</a></li>
+  <li><a href="#after-pca" id="toc-after-pca" class="nav-link" data-scroll-target="#after-pca"><span class="header-section-number">4.11.2</span> After PCA:</a></li>
+  </ul></li>
+  <li><a href="#what-do-the-principal-components-mean" id="toc-what-do-the-principal-components-mean" class="nav-link" data-scroll-target="#what-do-the-principal-components-mean"><span class="header-section-number">4.12</span> What Do the Principal Components Mean?</a></li>
+  <li><a href="#pca-is-lossy" id="toc-pca-is-lossy" class="nav-link" data-scroll-target="#pca-is-lossy"><span class="header-section-number">4.13</span> PCA is lossy</a>
+  <ul class="collapse">
+  <li><a href="#lesson-on-lossy-compression-pca-applied-to-image" id="toc-lesson-on-lossy-compression-pca-applied-to-image" class="nav-link" data-scroll-target="#lesson-on-lossy-compression-pca-applied-to-image"><span class="header-section-number">4.13.1</span> Lesson on lossy compression (PCA applied to image)</a></li>
+  <li><a href="#learning-objectives-1" id="toc-learning-objectives-1" class="nav-link" data-scroll-target="#learning-objectives-1"><span class="header-section-number">4.13.2</span> Learning Objectives</a></li>
+  <li><a href="#key-concepts" id="toc-key-concepts" class="nav-link" data-scroll-target="#key-concepts"><span class="header-section-number">4.13.3</span> Key Concepts</a></li>
+  <li><a href="#procedure-overview" id="toc-procedure-overview" class="nav-link" data-scroll-target="#procedure-overview"><span class="header-section-number">4.13.4</span> Procedure Overview</a></li>
+  <li><a href="#takeaway-message" id="toc-takeaway-message" class="nav-link" data-scroll-target="#takeaway-message"><span class="header-section-number">4.13.5</span> Takeaway Message</a></li>
+  </ul></li>
+  <li><a href="#visual-explanations-of-pca" id="toc-visual-explanations-of-pca" class="nav-link" data-scroll-target="#visual-explanations-of-pca"><span class="header-section-number">4.14</span> Visual explanations of PCA</a></li>
+  <li><a href="#lesson-summary" id="toc-lesson-summary" class="nav-link" data-scroll-target="#lesson-summary"><span class="header-section-number">4.15</span> Lesson Summary</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"><span class="header-section-number">4.16</span> Resources</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Introduction to Unsupervised Learning</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>By the end of this module, learners will be able to:</p>
+<ul>
+<li><p>Define unsupervised learning and explain how it differs from supervised learning in terms of inputs, outputs, and goals.</p></li>
+<li><p>Identify common unsupervised techniques, including clustering (e.g., k‑means, hierarchical) and dimensionality reduction (e.g., PCA), and describe when each is appropriate.</p></li>
+<li><p>Discuss real‑world applications of unsupervised learning, such as customer segmentation, anomaly detection, and image compression.</p></li>
+<li><p>Explain the role of unsupervised learning in exploratory data analysis.</p></li>
+<li><p>Interpret principal component analysis (PCA) intuitively to understand how PCA finds the directions of greatest variance in data.</p></li>
+<li><p>Apply dimensionality reduction to a simple multivariate dataset (e.g., crime rates and population by state) to visualize high‑dimensional data in two or three dimensions.</p></li>
+<li><p>Differentiate unsupervised from supervised problems by examining datasets and deciding whether the task is to uncover patterns versus predict a known target variable.</p></li>
+<li><p>Articulate the value of unsupervised learning in uncovering hidden structure in unlabelled data and its importance as data complexity grow.</p></li>
+</ul>
+</div>
+</div>
+<section id="setup-instructions" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="setup-instructions"><span class="header-section-number">4.1</span> Setup instructions</h2>
+<ul>
+<li><p>Please go through the setup instructions <a href="https://cambiotraining.github.io/ml-unsupervised/setup.html">here</a></p></li>
+<li><p>Walkthrough of getting setup with <a href="https://colab.research.google.com/">Google Colab</a> in the web browser.</p></li>
+</ul>
+</section>
+<section id="poll" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="poll"><span class="header-section-number">4.2</span> Poll</h2>
+<p>What would you like to get out this course?</p>
+<!--
+Please click the link below and let me know your thoughts.
+
+* [Poll](https://docs.google.com/document/d/140c9hqnLHyUKF3o03KSJJPk8_OKQFSiKm63EqRMfHvs/edit?usp=sharing)
+
+-->
+</section>
+<section id="video-tour" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="video-tour"><span class="header-section-number">4.3</span> Video tour</h2>
+<p><a href="https://youtu.be/MpP3JYP02ec">Quick video tour of course</a></p>
+</section>
+<section id="introduction" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.4</span> Introduction</h2>
+<p>Unsupervised learning is a branch of machine learning that deals with finding hidden patterns or intrinsic structures in data without the use of labeled responses. Unlike supervised learning, where the model learns from labeled data to predict outcomes, unsupervised learning works with input data that does not have any corresponding output variables. The primary goal is to explore the underlying structure, groupings, or features in the data.</p>
+<p>One of the most common applications of unsupervised learning is clustering, where the algorithm groups similar data points together based on their characteristics. This is particularly useful in scenarios such as customer segmentation, anomaly detection, and image compression. Another key technique is dimensionality reduction, which aims to reduce the number of variables under consideration, making it easier to visualize and interpret large datasets.</p>
+<p>Unsupervised learning is valuable because it can reveal insights that may not be immediately apparent, uncovering relationships and patterns that might otherwise go unnoticed. It is commonly used in exploratory data analysis and as a preprocessing step for other algorithms. As data continues to grow in complexity and volume, unsupervised learning plays a critical role in making sense of unstructured information.</p>
+<section id="motivation" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="motivation"><span class="header-section-number">4.4.1</span> Motivation</h3>
+<p>Here is a picture (taken by Soumya Banerjee) of a pavement in Cambridge the day after Valentine’s Day. Why did this picture capture my attention? The starkness of the grey pavement contrasted with the bright red rose. It may have triggered some unsupervised learning mechanism in my brain that allows me to pick anomalies!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rose_after_valentines_day.png" class="img-fluid figure-img"></p>
+<figcaption>Rose after Valentine’s Day (picture taken by Soumya Banerjee)</figcaption>
+</figure>
+</div>
+<p>Unsupervised learning is all about discovering structure in data without any explicit “right answers” to guide you. The rose‑on‑pavement photo is a perfect real‑world illustration of a few core ideas:</p>
+<ul>
+<li><p>Anomaly (or Outlier) Detection</p></li>
+<li><p><strong>What happened in your brain:</strong><br>
+When you look at a uniform grey pavement, your visual system builds an internal “model” of what is normal: flat, texture‑repeating, monochrome. The bright red rose doesn’t fit that model, so it “pops,” drawing your attention.</p></li>
+<li><p><strong>In machine learning:</strong><br>
+Algorithms can learn a representation of “normal” data (e.g.&nbsp;patches of pavement) and then flag anything that deviates significantly (e.g.&nbsp;the rose) as an anomaly.</p></li>
+<li><p><strong>Human vision analogy:</strong><br>
+Early in the visual cortex, neurons respond to edges, color contrasts, textures. A red circle on grey evokes strong responses in “color” and “shape‑edge” channels.</p></li>
+</ul>
+<!--
+- **ML counterpart:**  
+  Techniques like PCA or deep autoencoders learn low‑dimensional “features” (color histograms, texture filters). Dimensions where the rose is extreme (high red‑channel value) are exactly the ones that give us the “anomaly” score.
+-->
+<!--
+* Clustering & Pattern Discovery
+You might not only notice the rose, but if there were lots of petals scattered around, your brain could start grouping (clustering) regions of similar color/shape.
+-->
+<!--
+Unsupervised algorithms would partition image patches into clusters—“pavement patches,” “rose petals,” maybe even “shadows.” Anything that doesn’t belong to a big cluster may again be flagged as rare.
+-->
+<!--
+* Dimensionality Reduction & Visualization
+In a high‑dimensional feature space (e.g. each 10×10 pixel patch → a 300‑dim vector), you can’t “see” clusters easily. Algorithms like t‑SNE or UMAP compress that down to 2D so you can actually plot and see the rose‑patches separate from pavement.
+
+This is why, for instance, visual analytics tools will show outliers as distant points on a scatterplot—just as you instantly spot the rose on the pavement.
+
+-->
+<!--### Resources -->
+<!--
+[PCA intuition](https://stats.stackexchange.com/questions/2691/making-sense-of-principal-component-analysis-eigenvectors-eigenvalues)
+-->
+</section>
+<section id="example" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="example"><span class="header-section-number">4.4.2</span> Example</h3>
+<p>Given the data below, how should we reduce the number of features and/or visualize it? This is an <strong>unsupervised</strong> machine learning problem.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPT)</strong>: The columns of this data are the <em>features</em>.</p>
+</div>
+</div>
+<!-- end callout -->
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 27%">
+<col style="width: 29%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Murder (per 100k)</th>
+<th>Robbery (per 100k)</th>
+<th>Population</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>California</td>
+<td>9.1</td>
+<td>45.3</td>
+<td>39,512,223</td>
+</tr>
+<tr class="even">
+<td>Texas</td>
+<td>7.8</td>
+<td>38.6</td>
+<td>28,995,881</td>
+</tr>
+<tr class="odd">
+<td>Florida</td>
+<td>5.9</td>
+<td>31.7</td>
+<td>21,477,737</td>
+</tr>
+<tr class="even">
+<td>New York</td>
+<td>3.4</td>
+<td>26.4</td>
+<td>19,453,561</td>
+</tr>
+<tr class="odd">
+<td>Illinois</td>
+<td>6.4</td>
+<td>35.1</td>
+<td>12,671,821</td>
+</tr>
+<tr class="even">
+<td>Pennsylvania</td>
+<td>4.8</td>
+<td>22.9</td>
+<td>12,801,989</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPT)</strong>: Importantly, in unsupervised machine learning we are not trying to predict anything. For example, say in the data below we can try to predict the number of people who moved to that state last year. This would be a <strong>supervised</strong> machine learning problem <span class="citation" data-cites="Gareth2017">(<a href="../references.html#ref-Gareth2017" role="doc-biblioref">Gareth et al. 2017</a>)</span>.</p>
+</div>
+</div>
+<!-- end callout -->
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 14%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Murder (per 100k)</th>
+<th>Robbery (per 100k)</th>
+<th>Population</th>
+<th>People Who Moved (per 100k)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>California</td>
+<td>9.1</td>
+<td>45.3</td>
+<td>39,512,223</td>
+<td>5,400</td>
+</tr>
+<tr class="even">
+<td>Texas</td>
+<td>7.8</td>
+<td>38.6</td>
+<td>28,995,881</td>
+<td>4,100</td>
+</tr>
+<tr class="odd">
+<td>Florida</td>
+<td>5.9</td>
+<td>31.7</td>
+<td>21,477,737</td>
+<td>6,200</td>
+</tr>
+<tr class="even">
+<td>New York</td>
+<td>3.4</td>
+<td>26.4</td>
+<td>19,453,561</td>
+<td>3,800</td>
+</tr>
+<tr class="odd">
+<td>Illinois</td>
+<td>6.4</td>
+<td>35.1</td>
+<td>12,671,821</td>
+<td>2,900</td>
+</tr>
+<tr class="even">
+<td>Pennsylvania</td>
+<td>4.8</td>
+<td>22.9</td>
+<td>12,801,989</td>
+<td>2,500</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPTS)</strong>:</p>
+<ul>
+<li><p>If there is a column in the table that we are trying to predict, this would be called a <em>label</em>. <strong>Supervised</strong> machine learning (such as linear regression) tries to predict the <em>label</em> given the <em>features</em> <span class="citation" data-cites="Gareth2017">(<a href="../references.html#ref-Gareth2017" role="doc-biblioref">Gareth et al. 2017</a>)</span>.</p></li>
+<li><p>However in unsupervised machine learning, we only deal with features and do not try to predict anything.</p></li>
+<li><p>Hence there are no <em>labels</em> in unsupervised machine learning.</p></li>
+</ul>
+</div>
+</div>
+<!-- end callout -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPTS)</strong>:</p>
+<ul>
+<li><p>The number of columns in the data, is called the <em>dimensions</em> of the data.</p></li>
+<li><p>For example, if there are 3 columns, this is 3-dimensional data.</p></li>
+<li><p>We can visualize it in 3 dimensions in a 3D plot.</p></li>
+<li><p>Hence the columns of the data or dimensions form a <em>co-ordinate system</em>. We can visualize it in a plot. The X axis would represent the value in the first column, the Y axis would represent the values in the second column, and so on.</p></li>
+<li><p>How would you visualize a table that has 14 columns/dimensions?</p></li>
+</ul>
+</div>
+</div>
+<!-- end callout -->
+</section>
+</section>
+<section id="curse-of-dimensionality" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="curse-of-dimensionality"><span class="header-section-number">4.5</span> Curse of dimensionality</h2>
+<p>How would you visualize data that has 14 dimensions? How about 1 million dimensions (can happen in the age of big data)?</p>
+<ul>
+<li><p>Would you remove one column at a time?</p></li>
+<li><p>Would you plot each feature/column vs the other exhaustively? How many pairwise plots would you need to plot for exhaustive visualization?</p></li>
+</ul>
+<div class="callout callout-style-default callout-hint no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Hint</span>Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-hint" data-collapse="”true”">
+<div id="47f38dfb" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of pairwise plots for 5 features: 10
+Number of pairwise plots for 14 features: 91
+Number of pairwise plots for 1000000 features: 499999500000</code></pre>
+</div>
+</div>
+<div id="c3f5d246" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_files/figure-html/cell-3-output-1.png" width="949" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>You will have an exponential blowup! So this approach will not work.</p></li>
+<li><p>We need something more principled.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- end callout -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPT)</strong></p>
+<ul>
+<li><p>It is not possible to exhaustively plot one feature vs.&nbsp;another <em>or</em> remove any feature randomly. For example, in a dataset from patient healthcare records, we cannot just randomly throw away data on blood pressure.</p></li>
+<li><p>This is why we use dimensionality reduction to <em>reduce</em> the dimensions of the data. This yields fewer <em>new</em> features.</p></li>
+</ul>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="what-pca-does-to-the-data" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="what-pca-does-to-the-data"><span class="header-section-number">4.6</span> What PCA does to the data</h2>
+<!--
+[PCA in 3D](https://github.com/neelsoumya/python_machine_learning/blob/main/pca_intro_3D_view.ipynb)
+-->
+<section id="projection-of-3d-data" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="projection-of-3d-data"><span class="header-section-number">4.6.1</span> Projection of 3D Data</h3>
+<p>We generate three clusters of synthetic 3‑dimensional points, compute the first two principal components using scikit‑learn’s PCA, and then create a two‑panel figure:</p>
+<ol type="1">
+<li><strong>Left panel</strong>: A 3D scatter of the original points, the best‐fit plane defined by the first two principal components, and projection lines from each point down onto that plane.<br>
+</li>
+<li><strong>Right panel</strong>: A 2D scatter of the projected coordinates (the principal component scores) along the first two components, colored by cluster.</li>
+</ol>
+<p>Use this visualization to understand how PCA finds the plane that maximizes variance and how the data look when reduced to two dimensions.</p>
+<div id="f3aeaebd" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_files/figure-html/cell-5-output-1.png" width="758" height="950" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Play around with the figure below to get an intuition of what PCA does!</li>
+</ul>
+<div id="d45d1e0e" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+        <script type="text/javascript">
+        window.PlotlyConfig = {MathJaxConfig: 'local'};
+        if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+        </script>
+        <script type="module">import "https://cdn.plot.ly/plotly-3.1.0.min"</script>
+        
+</div>
+<div class="cell-output cell-output-display">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.0.min.js" integrity="sha256-Ei4740bWZhaUTQuD6q9yQlgVCMPBz6CZWhevDYPv93A=" crossorigin="anonymous"></script>                <div id="0f0da5a6-0c4a-4e08-bb74-bfaad216bedc" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("0f0da5a6-0c4a-4e08-bb74-bfaad216bedc")) {                    Plotly.newPlot(                        "0f0da5a6-0c4a-4e08-bb74-bfaad216bedc",                        [{"marker":{"color":{"dtype":"i1","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"opacity":0.9,"showscale":false,"size":5},"mode":"markers","name":"Data","x":{"dtype":"f8","bdata":"2ILRYIgzzr\u002fgFDOeltXOPwy1ZhZwzPC\u002fpjXmQzBu+b\u002f2ijcbytLzv4eaxhtFqfq\u002fn5u\u002fuKz9+r9Na0g6x4r1v+gt\u002fuWoQ9E\u002fRJoRP1p\u002fAcCGhCDZVYX9v7xumNGr2A\u002fAdG02cHWh6L\u002f\u002fsVm0HWsCwDD+Vvxwpg3AzRp1GS2BA8ACxVJGQ+kMwJpCj1M\u002fz\u002fm\u002f6leomrc5AMAy+jM6Eyn7v+loePEyYQXAu1jFQG3PDcAKs1FupQoNwIAL\u002fk07K\u002f+\u002fnhZbkweK67+3eYS2fXoFwNHIA0EPfgLAQpQy9zaW8b8cU27vPGDgv\u002fFqrG58cAHALvxjVJaM+T9Vjo0gKNAHQHPT7AiBFQBAx60KM0Y3A0DKPi7YL1jnP2JpoUOJjA9AoLLebS9iD0DzEIBXlD8HQK+86BhCtvs\u002fzf\u002f5IhSF\u002fT\u002f5io1j6wIDQOQrgTVwnApAjuDpbZwJ+T9+MOhZe0IDQGahvfTuNfU\u002fEsT921VpBUCgBj+RBSsDQBiF2MvfgwNAFrKWGleIEUCdxFM8pu8IQHp3jn176P4\u002fVuMEYujG8j\u002fskb+xWQMJQGGhpGiw\u002fvg\u002fxhqf72mYB0BtyExgQcEGQE2dhsMVgQlA2MRtFcGMAkBkPE2Oe+fuP8SU+aaa9\u002fQ\u002fG0f0E9an1r+OBIWXh8kBwLp6Ud2Nq\u002fG\u002flFyIEjCw+D+E4imn4Bykv2KWLO069cW\u002fYIk9pk5OAUDvF4QV+qPOv41JNxz1e+Q\u002f8DdP\u002f\u002fKd57+UiHiELyDtP7J8rXvP2d2\u002f39qYo8xtkb8fJM+4uqKlv9NhanOOq92\u002fBpArJPAxsD\u002fCm7KWNh3jv0d1YI+Nkt+\u002faChOJrl\u002f8r+WJA1PVI8AwPAzQFXiZeS\u002f0PUEegEP07+oRQ4582\u002fyP4CHH1t5dve\u002fNGQDcYUrwj9Npl2OYjvmP3Qwgja3U\u002fm\u002fVU5Z7tY34L9xQaCIAPv+v6vTGXTUorY\u002f"},"y":{"dtype":"f8","bdata":"U4nM+iyc2T\u002faPbF8hOH9PzaE00msX8O\u002f7eGqDQVwwj+Qs5MIGCa\u002fPzuZTXW\u002f5\u002fc\u002f8IV+lsBU679qkHIadqnrPw06DfEURfe\u002fx4daf0OG+D8z6pCR0DPYP0Upz1ExRNa\u002fJWD+pvI88z9TZFF538bwv8zKxUJgNv8\u002fb+u\u002fJXML9L+jygfREjvLvz+WDwSEWOC\u002fQs\u002fwE8pp2z\u002f5re\u002fYXUzkv6Zcf0PrAte\u002fT7g3W+a1xj+Jvyl3OZ7dPyn+C7u1VOc\u002fEc4quNjB87969aX7kd3rvz4\u002fFyi0waw\u002fnItn1WnN3T+TRH7jj1X+P57nN4DNIfG\u002f4C7njyKP8z9KeVABtc7WP4t4Y\u002fDskvw\u002fTb0UoGIh\u002fj9ZcMw+TAXvP8qM1767eNq\u002fJkgnRzCw9z\u002flH\u002fkqKY\u002frv2crDQm5rek\u002fKByZx4mm4z8wF4xIJZfxvwnETGDmOea\u002f+vY3kJWW\u002fT\u002fkCA0JJ6Pov1uAmk0YTKA\u002flB+RlW5z4j8aOYgQLn3xvx8V3p2OVcU\u002f4ruLCy057j9gYMvt9A31v7YtxQ7aafs\u002f2amdRC80ub8jdOVCZkfxv919BIDD39+\u002foT15FsJptj9n7d\u002fO4QDwv2JEO6rJSNQ\u002f5K0KCChr6z\u002f44KROn8\u002flP7\u002fON81xJ92\u002fmqclJWYA5D86vdRYeQAFQGJaa4bVagBAtpDKi+qg5j94AJFi+p7qP5uYRoagLAZAaifIkDWxCkC0iohUGswIQFxjp8vKg9g\u002fmuSxG0k9AkB9iR+0qYkCQAQGoFKM4\u002fA\u002fHHKDtIAIA0C5veEDc7TwPy3le\u002fUS2gNALF\u002fxf4ZAAUDnavz7eDH8P6D\u002fI3xwUPc\u002faFVUyuQ\u002fBkB+nGJW+mgDQBpdXU\u002fGpPk\u002fqnG+akgO+z8cnYcSD6MIQMir2w8kKwRAm9q64gfk+j8Z+NYA9GP0P4pYe5UO4gRAoFkraX919j9qUFtanoIBQDtsvDicBvs\u002f"},"z":{"dtype":"f8","bdata":"q8kiUtJR7z+CjKVC3EXvv1m0yPiMbLq\u002f94X9S7RE9z\u002fLdSJVQWjcP7ZqsECgQsq\u002fOjqw7IVsBMDXL1zb0L\u002fnv111pQ6pbac\u002fDgBtV36C9z\u002fKo\u002f2nvWjsv+5OiDY+A8Q\u002f+GBoa\u002fbJ2L9drH66ZLj2vzarnhcST+C\u002fUxxodDPh6D8ioV99qafsv66StpLe4\u002fK\u002ftafBzkUHsT96+DS5JjfXv2fWB1pLBeq\u002fhe1KY8e22b+ssFeUlgjtv2UVuRODgsA\u002fbkyrJ\u002fe\u002f2T\u002fc1m6774Xiv32q0Sh0pPK\u002fXvRzQnSU+L98LbX3R9zyP0wUJsYI3\u002fA\u002fVCa1JcGoyj9hsjNVP5zmPwSC0MunPsA\u002fW+knzmuQ9b8aMzIMHcXyv2IHTFom6+e\u002fWyQmgYXh\u002fT\u002fsvKxEoI\u002f+P9kd1VvjT+4\u002f9\u002f\u002fQkLeC7T+LjyiRVRbTP2yYh4A5J8O\u002fbYBUS3CD5T8LxR+Fh0HhPy+r\u002fd\u002fZWOS\u002fXqOAm4ipyr\u002f0UOnrMNz3v4JFrHItUuQ\u002f9war9NY17b9jCoEnmordvyyQhxAI1ee\u002fBAGx0DY75b9up\u002fQWCFzyv4WkuwBd3\u002f4\u002fw7dLRmKb879MdMflYbf4v4Pki+ysd+0\u002f+6gCoDPV5L\u002f8Vx0viLXpv8guf4EO5pE\u002f6KmLML2z9T+kNLcq43fZP0Ku0v2\u002fKvQ\u002f7sjxkOsiAkCq832sqy8EQK4ni1iJlgZAGCn8yNQX+j8Gqy3p+j0FQFFKtDVcnP8\u002fKk1m2\u002flt\u002fj\u002fNgYlQZkoGQBFdn7tvcPk\u002f8RsbSYgJEUD9vkXQ23b6P7zlS+uUY90\u002fRdopu4HbAUBKDg3RF27iP3GJ8QsSVANAO74XULT0C0AS1obCTmoFQNLYj5243\u002f0\u002fwNb1h1q81D8QuS\u002fCdfzyP\u002fWPw42SyfY\u002f5hr+d0WIBUD6naODe7vjPxaqCG7d9Ok\u002fNe7aMa8o\u002fz92SfDG7TAEQL\u002f+Bb15xwBA"},"type":"scatter3d"},{"colorscale":[[0.0,"rgb(255,255,255)"],[0.125,"rgb(240,240,240)"],[0.25,"rgb(217,217,217)"],[0.375,"rgb(189,189,189)"],[0.5,"rgb(150,150,150)"],[0.625,"rgb(115,115,115)"],[0.75,"rgb(82,82,82)"],[0.875,"rgb(37,37,37)"],[1.0,"rgb(0,0,0)"]],"name":"PC1-PC2 plane","opacity":0.25,"showscale":false,"x":{"dtype":"f8","bdata":"VclwzjNkEcBgDdmW\u002fbgLwBWI0JCTqQTAlgWQFVM0+78D9v0S\u002firqv1D5IClQlbA\u002fUDRGHVJQ7j+6JLQa\u002fUb9P6mXYpPosgVA9BxrmVLCDEAcOHjcBv8QwO\u002fq57Kj7grApGXfrDnfA8CzwK1Nn5\u002f5vz5sOYOWAee\u002fvqOiU0bwxD8LX4XW3LzwP51pluKw2\u002f4\u002fGrpTd0J9BkBlP1x9rIwNQOSmf+rZmRDAfcj2zkkkCsAyQ+7I3xQDwNF7y4XrCvi\u002feOJ08y7Y479pZVpJ8srQP+2jZ56QUfI\u002fQFc8VTI4AECM3ERbnEcHQNdhTWEGVw5AqxWH+Kw0EMAMpgXr71kJwMEg\u002feSFSgLA7jbpvTd29r+zWLBjx67gv\u002fR442jBHdc\u002f0OhJZkTm8z+xeS05jAIBQP3+NT\u002f2EQhASIQ+RWAhD0DlCB0NAJ8PwJuDFAeWjwjAUP4LASyAAcAL8gb2g+H0v9yd16e\u002fCtu\u002ffoxsiJBw3T+zLSwu+Hr1PyKcHh3mzAFAbiEnI1DcCEC5pi8puusPQHPmKymm1A7AKWEjIzzFB8De2xod0rUAwCmtJC7QTPO\u002fUIpOiPC31L8F0PrTr+HhP5VyDvarD\u002fc\u002flL4PAUCXAkDgQxgHqqYJQJVkkAYKWxBAAsQ6RUwKDsC4PjI\u002f4voGwNpyU3Lw1v+\u002fRmhCZhy48b+N7YrRQsrMv8pZv2MXC+U\u002feLfwvV+k+D8F4QDlmWEDQFFmCesDcQpAzvWI+DbAEECRoUlh8j8NwEccQVuIMAbA+C1xqjxC\u002fr9kI2CeaCPwv3rGeJKkJMC\u002fjuOD83406D9a\u002fNKFEzn6P3YD8sjzKwRAwoj6zl07C0AHh4HqYyURQB9\u002fWH2YdQzA1flPdy5mBcAV6Y7iiK38vwK9+6xpHe2\u002fEPs0mzL4m79UbUiD5l3rPz1BtU3Hzfs\u002f6CXjrE32BEA0q+uytwUMQD8YetyQihFArlxnmT6rC8Bk116T1JsEwDKkrBrVGPu\u002fPDM3HQL06b9oD1fXL02yPxr3DBNOh+4\u002fIIaXFXti\u002fT9ZSNSQp8AFQKXN3JYR0AxAeKlyzr3vEUA=","shape":"10, 10"},"y":{"dtype":"f8","bdata":"hUSDR5tK9b8S7WT9scb2v5+VRrPIQvi\u002fLD4oad+++b+55gkf9jr7v0aP69QMt\u002fy\u002f0zfNiiMz\u002fr9g4K5AOq\u002f\u002fv3ZESHuolQDAvRg51rNTAcCQFW8X66nov6pmMoMYouu\u002fxLf17kWa7r9vhFytOcnwv\u002fwsPmNQRfK\u002fidUfGWfB878WfgHPfT31v6Im44SUufa\u002fMM\u002fEOqs1+L+9d6bwwbH5v2CIXn9++sq\u002fZOY1F5pt07+YiLzu9F3Zv8wqQ8ZPTt+\u002fgObkTlWf4r+aN6i6gpflv7SIayawj+i\u002fzdkukt2H67\u002fnKvL9CoDuvwG+2jQcvPC\u002fxKJ\u002fr1dZ1j+QAPnX\u002fGjQP7i85ABE8cQ\u002foPCuoxwhsj\u002fAYK7pOoGWvwAhhhi6Yb2\u002f6FRQu5KRyr+mzC41JDnTv9putQx\u002fKdm\u002fDxE85NkZ37\u002fcRFdP9xftP8Lzk+PJH+o\u002fqKLQd5wn5z+OUQ0Mby\u002fkP3QASqBBN+E\u002ftF4NaSh+3D+AvIaRzY3WP04aALpyndA\u002fNPDyxC9axT+UV8sr9PKyPyxcd2Ohgfc\u002fn7OVrYoF9j8SC7T3c4n0P4Vi0kFdDfM\u002f+Lnwi0aR8T9rEQ\u002fWLxXwP7zRWkAyMu0\u002fo4CX1AQ66j+JL9Ro10HnP27eEP2pSeQ\u002f9Iqhj6M7AEBabWFpMPv+P87Ef7MZf\u002f0\u002fQBye\u002fQID\u002fD+0c7xH7Ib6PybL2pHVCvk\u002fmiL5276O9z8NehcmqBL2P4DRNXCRlvQ\u002f8yhUunoa8z\u002fSZ4dtdrYEQIuTlhJr+ANARL+lt186A0D+6rRcVHwCQLgWxAFJvgFAcULTpj0AAUAqbuJLMkIAQMgz4+FNCP8\u002fPIsBLDeM\u002fT+u4h92IBD8P7BEbUtJMQlAanB88D1zCEAknIuVMrUHQN3Hmjon9wZAlvOp3xs5BkBQH7mEEHsFQApLyCkFvQRAw3bXzvn+A0B9ouZz7kADQDbO9RjjggJAkCFTKRysDUBJTWLOEO4MQAJ5cXMFMAxAvKSAGPpxC0B20I+97rMKQC\u002f8nmLj9QlA6CeuB9g3CUCiU72szHkIQFx\u002fzFHBuwdAFavb9rX9BkA=","shape":"10, 10"},"z":{"dtype":"f8","bdata":"DOsP5XeVAsDMqJQjFv8CwI1mGWK0aAPATSSeoFLSA8AN4iLf8DsEwM6fpx2PpQTAjl0sXC0PBcBOG7Gay3gFwA7ZNdlp4gXAz5a6FwhMBsBgb2rbdTz6v+Hqc1iyD\u002fu\u002fYmZ91e7i+7\u002fi4YZSK7b8v2JdkM9nif2\u002f49iZTKRc\u002fr9kVKPJ4C\u002f\u002fv\u002fJnVqOOAQDAsiXb4SxrAMBz418gy9QAwE4Ratn3m+6\u002fKIS+aTgh8L+o\u002f8fmdPTwvyl70WOxx\u002fG\u002fqvba4O2a8r8qcuRdKm7zv6vt7dpmQfS\u002fLGn3V6MU9b+s5ADV3+f1vy1gClIcu\u002fa\u002fvIf+9wd+0b\u002fAdSTs+crUv8JjSuDrF9i\u002fxFFw1N1k27\u002fGP5bIz7Hev+QWXt5g\u002f+C\u002f5g1x2Nml4r\u002fnBITSUkzkv+j7lszL8uW\u002f6vKpxkSZ578kE9fC3zvaPyAlsc7t7tY\u002fHjeL2vuh0z8cSWXmCVXQPzS2fuQvEMo\u002fLtoy\u002fEt2wz9U\u002fM0n0Li5P5CIbK4QCqk\u002fAHguLO\u002fXZb+YV\u002fKTDsWrv4Mra99xffE\u002fArBhYjWq8D8DabDK8a3vPwJyndB4B+4\u002fAXuK1v9g7D8AhHfchrrqP\u002f6MZOINFOk\u002f\u002fZVR6JRt5z\u002f8nj7uG8flP\u002fqnK\u002fSiIOQ\u002fOpIgzutr\u002fD+5FhdRr5j7PzibDdRyxfo\u002fuB8EVzby+T84pPrZ+R75P7co8Vy9S\u002fg\u002fNq3n34B49z+2Md5iRKX2PzW21OUH0vU\u002ftDrLaMv+9D94\u002fGreMq0DQLg+5p+UQwNA94BhYfbZAkA3w9wiWHACQHcFWOS5BgJAtkfTpRudAUD2iU5nfTMBQDbMySjfyQBAdg5F6kBgAEBqoYBXRe3\u002fP9WvxdVvJAlAFPJAl9G6CEBUNLxYM1EIQJR2NxqV5wdA1Liy2\u002fZ9B0AT+y2dWBQHQFM9qV66qgZAk38kIBxBBkDSwZ\u002fhfdcFQBIEG6PfbQVAMmMgzaybDkBypZuODjIOQLHnFlBwyA1A8SmSEdJeDUAxbA3TM\u002fUMQHCuiJSViwxAsPADVvchDEDwMn8XWbgLQDB1+ti6TgtAb7d1mhzlCkA=","shape":"10, 10"},"type":"surface"},{"line":{"color":"rgba(120,120,120,0.7)","width":2},"mode":"lines","name":"Projections","x":[-0.23594765403233597,-0.2100947664301153,null,0.2408931992014578,0.1620538428715118,null,-1.0499115824744107,-1.0340762389623372,null,-1.5894014980616276,-1.53911771645763,null,-1.2389622748530065,-1.2167188927856023,null,-1.6663256726257332,-1.7074758092170463,null,-1.6869322983490986,-1.7144390892409305,null,-1.3463814045596394,-1.3819186255898204,null,0.26975462398760763,0.33102875959552225,null,-2.187183850025834,-2.182032784573286,null,-1.8450525743030837,-1.8673410072335894,null,-3.980796468223927,-3.945532854953035,null,-0.769709319272279,-0.8078335806895276,null,-2.3023027505753357,-2.290561695150845,null,-3.7062701906250126,-3.767357113899091,null,-2.4380743016111865,-2.358041798709165,null,-3.6138978475579515,-3.613155526497812,null,-1.613097502140738,-1.6140898290577272,null,-2.028182228338655,-2.025246066024995,null,-1.6975281022602187,-1.6714412173840607,null,-2.672460447775951,-2.6662876190472353,null,-3.726282602331677,-3.724703237929904,null,-3.6301983469660444,-3.652467441961,null,-1.9480546042038611,-1.9536451987980694,null,-0.8605993154566993,-0.7946240313291008,null,-2.684810090940313,-2.6549026812355763,null,-2.3115525321273727,-2.329844002503756,null,-1.099173513045813,-1.1438768117429061,null,-0.5117478062044003,-0.530091779280531,null,-2.179924835812351,-2.098797076724804,null,1.5968230530268204,1.5700845647625898,null,2.976639036483713,2.990256482390158,null,2.0105000207208206,1.9617630864008413,null,2.401989363444702,2.308188556491464,null,0.7295150015142664,0.6744908272696467,null,3.9436211856492926,3.940811005679845,null,3.922942026480385,3.9292703043162978,null,2.9060446582753854,2.9942339095295476,null,1.7319966290486197,1.7396899956205054,null,1.8449899069091658,1.8581043094091862,null,2.3764255311556295,2.42877070513383,null,3.3263858966870306,3.3508399450787985,null,1.5648464482783626,1.5300088026957601,null,2.4074618362411107,2.4553776972713957,null,1.325667339342624,1.3159835931216368,null,2.6764332949464995,2.6577547961422603,null,2.396006712661645,2.398292900192826,null,2.4393917012645367,2.458421486985108,null,4.383144774863942,4.3292292203740335,null,3.117016288095853,3.15407864771433,null,1.9317583946753687,1.8613485824838802,null,1.1735614613409857,1.1677794879448162,null,3.126635922106507,3.1366549043493945,null,1.562179955255566,1.6412646211432285,null,2.949420806925761,2.918353489164547,null,2.844362976401547,2.84118203886471,null,3.1880297923523018,3.2085336543078036,null,2.3187276529430214,2.2789866532399103,null,0.9657571582155353,0.93024938423532,null,1.3104502222497993,1.3353667357549943,null,-0.35399391125348395,-0.3249659963925272,null,-2.223403152224427,-2.284736240681888,null,-1.1043833394284506,-1.124577696077032,null,1.5430145954067358,1.591008456025335,null,-0.0392828182274956,0.014668256094272053,null,-0.1715463312222481,-0.17421135794333797,null,2.16323594928069,2.103928859828399,null,-0.2393791775759264,-0.25762148518755845,null,0.640131526097592,0.6926359951542477,null,-0.7380309092056887,-0.74872963768997,null,0.9101789080925919,0.9196984035634419,null,-0.46641909673594306,-0.44515041475635375,null,-0.017020413861440594,0.03318524760916227,null,-0.04225715166064269,-0.019628266954477683,null,-0.4635959746460944,-0.5217498805915814,null,0.06326199420033171,0.06437777650956535,null,-0.5973160689653627,-0.6277768952173669,null,-0.49331988336219407,-0.46250891124199967,null,-1.1561824318219127,-1.1386082847050334,null,-2.0699850250135325,-2.0614886093278275,null,-0.637437025552229,-0.6265249599945141,null,-0.2977908794017283,-0.3334456784693568,null,1.15233156478312,1.0912289952675154,null,-1.466424327802514,-1.4971350069939482,null,0.14195316332077967,0.17170348148845022,null,0.6947491436560057,0.6793518690650675,null,-1.5829383973350817,-1.633493803164,null,-0.5068163542986875,-0.4872257744123243,null,-1.936279805846507,-1.9243128275134176,null,0.08842208704466141,0.10145360201508674,null],"y":[0.4001572083672233,0.8555317211341682,null,1.8675579901499675,0.4788762294121556,null,-0.1513572082976979,0.12756760456105032,null,0.144043571160878,1.0297455051310362,null,0.12167501649282841,0.5134714543639738,null,1.4940790731576061,0.7692577808949697,null,-0.8540957393017248,-1.3386022166003788,null,0.8644361988595055,0.23848118135037,null,-1.4543656745987648,-0.3750789010287229,null,1.5327792143584575,1.623510430026743,null,0.37816251960217356,-0.014427447222104539,null,-0.3479121493261526,0.27322352258443666,null,1.2023798487844115,0.5308565267247204,null,-1.0485529650670926,-0.8417452198139882,null,1.9507753952317897,0.8747861923864001,null,-1.2527953600499264,0.15690256519833345,null,-0.2127402802139687,-0.19966498679688038,null,-0.510805137568873,-0.5282840510767953,null,0.42833187053041766,0.48004963233560494,null,-0.6343220936809636,-0.17482593708654715,null,-0.3595531615405413,-0.2508245383405808,null,0.17742614225375283,0.20524517376793916,null,0.4627822555257742,0.07053290840769055,null,0.7290905621775369,0.6306174504468274,null,-1.2348258203536526,-0.07273269843541674,null,-0.8707971491818818,-0.34400600956286753,null,0.05616534222974544,-0.2660218555253392,null,0.46566243973045984,-0.32174449045381615,null,1.8958891760305832,1.5727771921671108,null,-1.0707526215105427,0.3582372203511663,null,1.2224450703824274,0.7514715275893656,null,0.3563663971744019,0.596225011430108,null,1.7858704939058352,0.9274148327359465,null,1.8831506970562544,0.23093693197540055,null,0.9693967081580112,0.0001971772361774038,null,-0.41361898075974735,-0.46311768102351214,null,1.4805147914344245,1.591981505734243,null,-0.8612256850547025,0.6921457579749649,null,0.8024563957963949,0.937967875524055,null,0.6140793703460803,0.8450773439791415,null,-1.0994007905841947,-0.17738935175458637,null,-0.6945678597313655,-0.26383259553504457,null,1.8492637284793418,1.2356310802732493,null,-0.7699160744453164,0.0740771462036679,null,0.03183055827435118,-0.13873960336446367,null,0.5765908166149409,0.24758647392527056,null,-1.0930615087305058,-1.0527924467547893,null,0.16667349537252904,0.5018654295926774,null,0.9444794869904138,-0.005192740505480686,null,-1.315907410511521,-0.6630884986385172,null,1.7133427216493664,0.47313952214459865,null,-0.0984525244254323,-0.20029659533246869,null,-1.0799315083634233,-0.9034564767354892,null,-0.4980324506923049,0.8949702092054346,null,0.0875512413851909,-0.4596705972798897,null,-1.0002153473895647,-1.0562445965499254,null,0.3169426119248496,0.6780990247591743,null,0.8568306119026912,0.15682995220379836,null,0.681594518281627,0.05615818310448917,null,-0.45553250351734315,-0.016651347498836788,null,0.6250487065819812,1.1363483644706083,null,2.6252314510271875,1.5449062779734544,null,2.0521650792609742,1.6964603138598529,null,0.7071430902765516,1.5525102009555867,null,0.8319065022588026,1.7822043784781618,null,2.7717905512136674,2.72484859009506,null,3.336527949436392,2.2918888600434206,null,3.099659595887113,2.7783383543992555,null,0.3830439556891656,1.307861228816824,null,2.2799245990432384,2.091476471092652,null,2.317218215191302,2.4848952529955057,null,1.0555537440817497,1.43018174860758,null,2.379151735555082,3.2634776562059766,null,1.044054999507223,1.4426417069605177,null,2.4814814737734623,1.4571546367532897,null,2.1565065379653756,2.1761600031116686,null,1.762078270263993,1.2255392141086814,null,1.4571385239832821,1.9998450731698534,null,2.781198101709993,3.0907503190010366,null,2.426258730778101,2.5759151719723485,null,1.6027281856712023,1.7949340472786544,null,1.6909870309528778,1.0629609859307387,null,3.0796185920368213,2.0033537952337426,null,2.5210648764527583,1.9801248937043807,null,1.6806715828549048,2.2046957015030992,null,1.2744026215364157,1.003193984316908,null,2.610379379107205,1.7198930376471857,null,1.4036859615494919,1.7487557621781977,null,2.1887785967938287,2.3995657634565983,null,1.6891138283015283,1.9186518153758554,null],"z":[0.9787379841057392,0.6017716726368266,null,-0.977277879876411,0.17229511218386662,null,-0.10321885179355784,-0.3341172770076437,null,1.454273506962975,0.7210752673845371,null,0.44386323274542566,0.1195278694561483,null,-0.20515826376580087,0.3948604051714617,null,-2.5529898158340787,-2.1519075977707605,null,-0.7421650204064417,-0.22398943639732805,null,0.04575851730144607,-0.8476923514741321,null,1.469358769900285,1.3942500171118561,null,-0.8877857476301128,-0.5627934883703332,null,0.15634896910398005,-0.3578370834688249,null,-0.3873268174079523,0.1685709385820654,null,-1.4200179371789752,-1.5912166993529235,null,-0.5096521817516535,0.381068905189348,null,0.7774903558319103,-0.3894801536445043,null,-0.8954665611936756,-0.9062904983983837,null,-1.180632184122412,-1.1661628597117653,null,0.06651722238316789,0.02370443124413668,null,-0.3627411659871381,-0.7431194401972026,null,-0.813146282044454,-0.903153576896635,null,-0.4017809362082619,-0.4248099758328566,null,-0.9072983643832422,-0.5825880755690143,null,0.12898291075741067,0.21050052904139605,null,0.402341641177549,-0.5596576483547353,null,-0.5788496647644155,-1.0149358032047484,null,-1.1651498407833565,-0.898438120792129,null,-1.5362436862772237,-0.8844156243748271,null,1.1787795711596507,1.4462568438957144,null,1.0544517269311369,-0.12848893994989186,null,0.20827497807686035,0.5981544163163256,null,0.7065731681919482,0.5080143675673434,null,0.12691209270361992,0.8375554314897735,null,-1.3477590611424464,0.01996994282895087,null,-1.17312340511416,-0.3708045181192955,null,-0.7474548114407578,-0.7064789949692591,null,1.8675589604265699,1.7752850299295715,null,1.9100649530990337,0.6241592056253649,null,0.947251967773748,0.8350733955382523,null,0.9222066715665268,0.7309828510936978,null,0.298238174206056,-0.4650176547507646,null,-0.14963454032767076,-0.5062040873957898,null,0.6722947570124355,1.1802696864515319,null,0.5392491912918173,-0.1594219077111363,null,-0.635846078378881,-0.49464536802523074,null,-0.20829875557799488,0.06405630612141289,null,-1.4912575927056055,-1.524592966850861,null,0.6350314368921064,0.35755418787055815,null,-0.9128222254441586,-0.12666835282544586,null,-0.4615846048147089,-1.0019985506252027,null,-0.7447548220484399,0.28190524012443924,null,-0.6634782863621074,-0.5791701341084214,null,-1.1474686524111024,-1.2935575086690483,null,1.9295320538169858,0.7763821522615981,null,-1.225435518830168,-0.7724365206574593,null,-1.5447710967776116,-1.4983891873861153,null,0.920858823780819,0.6218877637136606,null,-0.6510255933001469,-0.07155384133684395,null,-0.8034096641738411,-0.2856634537024101,null,0.01747915902505673,-0.34583368769585954,null,1.3563815971671094,0.9331195552964525,null,0.3979423443932524,1.2922528168845058,null,1.2604370036086867,1.5548951026586895,null,2.267050869349183,1.567242442185624,null,2.523276660531754,1.7366048658841453,null,2.8235041539637313,2.862363460841662,null,1.6308181620575564,2.495587123218655,null,2.6552637307225977,2.9212585982532744,null,1.9756738756010643,1.2100953320955057,null,1.9018496103570421,2.05784998742055,null,2.786327962108976,2.6475222259797935,null,1.5899503067974516,1.2798272474699375,null,4.259308950690852,3.5272497969658216,null,1.6540182243006136,1.3240617671501345,null,0.4592029855553752,1.3071571390363648,null,2.232181036200276,2.2159115831323737,null,0.5759390910174684,1.0200947108147331,null,2.4160500462614256,1.9667888770014188,null,3.494484544491369,3.238232263593627,null,2.6769080350302454,2.553020037255034,null,1.8671194224130443,1.7080083332732203,null,0.3239961936700233,0.8438862074081617,null,1.186635740795797,2.077584968826783,null,1.4242120301869339,1.8720108074695683,null,2.691538751070186,2.2577431968849746,null,0.6166360446049446,0.8411468961015273,null,0.8111407422159711,1.548299590905048,null,1.9474327037304537,1.6617783987674324,null,2.5238910238342056,2.3493980329133164,null,2.0974001662687836,1.90738494604127,null],"type":"scatter3d"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"scene":{"xaxis":{"title":{"text":"X₁"}},"yaxis":{"title":{"text":"X₂"}},"zaxis":{"title":{"text":"X₃"}},"aspectmode":"data"},"margin":{"l":0,"r":0,"t":40,"b":0},"title":{"text":"Data and first two principal components"}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('0f0da5a6-0c4a-4e08-bb74-bfaad216bedc');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+</section>
+</section>
+<section id="another-intuition-behind-pca" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="another-intuition-behind-pca"><span class="header-section-number">4.7</span> Another intuition behind PCA</h2>
+<p>Principal Component Analysis (PCA) reduces the number of dimensions in your data by finding the directions where the data varies the most and keeping only those directions.</p>
+<p>Imagine you have a book: it has length, width, and height. But if the book is very thin, almost all of its <em>size</em> or <em>volume</em> is in the length and width—the height is so small that you can almost ignore it. If you wanted to describe where the book is on a table, you could just use two numbers (length and width), and you wouldn’t lose much information by ignoring the height.</p>
+<p>PCA works the same way: it finds the <em>thin</em> directions in your data that do not add much information, and lets you focus on the most important dimensions. This makes it easier to visualize and analyze your data without losing the main patterns.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/book_pca.png" class="img-fluid figure-img"></p>
+<figcaption>A thin book on the floor. Image created using the DALL-E AI tool.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPT)</strong></p>
+<p>Say your data has too many <em>columns/dimensions/features</em>. Dimensionality reduction techniques (such as PCA) reduce the number of dimensions or the number of columns in your data.</p>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="coming-back-to-the-crime-data" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="coming-back-to-the-crime-data"><span class="header-section-number">4.8</span> Coming back to the crime data</h2>
+<ul>
+<li>Original Data (4 Features)</li>
+</ul>
+<p>Our crime dataset has <strong>4 features</strong> (dimensions) for each state:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 14%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Murder (per 100k)</th>
+<th>Robbery (per 100k)</th>
+<th>Population</th>
+<th>People Who Moved (per 100k)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>California</td>
+<td>9.1</td>
+<td>45.3</td>
+<td>39,512,223</td>
+<td>5,400</td>
+</tr>
+<tr class="even">
+<td>Texas</td>
+<td>7.8</td>
+<td>38.6</td>
+<td>28,995,881</td>
+<td>4,100</td>
+</tr>
+<tr class="odd">
+<td>Florida</td>
+<td>5.9</td>
+<td>31.7</td>
+<td>21,477,737</td>
+<td>6,200</td>
+</tr>
+<tr class="even">
+<td>New York</td>
+<td>3.4</td>
+<td>26.4</td>
+<td>19,453,561</td>
+<td>3,800</td>
+</tr>
+<tr class="odd">
+<td>Illinois</td>
+<td>6.4</td>
+<td>35.1</td>
+<td>12,671,821</td>
+<td>2,900</td>
+</tr>
+<tr class="even">
+<td>Pennsylvania</td>
+<td>4.8</td>
+<td>22.9</td>
+<td>12,801,989</td>
+<td>2,500</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="what-pca-does" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="what-pca-does"><span class="header-section-number">4.9</span> What PCA Does</h2>
+<p>PCA finds <strong>new features</strong> (called Principal Components) that are combinations of the original features. These new features capture the most important patterns in the data.</p>
+<hr>
+</section>
+<section id="after-pca-reduced-to-2-new-features" class="level2" data-number="4.10">
+<h2 data-number="4.10" class="anchored" data-anchor-id="after-pca-reduced-to-2-new-features"><span class="header-section-number">4.10</span> After PCA: Reduced to 2 New Features</h2>
+<p>PCA transforms our data into <strong>Principal Components (PC1 and PC2)</strong>. These are the new, reduced features:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 28%">
+<col style="width: 30%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>PC1 (Primary Pattern)</th>
+<th>PC2 (Secondary Pattern)</th>
+<th>Variance Explained</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>California</td>
+<td>3.45</td>
+<td>0.82</td>
+<td>PC1: 68%</td>
+</tr>
+<tr class="even">
+<td>Texas</td>
+<td>2.18</td>
+<td>-0.15</td>
+<td>PC2: 23%</td>
+</tr>
+<tr class="odd">
+<td>Florida</td>
+<td>1.35</td>
+<td>1.24</td>
+<td><strong>Total: 91%</strong></td>
+</tr>
+<tr class="even">
+<td>New York</td>
+<td>0.92</td>
+<td>-1.05</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Illinois</td>
+<td>0.31</td>
+<td>0.18</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Pennsylvania</td>
+<td>-0.22</td>
+<td>-0.94</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="what-did-we-gain" class="level2" data-number="4.11">
+<h2 data-number="4.11" class="anchored" data-anchor-id="what-did-we-gain"><span class="header-section-number">4.11</span> What Did We Gain?</h2>
+<section id="before-pca" class="level3" data-number="4.11.1">
+<h3 data-number="4.11.1" class="anchored" data-anchor-id="before-pca"><span class="header-section-number">4.11.1</span> Before PCA:</h3>
+<ul>
+<li><strong>4 features</strong> to track and visualize</li>
+<li>Hard to see overall patterns</li>
+<li>Features may be correlated (redundant information)</li>
+</ul>
+</section>
+<section id="after-pca" class="level3" data-number="4.11.2">
+<h3 data-number="4.11.2" class="anchored" data-anchor-id="after-pca"><span class="header-section-number">4.11.2</span> After PCA:</h3>
+<ul>
+<li><strong>2 features</strong> capture 91% of the information</li>
+<li>Easier to visualize (can plot in 2D)</li>
+<li>New features are uncorrelated</li>
+<li>Lost only 9% of information</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="what-do-the-principal-components-mean" class="level2" data-number="4.12">
+<h2 data-number="4.12" class="anchored" data-anchor-id="what-do-the-principal-components-mean"><span class="header-section-number">4.12</span> What Do the Principal Components Mean?</h2>
+<p><strong>PC1 (Primary Pattern):</strong> Combines all 4 original features with different weights. States with high PC1 values (like California) tend to have high values across multiple original features.</p>
+<p><strong>PC2 (Secondary Pattern):</strong> Captures the remaining variation not explained by PC1. This might separate states based on different combinations of the original features.</p>
+<p><strong>Key Insight:</strong> PC1 and PC2 are weighted combinations like: - PC1 = 0.45×Murder + 0.48×Robbery + 0.52×Population + 0.54×Migration - PC2 = 0.62×Murder - 0.15×Robbery - 0.68×Population + 0.35×Migration</p>
+<p>(These weights are determined by the data patterns, not chosen arbitrarily)</p>
+</section>
+<section id="pca-is-lossy" class="level2" data-number="4.13">
+<h2 data-number="4.13" class="anchored" data-anchor-id="pca-is-lossy"><span class="header-section-number">4.13</span> PCA is lossy</h2>
+<p>PCA does lose some information. But it can capture some/most of the salient aspects of your data.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>NOTE (IMPORTANT CONCEPT)</strong></p>
+<p>Dimensionality reduction techniques (such as PCA) always lose some information. In other words, it is <em>lossy</em>.</p>
+</div>
+</div>
+<!-- end callout -->
+<section id="lesson-on-lossy-compression-pca-applied-to-image" class="level3" data-number="4.13.1">
+<h3 data-number="4.13.1" class="anchored" data-anchor-id="lesson-on-lossy-compression-pca-applied-to-image"><span class="header-section-number">4.13.1</span> Lesson on lossy compression (PCA applied to image)</h3>
+</section>
+<section id="learning-objectives-1" class="level3" data-number="4.13.2">
+<h3 data-number="4.13.2" class="anchored" data-anchor-id="learning-objectives-1"><span class="header-section-number">4.13.2</span> Learning Objectives</h3>
+<ul>
+<li>Understand how Principal Component Analysis (PCA) can be applied to images.</li>
+<li>Observe how PCA captures the most significant patterns in image data.</li>
+<li>Visualize how the number of principal components affects image reconstruction.</li>
+<li>Appreciate the trade-off between compression and information loss.</li>
+</ul>
+</section>
+<section id="key-concepts" class="level3" data-number="4.13.3">
+<h3 data-number="4.13.3" class="anchored" data-anchor-id="key-concepts"><span class="header-section-number">4.13.3</span> Key Concepts</h3>
+<ul>
+<li><strong>PCA</strong> is a dimensionality reduction technique that identifies directions (principal components) along which the variance in the data is maximized.</li>
+<li>Images can be viewed as high-dimensional data (each pixel as a feature), and PCA helps reduce that dimensionality while preserving key patterns.</li>
+</ul>
+</section>
+<section id="procedure-overview" class="level3" data-number="4.13.4">
+<h3 data-number="4.13.4" class="anchored" data-anchor-id="procedure-overview"><span class="header-section-number">4.13.4</span> Procedure Overview</h3>
+<ol type="1">
+<li><strong>Load and display an image</strong> from a URL.</li>
+<li><strong>Apply PCA to each RGB channel</strong> of the image separately.</li>
+<li><strong>Reconstruct the image</strong> using an increasing number of principal components.</li>
+<li><strong>Visualize the reconstructions</strong> to show how few components capture most of the image’s structure.</li>
+</ol>
+<div id="4d8c4151" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_files/figure-html/cell-7-output-1.png" width="296" height="409" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_files/figure-html/cell-7-output-2.png" width="1430" height="447" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="takeaway-message" class="level3" data-number="4.13.5">
+<h3 data-number="4.13.5" class="anchored" data-anchor-id="takeaway-message"><span class="header-section-number">4.13.5</span> Takeaway Message</h3>
+<p>PCA can significantly reduce image data dimensionality while preserving salient features, making it a powerful tool for image compression and understanding. However, perfect reconstruction is only possible with all components, revealing the balance between efficiency and fidelity.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Key Concept
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/information_bottleneck.png" class="img-fluid figure-img"></p>
+<figcaption>Information bottleneck</figcaption>
+</figure>
+</div>
+<p>In unsupervised learning, the <strong>bottleneck concept</strong> refers to a deliberate constraint where information is compressed through a narrow intermediate step. The model is trained to reconstruct the input data after passing it through this low-dimensional bottleneck, forcing it to learn a compact and informative representation of the underlying structure of the data.</p>
+<p><em>Note</em>: The figure shows features coming in from the right and getting compressed to fewer (new) features. What is not shown is that there are multiple rows in the dataset.</p>
+<p>Since there are no labels guiding the learning process, the model relies solely on reconstructing its input as accurately as possible, using only the limited information passed through this narrow channel. This compression encourages the model to capture essential features while discarding noise or redundancy.</p>
+<!--
+The bottleneck acts as an inductive bias that promotes dimensionality reduction, feature learning, and denoising. By minimizing reconstruction error while constrained by a reduced latent space, the model implicitly discovers patterns, clusters, and hierarchies within the input data. In practical terms, this is a foundational principle behind many unsupervised representation learning methods, including classical autoencoders, variational autoencoders (VAEs), and self-supervised learning systems that rely on contrastive or generative objectives. The learned low-dimensional codes can then be used for downstream tasks such as clustering, visualization (e.g., with t-SNE or PCA), or as inputs to supervised models in a semi-supervised setting.
+
+magine you have a huge library of biological images—say, pictures of different cell types under a microscope—and you want to teach a computer to recognize patterns in those images without telling it what any of the cells are. A “bottleneck” in this context is like asking the computer to summarize each image using only a few key words instead of the entire picture. By forcing it to compress all the rich detail down to a small summary, the computer has to figure out which features—like cell shape, size, or texture—are truly important. This is similar to how a biologist might sketch a simplified diagram of a cell, highlighting its nucleus and membrane but leaving out every ribosome and microtubule.
+-->
+<p>Because the computer must recreate the original image from that stripped‑down summary, it learns to ignore random noise.</p>
+<!--
+ or unimportant quirks (like slight variations in lighting) and focus on the core characteristics shared by similar cell types. In other words, the bottleneck helps the machine discover the hidden “essence” of the data. 
+-->
+<!--
+Once you have those concise summaries, you can use them to cluster cells into groups, visualize how different cell types relate, or even feed them into a second analysis—just as you might reduce a complex DNA dataset to a handful of genetic markers before drawing a phylogenetic tree. This approach lets you explore and interpret large biological datasets more effectively, all without ever providing explicit labels.
+-->
+</div>
+</div>
+<!-- end callout -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Activity: Playable version of PCA in browser
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://projector.tensorflow.org/">PCA in your browser</a></p>
+</div>
+</div>
+<!-- end callout -->
+</section>
+</section>
+<section id="visual-explanations-of-pca" class="level2" data-number="4.14">
+<h2 data-number="4.14" class="anchored" data-anchor-id="visual-explanations-of-pca"><span class="header-section-number">4.14</span> Visual explanations of PCA</h2>
+<div id="78205415" class="cell" data-fig.cap="Visual explanation of PCA" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_files/figure-html/cell-8-output-1.png" width="662" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Intuition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>PCA maximimizes the variance captured</li>
+</ul>
+<div id="5dcf1d01" class="cell" data-fig.cap="Intuition behind PCA" data-execution_count="8">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_files/figure-html/cell-9-output-1.png" width="651" height="671" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>App to explain the intuition behind PCA</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/pca_rotating_clean.gif" class="img-fluid figure-img"></p>
+<figcaption>Animation</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/pca_pendulum_animation.gif" class="img-fluid figure-img"></p>
+<figcaption>Animation</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- end callout -->
+</section>
+<section id="lesson-summary" class="level2" data-number="4.15">
+<h2 data-number="4.15" class="anchored" data-anchor-id="lesson-summary"><span class="header-section-number">4.15</span> Lesson Summary</h2>
+<ul>
+<li><p>Basics of unsupervised learning</p></li>
+<li><p>Useful for visualization, outlier detection and making sense of your data if there are many features</p></li>
+<li><p><strong>What it is:</strong> Discover hidden patterns or groupings in unlabeled data, without predicting a specific target.<br>
+</p></li>
+<li><p><strong>Key techniques:</strong></p>
+<ul>
+<li><strong>Clustering</strong> for grouping similar observations<br>
+</li>
+<li><strong>Dimensionality reduction</strong> (e.g.&nbsp;PCA) for compressing and visualizing high‑dimensional data<br>
+</li>
+</ul></li>
+<li><p><strong>Why it matters:</strong></p>
+<ul>
+<li>Reveals structure in customer segmentation, anomaly detection, image compression, etc.<br>
+</li>
+<li>Serves as exploratory analysis and preprocessing for downstream tasks<br>
+</li>
+</ul></li>
+<li><p><strong>Information bottleneck:</strong> Forcing models to squeeze data through a narrow bottleneck uncovers the most essential features and removes noise<br>
+</p></li>
+<li><p><strong>Hands‑on example:</strong> Apply PCA to crime‑and‑population data by state to project three features into two dimensions for visualization<br>
+</p></li>
+<li><p><strong>Unsupervised vs.&nbsp;supervised:</strong></p>
+<ul>
+<li><strong>Unsupervised:</strong> No labels, focus on pattern discovery<br>
+</li>
+<li><strong>Supervised:</strong> With <em>labels</em>, focus on <em>predicting</em> a known outcome</li>
+</ul></li>
+</ul>
+</section>
+<section id="resources" class="level2" data-number="4.16">
+<h2 data-number="4.16" class="anchored" data-anchor-id="resources"><span class="header-section-number">4.16</span> Resources</h2>
+<ul>
+<li><p><a href="https://www.statlearning.com/">Introduction to Statistical Learning in Python book</a></p></li>
+<li><p><a href="https://www.youtube.com/playlist?list=PLoROMvodv4rNHU1-iPeDRH-J0cL-CrIda">Video lectures by the authors of the book Introduction to Statistical Learning in Python</a></p></li>
+<li><p><a href="https://github.com/neelsoumya/public_teaching_unsupervised_learning">Github repository with more theoretical material</a></p></li>
+<li><p><a href="https://mlu-explain.github.io">Interactive explanations of machine learning models</a></p></li>
+<li><p><a href="https://mml-book.github.io/book/mml-book.pdf">Mathematics behind unsupervised machine learning</a></p></li>
+</ul>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Gareth2017" class="csl-entry" role="listitem">
+Gareth, James, Witten Daniela, Hastie Trevor, and Tibshirani Robert. 2017. <em>Introduction to Statistical Learning with Applications in r</em>. Springer. <a href="https://www.statlearning.com/">https://www.statlearning.com/</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../references.html" class="pagination-link" aria-label="References and Resources">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">References and Resources</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../materials/python_refresher.html" class="pagination-link" aria-label="Refresher on Python">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Refresher on Python</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> <img src="https://creativecommons.org/images/deed/cc_icon_black_x2.png" class="img-fluid" width="25"> Cambridge Research Informatics Training</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
