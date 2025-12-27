@@ -77,6 +77,9 @@ quarto render materials/quarto_presentation_day1.qmd --to revealjs
 
 ## Contact
 
-Soumya Banerjee
+- Soumya Banerjee
 
-sb2333@cam.ac.uk
+- sb2333@cam.ac.uk
+
+- https://deepwiki.com/cambiotraining/ml-unsupervised
+
