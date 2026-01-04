@@ -83,3 +83,6 @@ quarto render materials/quarto_presentation_day1.qmd --to revealjs
 
 - https://deepwiki.com/cambiotraining/ml-unsupervised
 
+- https://cambiotraining.github.io/ml-unsupervised/
+  
+
