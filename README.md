@@ -2,9 +2,8 @@
 
 ## Introduction
 
-This repository contains the materials for the course on applied unsupervised machine learning.
+This repository contains the materials for the course on applied unsupervised machine learning. 
 
-**Course Developers**: see our [guidelines page](https://cambiotraining.github.io/quarto-course-template/materials.html) if contributing materials.
 
 These materials are released under a [CC BY 4.0](LICENSE.md) license.
 
@@ -55,6 +54,14 @@ chmod 755 gitshell.sh
 * Push changes to the repository
 
 ```bash
+git commit -m "Updated materials"
+git push
+```
+
+* Alternatively a single shell command
+
+```bash
+./gitshell.sh
 git commit -m "Updated materials"
 git push
 ```
